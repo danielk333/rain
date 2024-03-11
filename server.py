@@ -43,10 +43,12 @@ while server_open:
 
             if data == 'echo':
                 msg = data
+                msg += end_char
                 connection.sendall(msg.encode(encoding))
                 data = ''
             if data == 'close':
                 msg = 'Closing the connection'
+                msg += end_char
                 connection.sendall(msg.encode(encoding))
                 # connection.close()
                 data = ''

@@ -4,20 +4,44 @@ import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('localhost', 10000)
 encoding = 'utf-8'
+max_len = 256
+end_char = '\n'
+dt = 0.0
+timeout = 5.0
+
+def send_commands(end_char, encoding):
+    command = input()
+    data = command + end_char
+    sock.sendall(data.encode(encoding))
+
+    return command
+
+def receive_data(max_len, end_char, encoding, dt, timeout):
+    data = ''
+    t0 = time.time()
+    while len(data) < max_len:
+        data_raw = sock.recv(1)
+        if data_raw == end_char.encode(encoding):
+            break
+        elif len(data_raw) > 0:
+            data += data_raw.decode(encoding)
+        else:
+            dt = time.time() - t0
+            if dt >= timeout:
+                break
+
+    return data
+
+def interpret(data, command):
+    print(f'Server Response: {data}')
+    if command == 'close':
+        sys.exit()
 
 print(f'Connecting to {server_address[0]} on port {server_address[1]}')
 
-sock.connect(server_address)
+connection = sock.connect(server_address)
 
 while True:
-    data = input()
-    # data += '\n'
-    # print(data)
-    sock.sendall(data.encode(encoding))
-    # print(data.encode('utf-8'))
-
-    reception = sock.recv(10)
-    reception = reception.decode(encoding)
-    print(f'Server Response: {reception}')
-    if data == 'close':
-        sys.exit()
+    command = send_commands(end_char, encoding)
+    reception = receive_data(max_len, end_char, encoding, dt, timeout)
+    interpret(reception, command)
