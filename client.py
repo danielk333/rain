@@ -33,7 +33,7 @@ def receive_data(max_len, end_char, encoding, dt, timeout):
 
     return data
 
-def interpret(data, command):
+def interpret(data, command, connected):
     print(f'Server Response: {data}')
     if command == 'close':
         connected = False
@@ -47,6 +47,6 @@ connected = True
 while connected:
     command = send_commands(end_char, encoding)
     reception = receive_data(max_len, end_char, encoding, dt, timeout)
-    connected = interpret(reception, command)
+    connected = interpret(reception, command, connected)
 
 sys.exit()
