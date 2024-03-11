@@ -45,6 +45,8 @@ while server_open:
                 msg = data
                 connection.sendall(msg.encode(encoding))
                 data = ''
-            if data == 'a':
-                msg = data
+            if data == 'close':
+                msg = 'Closing the connection'
                 connection.sendall(msg.encode(encoding))
+                # connection.close()
+                data = ''
