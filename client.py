@@ -37,6 +37,8 @@ def interpret(data, command, connected):
     print(f'Server Response: {data}')
     if command == 'close':
         connected = False
+    if command == 'shutdown':
+        connected = False
     return connected
 
 print(f'Connecting to {server_address[0]} on port {server_address[1]}')

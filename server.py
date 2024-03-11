@@ -27,7 +27,7 @@ def receive_command(max_len, end_char, encoding, dt, timeout):
     print(command)
     return command
 
-def send_feedback(command, connected):
+def send_feedback(command, connected, server_open):
     if command == 'echo':
         feedback = command
         feedback += end_char
@@ -37,8 +37,16 @@ def send_feedback(command, connected):
         feedback += end_char
         connection.sendall(feedback.encode(encoding))
         connected = False
+    if command == 'shutdown':
+        feedback = 'Closing the connection and shutting down the server'
+        feedback += end_char
+        connection.sendall(feedback.encode(encoding))
+        print('Shutting down the server')
+        connected = False
+        server_open = False
+        connection.close()
 
-    return connected
+    return connected, server_open
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(server_address)
@@ -54,4 +62,4 @@ while server_open:
 
     while connected == True:
         command = receive_command(max_len, end_char, encoding, dt, timeout)
-        connected = send_feedback(command, connected)
+        connected, server_open = send_feedback(command, connected, server_open)
