@@ -1,5 +1,6 @@
 import socket
 import sys
+import time
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('localhost', 10000)
@@ -35,13 +36,17 @@ def receive_data(max_len, end_char, encoding, dt, timeout):
 def interpret(data, command):
     print(f'Server Response: {data}')
     if command == 'close':
-        sys.exit()
+        connected = False
+    return connected
 
 print(f'Connecting to {server_address[0]} on port {server_address[1]}')
 
 connection = sock.connect(server_address)
+connected = True
 
-while True:
+while connected:
     command = send_commands(end_char, encoding)
     reception = receive_data(max_len, end_char, encoding, dt, timeout)
-    interpret(reception, command)
+    connected = interpret(reception, command)
+
+sys.exit()
