@@ -1,43 +1,32 @@
-import socket
-import time
 import zmq
 
 server_address = ('localhost', 10000)
 server_open = False
 encoding = 'utf-8'
-max_len = 256
-end_char = '\n'
 
-def receive_command(max_len, end_char, encoding, dt, timeout):
-    command = ''
-    while len(command) < max_len:
-        data_raw = connection.recv(1)
-        if data_raw == end_char.encode(encoding):
-            break
-        elif len(data_raw) > 0:
-            command += data_raw.decode(encoding)
+def receive_command(encoding):
+    command = socket.recv_string(0, encoding)
+    print(f'Command received: {command}')
 
-    print(command)
     return command
 
 def send_feedback(command, connected, server_open):
     if command == 'echo':
         feedback = command
-        feedback += end_char
-        connection.sendall(feedback.encode(encoding))
-    if command == 'close':
+        socket.send_string(f'Received {feedback}', 0, True, encoding)
+    elif command == 'close':
         feedback = 'Closing the connection'
-        feedback += end_char
-        connection.sendall(feedback.encode(encoding))
+        socket.send_string(f'Received {feedback}', 0, True, encoding)
         connected = False
-    if command == 'shutdown':
+    elif command == 'shutdown':
         feedback = 'Closing the connection and shutting down the server'
-        feedback += end_char
-        connection.sendall(feedback.encode(encoding))
+        socket.send_string(f'Received {feedback}', 0, True, encoding)
         print('Shutting down the server')
         connected = False
         server_open = False
-        connection.close()
+    else:
+        feedback = command
+        socket.send_string(f'Received {feedback}', 0, True, encoding)
 
     return connected, server_open
 
@@ -54,9 +43,5 @@ while server_open:
     connected = True
 
     while connected == True:
-        # command = receive_command(max_len, end_char, encoding)
-        command = socket.recv_string(0, encoding)
-        print(command)
-        socket.send_string('Received', 0, True, encoding)
-        time.sleep(2)
-        # connected, server_open = send_feedback(command, connected, server_open)
+        command = receive_command(encoding)
+        connected, server_open = send_feedback(command, connected, server_open)
