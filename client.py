@@ -12,8 +12,12 @@ def send_command():
     return command
 
 def receive_data(command):
-    feedback = socket.recv_string(0, encoding)
-    print(f'Server Response: {feedback}')
+    feedback = socket.recv_json(0)
+    print(f'Server Response:')
+    print('{')
+    for item in feedback:
+        print(f'    {item}: {feedback[item]}')
+    print('}')
     socket.disconnect(f'tcp://{server_address[0]}:{server_address[1]}')
 
     return

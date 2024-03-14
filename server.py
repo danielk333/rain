@@ -1,4 +1,5 @@
 import zmq
+import time
 
 server_address = ('localhost', 10000)
 server_open = False
@@ -12,16 +13,23 @@ def receive_command():
 
 def send_feedback(command, server_open):
     if command == 'echo':
-        feedback = command
-        socket.send_string(feedback, 0, True, encoding)
+        feedback = {"command": command,
+                    "response": command}
+        socket.send_json(feedback, 0)
     elif command == 'shutdown':
-        feedback = 'Shutting down the server'
-        socket.send_string(feedback, 0, True, encoding)
-        print(feedback)
+        response = 'Shutting down the server'
+        local_time = time.localtime()
+        current_time = f'{local_time[3]}:{local_time[4]}:{local_time[5]}'
+        feedback = {"command": command,
+                    "response": response,
+                    "time": current_time}
+        socket.send_json(feedback, 0)
+        print(response)
         server_open = False
     else:
-        feedback = command
-        socket.send_string(feedback, 0, True, encoding)
+        feedback = {"command": command,
+                    "response": "Invalid command"}
+        socket.send_json(feedback, 0)
 
     return server_open
 
