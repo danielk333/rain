@@ -11,7 +11,7 @@ def new_keypair(infra_name):
     file_pub, file_prv = zmq.auth.create_certificates(home, infra_name)
 
     # Put the keypair files into separate directories
-    shutil.move(os.path.join(home, file_pub), os.path.join(dir_pub, '.'))
-    shutil.move(os.path.join(home, file_prv), os.path.join(dir_prv, '.'))
+    # shutil.move(os.path.join(home, file_pub), os.path.join(dir_pub, '.'))
+    # shutil.move(os.path.join(home, file_prv), os.path.join(dir_prv, '.'))
 
-new_keypair('key_test')
+    return file_pub, file_prv
