@@ -4,3 +4,6 @@ test.py
 # External reference files
 generate_certificates.py
 ironhouse.py
+
+# Automatically generated files
+__pycache__
