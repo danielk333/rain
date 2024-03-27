@@ -71,4 +71,6 @@ generate_secret(infra_name, key_pub, key_prv)
 # Create an info file and write in it the static information
 generate_static(infra_name, key_pub)
 
+# TODO 4: Add the new info file to a directory with other info files
+
 print(f'Thank you for registering {infra_name} to RAIN!')
