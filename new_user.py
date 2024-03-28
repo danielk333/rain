@@ -63,14 +63,14 @@ infra_name = input().lower()
 file_pub, file_prv, gen_time = new_keypair(infra_name)
 
 # Extract public and private keys from the automatically generated files
-# key_pub = key_detect(file_pub)
 key_pub, key_prv = key_detect(file_prv)
+
+# Delete the automatically generated files
+os.remove(file_pub)
+os.remove(file_prv)
 
 # Create a new file for the private key
 generate_secret(infra_name, key_pub, key_prv, gen_time)
-
-# TODO 3: Delete the automatically generated files
-
 
 # Create an info file and write in it the static information
 generate_static(infra_name, key_pub, gen_time)
