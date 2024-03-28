@@ -1,55 +1,7 @@
-from keygen import new_keypair
 import os
 
-def key_detect(key_file):
-    with open(key_file, 'r') as in_file:
-        row_found = False
-        while not row_found:
-            line = in_file.readline()
-            if line[0:5] == 'curve':
-                row_found = True
-                key = []
-                for item in range(2):
-                    line = in_file.readline()
-                    pos = []
-                    for iter in range(len(line)):
-                        if line[iter] == '"':
-                            pos.append(iter)
-                    key.append(line[pos[0]+1: pos[1]])
-                    item =+ 1
-
-    return key[0], key[1]
-
-def generate_static(path, name, key, gen_time):
-    with open(f'{path}/{name}.info', 'w') as static:
-        static.write(f'#   {name.upper()}\n\n')
-        static.write('#   Contact Name:\n')
-        static.write('#   Contact Address:\n')
-        static.write('#   Coordinates:\n')
-
-        static.write('\n' + '-------------------\n\n')
-
-        static.write('#   Type: ZeroMQ CURVE Public Certificate\n')
-        static.write(f'#   Generated: {gen_time[0]}/{gen_time[1]:02}/{gen_time[2]:02} ' +
-                     f'at {gen_time[3]:02}:{gen_time[4]:02}:{gen_time[5]:02} UTC\n\n')
-        static.write('curve\n')
-        static.write(f'    public-key = "{key_pub}"\n')
-
-        static.write('\n' + '-------------------\n\n')
-
-    return
-
-def generate_secret(path, name, key_pub, key_prv, gen_time):
-    with open(f'{path}/{name}.private', 'w') as secret:
-        secret.write(f'#   {name.upper()}\n\n')
-        secret.write('#   Type: ZeroMQ CURVE **Secret** Certificate\n')
-        secret.write(f'#   Generated: {gen_time[0]}/{gen_time[1]:02}/{gen_time[2]:02} ' +
-                     f'at {gen_time[3]:02}:{gen_time[4]:02}:{gen_time[5]:02} UTC\n\n')
-        secret.write('curve\n')
-        secret.write(f'    public-key = "{key_pub}"\n')
-        secret.write(f'    secret-key = "{key_prv}"\n')
-
-    return
+from keygen import new_keypair, key_detect
+from generate import generate_static, generate_secret
 
 home = os.path.dirname(__file__)
 dir_info = os.path.join(home, 'infra_info')
@@ -60,7 +12,7 @@ infra_name = input().lower()
 
 # Generate a key pair for the new instrument
 ## TODO 1: Check there is no existing instrument with this name, and no existing keypair
-file_pub, file_prv, gen_time = new_keypair(infra_name)
+file_pub, file_prv, gen_time = new_keypair(home, infra_name)
 
 # Extract public and private keys from the automatically generated files
 key_pub, key_prv = key_detect(file_prv)
