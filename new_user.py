@@ -20,8 +20,8 @@ def key_detect(key_file):
 
     return key[0], key[1]
 
-def generate_static(name, key, gen_time):
-    with open(f'{name}.info', 'w') as static:
+def generate_static(path, name, key, gen_time):
+    with open(f'{path}/{name}.info', 'w') as static:
         static.write(f'#   {name.upper()}\n\n')
         static.write('#   Contact Name:\n')
         static.write('#   Contact Address:\n')
@@ -39,8 +39,8 @@ def generate_static(name, key, gen_time):
 
     return
 
-def generate_secret(name, key_pub, key_prv, gen_time):
-    with open(f'{name}.private', 'w') as secret:
+def generate_secret(path, name, key_pub, key_prv, gen_time):
+    with open(f'{path}/{name}.private', 'w') as secret:
         secret.write(f'#   {name.upper()}\n\n')
         secret.write('#   Type: ZeroMQ CURVE **Secret** Certificate\n')
         secret.write(f'#   Generated: {gen_time[0]}/{gen_time[1]:02}/{gen_time[2]:02} ' +
@@ -52,8 +52,8 @@ def generate_secret(name, key_pub, key_prv, gen_time):
     return
 
 home = os.path.dirname(__file__)
-dir_pub = os.path.join(home, 'public_keys')
-dir_prv = os.path.join(home, 'private_keys')
+dir_info = os.path.join(home, 'infra_info')
+dir_secret = os.path.join(home, 'infra_secret')
 
 print('Please enter the name of your instrument:')
 infra_name = input().lower()
@@ -69,12 +69,10 @@ key_pub, key_prv = key_detect(file_prv)
 os.remove(file_pub)
 os.remove(file_prv)
 
-# Create a new file for the private key
-generate_secret(infra_name, key_pub, key_prv, gen_time)
+# Create a new file for the private key, in the infra_secret directory
+generate_secret(dir_secret, infra_name, key_pub, key_prv, gen_time)
 
-# Create an info file and write in it the static information
-generate_static(infra_name, key_pub, gen_time)
-
-# TODO 4: Add the new info file to a directory with other info files
+# Create an info file and write in it the static information, in the infra_info directory
+generate_static(dir_info, infra_name, key_pub, gen_time)
 
 print(f'Thank you for registering {infra_name} to RAIN!')
