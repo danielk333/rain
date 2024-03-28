@@ -1,5 +1,6 @@
 # Test files
-test.py
+test
+test/*
 
 # External reference files
 generate_certificates.py
