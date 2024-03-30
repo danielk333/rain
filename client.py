@@ -1,7 +1,6 @@
 import zmq
 import zmq.auth
 import os
-from keygen import key_detect
 
 server_address = ('127.0.0.1', 10000)
 encoding = 'utf-8'

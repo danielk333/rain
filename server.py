@@ -3,7 +3,6 @@ import zmq.auth
 import time
 import os
 from zmq.auth.thread import ThreadAuthenticator
-from keygen import key_detect
 
 server_address = ('127.0.0.1', 10000)
 server_open = False

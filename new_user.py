@@ -1,6 +1,7 @@
 import os
+import zmq.auth
 
-from keygen import new_keypair, key_detect
+from keygen import new_keypair
 from generate import generate_static
 
 home = os.path.dirname(__file__)
@@ -15,14 +16,14 @@ infra_name = input().lower()
 ## TODO 1: Check there is no existing instrument with this name, and no existing keypair
 file_pub, file_prv, gen_time = new_keypair(home, infra_name)
 
-# Extract public and private keys from the automatically generated files
-key_pub, key_prv = key_detect(file_prv)
-
-# Create an info file and write in it the static information, in the infra_info directory
-generate_static(dir_info, infra_name, key_pub, gen_time)
+# Extract public and private keys from the automatically generated private file
+key_pub, key_prv = zmq.auth.load_certificate(file_prv)
 
 # Move these files into their respective directories
 os.rename(os.path.join(home, f'{infra_name}.key'), os.path.join(dir_pub, f'{infra_name}.key'))
 os.rename(os.path.join(home, f'{infra_name}.key_secret'), os.path.join(dir_prv, f'{infra_name}.key_secret'))
+
+# Create an info file and write in it the static information, in the infra_info directory
+generate_static(dir_info, infra_name, key_pub, gen_time)
 
 print(f'Thank you for registering {infra_name} to RAIN!')
