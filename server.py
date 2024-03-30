@@ -3,6 +3,7 @@ import zmq.auth
 import time
 import os
 from zmq.auth.thread import ThreadAuthenticator
+from keygen import key_detect
 
 server_address = ('127.0.0.1', 10000)
 server_open = False
@@ -11,6 +12,7 @@ encoding = 'utf-8'
 home = os.path.dirname(__file__)
 dir_pub = os.path.join(home, 'public_keys')
 dir_prv = os.path.join(home, 'private_keys')
+# dir_info = os.path.join(home, 'infra_info')
 
 def receive_command():
     command = socket.recv_string(0, encoding)
@@ -49,7 +51,7 @@ auth.allow(server_address[0])
 auth.configure_curve(domain='*', location=dir_pub)
 
 socket = context.socket(zmq.REP)
-server_file_prv = os.path.join(dir_prv, "server.key_secret")
+server_file_prv = os.path.join(dir_prv, "odyssey.key_secret")
 server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
 socket.curve_secretkey = server_prv
 socket.curve_publickey = server_pub
