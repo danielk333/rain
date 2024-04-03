@@ -1,10 +1,40 @@
-## Static Information
+#   AURORA
 
-Infrastructure name: Aurora
-Contact Name: Calum Lonie
-Contact Address: Atlantis Base, Pegasus Galaxy
-Coordinates:
+#   Contact Name: Calum Lonie
+#   Contact Address: Atlantis Base, Pegasus Galaxy
+#   Coordinates:
 
-Public Key:
+-------------------
 
-## Dynamic Information
+#   PUBLIC KEY
+
+#   Type: ZeroMQ CURVE Public Certificate
+#   Generated: 2024/03/30 at 10:12:20 UTC
+
+    public-key = "mq+1j}%O*1ROa2waV&#jwf!:[ozm*#Ou=9UJ(^=c"
+
+-------------------
+
+#   PARAMETER GROUPS
+
+{
+    "group_name" = "propulsion",
+    "request" = "true",
+    "command" = "true",
+    "subscribe" = "false",
+
+    "parameters" = [
+        {
+            "name" = "thrusters"
+            "value_link" = "TBD"
+        },
+        {
+            "name" = "sub-light"
+            "value_link" = "TBD"
+        },
+        {
+            "name" = "hyperdrive"
+            "value_link" = "TBD"
+        }
+    ]
+}
