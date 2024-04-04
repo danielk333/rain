@@ -18,23 +18,26 @@
 #   PARAMETER GROUPS
 
 {
-    "group_name" = "propulsion",
-    "request" = "true",
-    "command" = "true",
-    "subscribe" = "false",
+    "group_name": "propulsion",
+    "request": "true",
+    "command": "true",
+    "subscribe": "false",
 
-    "parameters" = [
+    "parameters": [
         {
-            "name" = "thrusters"
-            "value_link" = "TBD"
+            "name": "thrusters",
+            "vaue": "OFF",
+            "value_link": "TBD"
         },
         {
-            "name" = "sub-light"
-            "value_link" = "TBD"
+            "name": "sub-light",
+            "value": "OFF",
+            "value_link": "TBD"
         },
         {
-            "name" = "hyperdrive"
-            "value_link" = "TBD"
+            "name": "hyperdrive",
+            "value": "ON",
+            "value_link": "TBD"
         }
     ]
 }
