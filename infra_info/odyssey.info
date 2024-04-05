@@ -14,3 +14,29 @@ curve
 
 -------------------
 
+#   PARAMETER GROUPS
+
+{
+    "group_name": "propulsion",
+    "request": "true",
+    "command": "true",
+    "subscribe": "false",
+
+    "parameters": [
+        {
+            "name": "thrusters",
+            "value": "OFF",
+            "value_link": "TBD"
+        },
+        {
+            "name": "sub-light",
+            "value": "OFF",
+            "value_link": "TBD"
+        },
+        {
+            "name": "hyperdrive",
+            "value": "ON",
+            "value_link": "TBD"
+        }
+    ]
+}
