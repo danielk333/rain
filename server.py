@@ -3,7 +3,9 @@ import zmq.auth
 import time
 import os
 from zmq.auth.thread import ThreadAuthenticator
+from load import load_info
 
+server_name = "odyssey"
 server_address = ('127.0.0.1', 10000)
 server_open = False
 encoding = 'utf-8'
@@ -11,7 +13,7 @@ encoding = 'utf-8'
 home = os.path.dirname(__file__)
 dir_pub = os.path.join(home, 'public_keys')
 dir_prv = os.path.join(home, 'private_keys')
-# dir_info = os.path.join(home, 'infra_info')
+dir_info = os.path.join(home, 'infra_info')
 
 def receive_command():
     command = socket.recv_string(0, encoding)
@@ -35,9 +37,18 @@ def send_feedback(command, server_open):
         print(response)
         server_open = False
     else:
-        feedback = {"command": command,
-                    "response": "Invalid command"}
-        socket.send_json(feedback, 0)
+        info = load_info(dir_info, f"{server_name}.info")
+        for item in info["parameters"]:
+            if item["name"] == command:
+                feedback = {"command": "request",
+                            "parameter": command,
+                            "value": item["value"]}
+                socket.send_json(feedback, 0)
+                break
+        else:
+            feedback = {"command": command,
+                        "response": "Invalid command"}
+            socket.send_json(feedback, 0)
 
     return server_open
 
@@ -50,7 +61,7 @@ auth.allow(server_address[0])
 auth.configure_curve(domain='*', location=dir_pub)
 
 socket = context.socket(zmq.REP)
-server_file_prv = os.path.join(dir_prv, "odyssey.key_secret")
+server_file_prv = os.path.join(dir_prv, f"{server_name}.key_secret")
 server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
 socket.curve_secretkey = server_prv
 socket.curve_publickey = server_pub

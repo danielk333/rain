@@ -2,6 +2,10 @@ import os
 import json
 from pprint import pprint
 
+home = os.path.dirname(__file__)
+dir_info = os.path.join(home, 'infra_info')
+# file_name = 'odyssey.info'
+
 def load_info(path, file_name):
     with open(os.path.join(dir_info, file_name), 'r') as f:
         data = f.read()
@@ -30,16 +34,13 @@ def request_parameters(info, request):
 
     return value
 
-home = os.path.dirname(__file__)
-dir_info = os.path.join(home, 'infra_info')
-file_name = 'aurora.info'
-
-print("Please enter a command:")
-prompt = input()
-if prompt == "request":
-    info = load_info(dir_info, file_name)
-    pprint(info["parameters"], indent=4, sort_dicts=False)
-    print("Please enter a parameter to request:")
-    request = input()
-    value = request_parameters(info, request)
-    print(f"Value of {request}: {value}")
+#
+# print("Please enter a command:")
+# prompt = input()
+# if prompt == "request":
+#     info = load_info(dir_info, file_name)
+#     pprint(info["parameters"], indent=4, sort_dicts=False)
+#     print("Please enter a parameter to request:")
+#     request = input()
+#     value = request_parameters(info, request)
+#     print(f"Value of {request}: {value}")

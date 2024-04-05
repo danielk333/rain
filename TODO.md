@@ -1,7 +1,7 @@
 # RAIN TODOs
 
 Big TODOs:
-- [ ] T1: Implement the request parameter process into the server-client model
+- [x] T1: Implement the request parameter process into the server-client model
 - [ ] T2: Implement commands to change parameters
 - [ ] T3: Split client and server actions into separate files
 - [ ] T4: Convert clients and servers into classes
