@@ -16,5 +16,6 @@ Smaller TODOs:
 - [ ] TODO 7: Add server details to the info file
 - [ ] TODO 8: Ask user what server to interact with
 - [ ] TODO 9: Also find the end of the parameters
+- [ ] TODO 10: Add the request and command status to the pprint
 
 Exception Handling:
