@@ -4,9 +4,11 @@ import os
 from load import load_info
 from pprint import pprint
 
+## TODO 8: Ask user what server to interact with
 server_name = "odyssey"
 client_name = "apollo"
 
+## TODO 7: Add server details to the info file
 server_address = ('127.0.0.1', 10000)
 encoding = 'utf-8'
 

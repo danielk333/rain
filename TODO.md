@@ -13,5 +13,8 @@ Smaller TODOs:
 - [x] TODO 4: Add the new info file to a directory with other info files
 - [ ] TODO 5: Replace os library with Pathlib
 - [ ] TODO 6: Replace feedback printing with pprint
+- [ ] TODO 7: Add server details to the info file
+- [ ] TODO 8: Ask user what server to interact with
+- [ ] TODO 9: Also find the end of the parameters
 
 Exception Handling:

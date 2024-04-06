@@ -8,6 +8,7 @@ dir_info = os.path.join(home, 'infra_info')
 def load_info(path, file_name):
     with open(os.path.join(dir_info, file_name), 'r') as f:
         data = f.read()
+        ## TODO 9: Also find the end of the parameters
         for char in range(len(data)):
             if data[char] == '{':
                 data = data[char:len(data)]

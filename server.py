@@ -6,6 +6,7 @@ from zmq.auth.thread import ThreadAuthenticator
 from load import load_info
 
 server_name = "odyssey"
+## TODO 7: Add server details to the info file
 server_address = ('127.0.0.1', 10000)
 server_open = False
 encoding = 'utf-8'
