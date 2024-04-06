@@ -57,9 +57,16 @@ if user_input == "request":
     param = input()
     for item in info["parameters"]:
         if item["name"] == param:
-            command = param
+            if info["request"] == "true:":
+                command = param
+                break
+            else:
+                command = None
+                print("This parameter is not requestable")
+                break
 else:
     command = user_input
 
-send_command(command)
-receive_data(command)
+if command:
+    send_command(command)
+    receive_data(command)
