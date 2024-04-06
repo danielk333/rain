@@ -22,6 +22,7 @@ def receive_command():
 
     return command
 
+## TODO 11: Make a list of each type of command and separate the responses to these in separate functions
 def send_feedback(command, server_open):
     if command == 'echo':
         feedback = {"command": command,

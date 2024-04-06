@@ -17,5 +17,6 @@ Smaller TODOs:
 - [ ] TODO 8: Ask user what server to interact with
 - [ ] TODO 9: Also find the end of the parameters
 - [ ] TODO 10: Add the request and command status to the pprint
+- [ ] TODO 11: Make a list of each type of command and separate the responses to these in separate functions
 
 Exception Handling:
