@@ -60,7 +60,7 @@ def send_feedback(command, server_open):
     elif command == 'shutdown':
         response = 'Shutting down the server'
         local_time = time.localtime()
-        current_time = f'{local_time[3]}:{local_time[4]}:{local_time[5]}'
+        current_time = f'{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02}'
         feedback = {"command": command,
                     "response": response,
                     "time": current_time}
