@@ -61,8 +61,6 @@ def send_feedback(command, server_open):
         info = load_info(dir_info, f"{server_name}.info")
         for item in info["parameters"]:
             if item["name"] == command[0]:
-                # item["value"] = command[1]
-                ## Replace the value in the info file
                 change_data(dir_data, server_name, command)
                 feedback = {"command": "command",
                             "parameter": command[0],
