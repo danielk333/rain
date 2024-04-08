@@ -58,7 +58,7 @@ if user_input == "request":
     param = input()
     for item in info["parameters"]:
         if item["name"] == param:
-            if info["request"] == "true:":
+            if info["request"] == "true":
                 command = param
                 break
             else:
@@ -73,7 +73,7 @@ elif user_input == "command":
     param = input()
     print("Enter the value you would like to give this parameter")
     new_value = input()
-    command = param + "\n" + new_value
+    command = param + ":" + new_value
 else:
     command = user_input
 

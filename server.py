@@ -35,6 +35,16 @@ def change_data(path, file_name, command):
         for item in lines:
             f.write(item)
 
+def load_data(path, file_name, parameter):
+    with open(os.path.join(path, f"{file_name}.data"), 'r') as f:
+        for line in f:
+            if parameter in line:
+                components = line.split(' : ')
+                value = components[1]
+                break
+
+    return value
+
 def receive_command():
     command = socket.recv_string(0, encoding)
     print(f'Command received: {command}')
@@ -57,8 +67,8 @@ def send_feedback(command, server_open):
         socket.send_json(feedback, 0)
         print(response)
         server_open = False
-    elif command.find("\n"):
-        command = command.splitlines()
+    elif ":" in command:
+        command = command.split(":")
         info = load_info(dir_info, f"{server_name}.info")
         for item in info["parameters"]:
             if item["name"] == command[0]:
@@ -72,9 +82,10 @@ def send_feedback(command, server_open):
         info = load_info(dir_info, f"{server_name}.info")
         for item in info["parameters"]:
             if item["name"] == command:
+                value = load_data(dir_data, server_name, command)
                 feedback = {"command": "request",
                             "parameter": command,
-                            "value": item["value"]}
+                            "value": value}
                 socket.send_json(feedback, 0)
                 break
         else:
