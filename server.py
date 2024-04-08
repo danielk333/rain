@@ -15,6 +15,24 @@ home = os.path.dirname(__file__)
 dir_pub = os.path.join(home, 'public_keys')
 dir_prv = os.path.join(home, 'private_keys')
 dir_info = os.path.join(home, 'infra_info')
+dir_data = os.path.join(home, 'data')
+
+def change_data(path, file_name, command):
+    with open(os.path.join(path, f"{file_name}.data"), 'r') as f:
+        lines = []
+        for line in f:
+            if command[0] in line:
+                line_to_change = line
+                components = line_to_change.split(' : ')
+                new_line = components[0] + ' : ' + command[1] + '\n'
+                lines.append(new_line)
+                break
+            else:
+                lines.append(line)
+
+    with open(os.path.join(path, f"{file_name}.data"), 'w') as f:
+        for item in lines:
+            f.write(item)
 
 def receive_command():
     command = socket.recv_string(0, encoding)
@@ -38,6 +56,19 @@ def send_feedback(command, server_open):
         socket.send_json(feedback, 0)
         print(response)
         server_open = False
+    elif command.find("\n"):
+        command = command.splitlines()
+        info = load_info(dir_info, f"{server_name}.info")
+        for item in info["parameters"]:
+            if item["name"] == command[0]:
+                # item["value"] = command[1]
+                ## Replace the value in the info file
+                change_data(dir_data, server_name, command)
+                feedback = {"command": "command",
+                            "parameter": command[0],
+                            "new value": command[1]}
+                socket.send_json(feedback, 0)
+                break
     else:
         info = load_info(dir_info, f"{server_name}.info")
         for item in info["parameters"]:

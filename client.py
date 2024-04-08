@@ -65,6 +65,15 @@ if user_input == "request":
                 command = None
                 print("This parameter is not requestable")
                 break
+elif user_input == "command":
+    info = load_info(dir_info, f"{server_name}.info")
+    ## TODO 10: Add the request and command status to the pprint
+    pprint(info["parameters"], indent=4, sort_dicts=False)
+    print("\nPlease enter the parameter you would like to command")
+    param = input()
+    print("Enter the value you would like to give this parameter")
+    new_value = input()
+    command = param + "\n" + new_value
 else:
     command = user_input
 
