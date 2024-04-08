@@ -2,7 +2,7 @@
 
 Big TODOs:
 - [x] T1: Implement the request parameter process into the server-client model
-- [ ] T2: Implement commands to change parameters
+- [x] T2: Implement commands to change parameters
 - [ ] T3: Split client and server actions into separate files
 - [ ] T4: Convert clients and servers into classes
 
@@ -18,5 +18,6 @@ Smaller TODOs:
 - [ ] TODO 9: Also find the end of the parameters
 - [ ] TODO 10: Add the request and command status to the pprint
 - [ ] TODO 11: Make a list of each type of command and separate the responses to these in separate functions
+- [ ] TODO 12: Be able to handle changing values of multiple parameters
 
 Exception Handling:

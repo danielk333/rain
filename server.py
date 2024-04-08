@@ -17,6 +17,7 @@ dir_prv = os.path.join(home, 'private_keys')
 dir_info = os.path.join(home, 'infra_info')
 dir_data = os.path.join(home, 'data')
 
+## TODO 12: Be able to handle changing values of multiple parameters
 def change_data(path, file_name, command):
     with open(os.path.join(path, f"{file_name}.data"), 'r') as f:
         lines = []
