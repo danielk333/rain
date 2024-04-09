@@ -5,6 +5,8 @@ Big TODOs:
 - [x] T2: Implement commands to change parameters
 - [ ] T3: Split client and server actions into separate files
 - [ ] T4: Convert clients and servers into classes
+- [ ] T5: Split the code into the established layers
+- [ ] T6: Split the code between the public repository and the database repository
 
 Smaller TODOs:
 - [ ] ~~TODO 1: Check there is no existing instrument with this name, and no existing keypair~~
