@@ -1,7 +1,9 @@
 #   AURORA
 
 #   Contact Name: Calum Lonie
-#   Contact Address: Atlantis Base, Pegasus Galaxy
+#   Email:
+#   Phone Number:
+#   Address: Atlantis Base, Pegasus Galaxy
 #   Coordinates:
 
 -------------------
@@ -15,29 +17,35 @@
 
 -------------------
 
+#   SERVER DETAILS
+
+#   Server Address: 127.0.0.1
+#   Port: 10000
+
+-------------------
+
 #   PARAMETER GROUPS
 
 {
     "group_name": "propulsion",
-    "request": "true",
-    "command": "true",
-    "subscribe": "false",
-
     "parameters": [
         {
             "name": "thrusters",
-            "value": "OFF",
-            "value_link": "TBD"
+            "request": "true",
+            "command": "true",
+            "subscribe": false
         },
         {
             "name": "sub-light",
-            "value": "OFF",
-            "value_link": "TBD"
+            "request": "true",
+            "command": "true",
+            "subscribe": false
         },
         {
             "name": "hyperdrive",
-            "value": "ON",
-            "value_link": "TBD"
+            "request": "true",
+            "command": "true",
+            "subscribe": false
         }
     ]
 }
