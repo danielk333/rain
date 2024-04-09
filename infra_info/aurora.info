@@ -33,19 +33,19 @@
             "name": "thrusters",
             "request": "true",
             "command": "true",
-            "subscribe": false
+            "subscribe": "false"
         },
         {
             "name": "sub-light",
             "request": "true",
             "command": "true",
-            "subscribe": false
+            "subscribe": "false"
         },
         {
             "name": "hyperdrive",
             "request": "true",
             "command": "true",
-            "subscribe": false
+            "subscribe": "false"
         }
     ]
 }
