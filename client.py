@@ -52,12 +52,12 @@ user_input = input()
 
 if user_input == "request":
     info = load_info(dir_info, f"{server_name}.info")
-    ## TODO 10: Add the request and command status to the pprint
     pprint(info["parameters"], indent=4, sort_dicts=False)
     print("\nPlease enter the parameter you would like to request")
     param = input()
     for item in info["parameters"]:
         if item["name"] == param:
+            ## TODO 15: Fix the request and command status checks
             if info["request"] == "true":
                 command = param
                 break
@@ -67,7 +67,6 @@ if user_input == "request":
                 break
 elif user_input == "command":
     info = load_info(dir_info, f"{server_name}.info")
-    ## TODO 10: Add the request and command status to the pprint
     pprint(info["parameters"], indent=4, sort_dicts=False)
     print("\nPlease enter the parameter you would like to command")
     param = input()

@@ -1,0 +1,51 @@
+#   DAEDALUS
+
+#   Contact Name: 
+#   Email: 
+#   Phone Number: 
+#   Address: 
+#   Coordinates: 
+
+-------------------
+
+#   PUBLIC KEY
+
+#   Type: ZeroMQ CURVE Public Certificate
+#   Generated: 2024/04/09 at 14:27:54 UTC
+
+    public-key = "b'qB?/8VAA?PARQ.$tCao/-!(R5UNvn4cE+19JG6&1'"
+
+-------------------
+
+#   SERVER DETAILS
+
+#   Server Address: 
+#   Port: 
+
+-------------------
+
+#   PARAMETER GROUPS
+
+{
+    "group_name": "",
+    "parameters": [
+        {
+            "name": "",
+            "request": "",
+            "command": "",
+            "subscribe": ""
+        },
+        {
+            "name": "",
+            "request": "",
+            "command": "",
+            "subscribe": ""
+        },
+        {
+            "name": "",
+            "request": "",
+            "command": "",
+            "subscribe": ""
+        }
+    ]
+}
