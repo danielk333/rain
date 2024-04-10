@@ -16,8 +16,7 @@ def generate_key(path, name, key, gen_time):
         f.write('#   Type: ZeroMQ CURVE Public Certificate\n')
         f.write(f'#   Generated: {gen_time[0]}/{gen_time[1]:02}/{gen_time[2]:02} ' +
                      f'at {gen_time[3]:02}:{gen_time[4]:02}:{gen_time[5]:02} UTC\n\n')
-        ## TODO 14: Convert the key from bytes to string
-        f.write(f'    public-key = "{key}"\n')
+        f.write(f'    public-key = "{key.decode("utf-8")}"\n')
         f.write('\n' + '-------------------\n\n')
 
     return

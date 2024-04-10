@@ -22,7 +22,7 @@ Smaller TODOs:
 - [ ] TODO 11: Make a list of each type of command and separate the responses to these in separate functions
 - [ ] TODO 12: Be able to handle changing values of multiple parameters
 - [x] TODO 13: Fix how commands are received
-- [ ] TODO 14: Convert the key from bytes to string
+- [x] TODO 14: Convert the key from bytes to string
 - [x] TODO 15: Fix the request and command status checks
 - [ ] TODO 16: Load server details from info file
 
