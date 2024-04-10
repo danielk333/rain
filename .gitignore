@@ -1,7 +1,7 @@
 # Database-related files
-infra_info
-public_keys
-private_keys
+infra_info/*
+public_keys/*
+private_keys/*
 
 # Test files
 test
