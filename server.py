@@ -6,7 +6,7 @@ from zmq.auth.thread import ThreadAuthenticator
 from load import load_info
 
 server_name = "odyssey"
-## TODO 7: Add server details to the info file
+## TODO 16: Load server details from info file
 server_address = ('127.0.0.1', 10000)
 server_open = False
 encoding = 'utf-8'
@@ -18,14 +18,14 @@ dir_info = os.path.join(home, 'infra_info')
 dir_data = os.path.join(home, 'data')
 
 ## TODO 12: Be able to handle changing values of multiple parameters
-def change_data(path, file_name, command):
+def change_data(path, file_name, param, value):
     with open(os.path.join(path, f"{file_name}.data"), 'r') as f:
         lines = []
         for line in f:
-            if command[0] in line:
+            if param in line:
                 line_to_change = line
                 components = line_to_change.split(' : ')
-                new_line = components[0] + ' : ' + command[1] + '\n'
+                new_line = components[0] + ' : ' + value + '\n'
                 lines.append(new_line)
                 break
             else:
@@ -45,54 +45,45 @@ def load_data(path, file_name, parameter):
 
     return value
 
-def receive_command():
-    command = socket.recv_string(0, encoding)
-    print(f'Command received: {command}')
+def receive_message():
+    message = socket.recv_json(0)
+    print(f'Message received:\n{message}')
 
-    return command
+    return message
 
 ## TODO 11: Make a list of each type of command and separate the responses to these in separate functions
-## TODO 13: Fix how commands are received
-def send_feedback(command, server_open):
-    if command == 'echo':
-        feedback = {"command": command,
-                    "response": command}
-        socket.send_json(feedback, 0)
-    elif command == 'shutdown':
+def send_feedback(message, server_open):
+    if message["type"] == "admin":
         response = 'Shutting down the server'
         local_time = time.localtime()
-        current_time = f'{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02}'
-        feedback = {"command": command,
+        current_time = f'{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02} Local Time'
+        feedback = {"type": message["type"],
                     "response": response,
                     "time": current_time}
         socket.send_json(feedback, 0)
         print(response)
         server_open = False
-    elif ":" in command:
-        command = command.split(":")
+    elif message["type"] == "request":
         info = load_info(dir_info, f"{server_name}.info")
         for item in info["parameters"]:
-            if item["name"] == command[0]:
-                change_data(dir_data, server_name, command)
-                feedback = {"command": "command",
-                            "parameter": command[0],
-                            "new value": command[1]}
-                socket.send_json(feedback, 0)
-                break
-    else:
-        info = load_info(dir_info, f"{server_name}.info")
-        for item in info["parameters"]:
-            if item["name"] == command:
-                value = load_data(dir_data, server_name, command)
-                feedback = {"command": "request",
-                            "parameter": command,
+            if item["name"] == message["parameter"]:
+                value = load_data(dir_data, server_name, message["parameter"])
+                feedback = {"type": message["type"],
+                            "parameter": message["parameter"],
                             "value": value}
                 socket.send_json(feedback, 0)
                 break
-        else:
-            feedback = {"command": command,
-                        "response": "Invalid command"}
-            socket.send_json(feedback, 0)
+    elif message["type"] == "command":
+        # command = command.split(":")
+        info = load_info(dir_info, f"{server_name}.info")
+        for item in info["parameters"]:
+            if item["name"] == message["parameter"]:
+                change_data(dir_data, server_name, message["parameter"], message["new_value"])
+                feedback = {"type": "command",
+                            "parameter": message["parameter"],
+                            "new value": message["new_value"]}
+                socket.send_json(feedback, 0)
+                break
 
     return server_open
 
@@ -115,7 +106,7 @@ server_open = True
 print(f'I am a WIP server open on {server_address[0]} with port {server_address[1]} ready to talk to friends')
 
 while server_open:
-    command = receive_command()
-    server_open = send_feedback(command, server_open)
+    message = receive_message()
+    server_open = send_feedback(message, server_open)
 
 auth.stop()

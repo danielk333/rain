@@ -8,7 +8,7 @@ from pprint import pprint
 server_name = "odyssey"
 client_name = "apollo"
 
-## TODO 7: Add server details to the info file
+## TODO 16: Load server details from info file
 server_address = ('127.0.0.1', 10000)
 encoding = 'utf-8'
 
@@ -17,16 +17,16 @@ dir_pub = os.path.join(home, 'public_keys')
 dir_prv = os.path.join(home, 'private_keys')
 dir_info = os.path.join(home, 'infra_info')
 
-def send_command(command):
+def send_message(message):
     server_file_pub = os.path.join(dir_pub, f"{server_name}.key")
     server_pub, _ = zmq.auth.load_certificate(server_file_pub)
     socket.curve_serverkey = server_pub
     socket.connect(f'tcp://{server_address[0]}:{server_address[1]}')
-    socket.send_string(command, 0, True, encoding)
+    socket.send_json(message, 0)
 
     return
 
-def receive_data(command):
+def receive_feedback():
     feedback = socket.recv_json(0)
     ## TODO 6: Replace this with pprint?
     print(f'Server Response:')
@@ -50,37 +50,48 @@ socket.curve_publickey = client_pub
 print(f'Please enter the command you would like to send to {server_address[0]}:')
 user_input = input()
 
-if user_input == "request":
+if user_input == "admin":
+    print("Please enter the admin command you'd like to enter:")
+    command = input()
+    if command == "shutdown":
+        message = {"type": "admin",
+                   "command": "shutdown"}
+    else:
+        print("You have entered an invalid admin command")
+        message = None
+elif user_input == "request":
     info = load_info(dir_info, f"{server_name}.info")
     pprint(info["parameters"], indent=4, sort_dicts=False)
-    print("\nPlease enter the parameter you would like to request")
+    print("\nPlease enter the parameter you would like to request:")
     param = input()
     for item in info["parameters"]:
         if item["name"] == param:
             if item["request"] == "true":
-                command = param
+                message = {"type": "request",
+                           "parameter": param}
                 break
             else:
-                command = None
+                message = None
                 print("This parameter is not requestable")
                 break
 elif user_input == "command":
     info = load_info(dir_info, f"{server_name}.info")
     pprint(info["parameters"], indent=4, sort_dicts=False)
-    print("\nPlease enter the parameter you would like to command")
-    if item["command"] == "true":
-        param = input()
-        print("Enter the value you would like to give this parameter")
-        new_value = input()
-        command = param + ":" + new_value
-        # break
-    else:
-        command = None
-        print("This parameter is not commandable")
-        # break
+    print("\nPlease enter the parameter you would like to command:")
+    param = input()
+    for item in info["parameters"]:
+        if item["name"] == param:
+            if item["command"] == "true":
+                print("Please enter the value you would like to give this parameter:")
+                new_value = input()
+                message = {"type": "command",
+                           "parameter": param,
+                           "new_value": new_value}
+                break
 else:
-    command = user_input
+    message = None
+    print("You have not entered a valid message type")
 
-if command:
-    send_command(command)
-    receive_data(command)
+if message:
+    send_message(message)
+    receive_feedback()
