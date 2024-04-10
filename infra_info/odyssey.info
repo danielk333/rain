@@ -11,9 +11,9 @@
 #   PUBLIC KEY
 
 #   Type: ZeroMQ CURVE Public Certificate
-#   Generated: 2024/04/10 at 09:50:32 UTC
+#   Generated: 2024/04/10 at 15:51:53 UTC
 
-    public-key = "b'gIm:UuW4*gNR&M89Wvf(V<VpuZ!P${9gzrrj&[GN'"
+    public-key = "F!5J%Z8o}N-+1{I<YZq<tqu?.7oSqGiMu!+z>HU%"
 
 -------------------
 
@@ -33,19 +33,19 @@
             "name": "thrusters",
             "request": "true",
             "command": "true",
-            "subscribe": "false"
+            "subscribe": "true"
         },
         {
             "name": "sub-light",
             "request": "true",
             "command": "true",
-            "subscribe": "false"
+            "subscribe": "true"
         },
         {
             "name": "hyperdrive",
             "request": "true",
             "command": "true",
-            "subscribe": "false"
+            "subscribe": "true"
         }
     ]
 }
