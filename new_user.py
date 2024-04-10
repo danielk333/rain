@@ -27,5 +27,6 @@ generate_header(dir_info, infra_name)
 generate_key(dir_info, infra_name, key_pub, gen_time)
 generate_server(dir_info, infra_name)
 generate_params(dir_info, infra_name)
+## TODO 17: Generate the data file
 
 print(f'Thank you for registering {infra_name} to RAIN!')
