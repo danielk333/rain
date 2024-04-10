@@ -1,16 +1,26 @@
 #   ODYSSEY
 
-#   Contact Name:
-#   Contact Address:
-#   Coordinates:
+#   Contact Name: 
+#   Email: 
+#   Phone Number: 
+#   Address: 
+#   Coordinates: 
 
 -------------------
 
-#   Type: ZeroMQ CURVE Public Certificate
-#   Generated: 2024/03/30 at 10:12:20 UTC
+#   PUBLIC KEY
 
-curve
-    public-key = "mq+1j}%O*1ROa2waV&#jwf!:[ozm*#Ou=9UJ(^=c"
+#   Type: ZeroMQ CURVE Public Certificate
+#   Generated: 2024/04/10 at 09:50:32 UTC
+
+    public-key = "b'gIm:UuW4*gNR&M89Wvf(V<VpuZ!P${9gzrrj&[GN'"
+
+-------------------
+
+#   SERVER DETAILS
+
+#   Server Address: "127.0.0.1"
+#   Port: 10000
 
 -------------------
 
@@ -18,25 +28,24 @@ curve
 
 {
     "group_name": "propulsion",
-    "request": "true",
-    "command": "true",
-    "subscribe": "false",
-
     "parameters": [
         {
             "name": "thrusters",
-            "value": "OFF",
-            "value_link": "TBD"
+            "request": "true",
+            "command": "true",
+            "subscribe": "false"
         },
         {
             "name": "sub-light",
-            "value": "OFF",
-            "value_link": "TBD"
+            "request": "true",
+            "command": "true",
+            "subscribe": "false"
         },
         {
             "name": "hyperdrive",
-            "value": "ON",
-            "value_link": "TBD"
+            "request": "true",
+            "command": "true",
+            "subscribe": "false"
         }
     ]
 }

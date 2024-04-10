@@ -1,16 +1,19 @@
 #   APOLLO
 
-#   Contact Name:
-#   Contact Address:
-#   Coordinates:
+#   Contact Name: 
+#   Email: 
+#   Phone Number: 
+#   Address: 
+#   Coordinates: 
 
 -------------------
 
-#   Type: ZeroMQ CURVE Public Certificate
-#   Generated: 2024/03/30 at 10:12:36 UTC
+#   PUBLIC KEY
 
-curve
-    public-key = "QO/*uv-3Szu$wG-mU4>ldg.i3<#ZEWNsgaW]0(gL"
+#   Type: ZeroMQ CURVE Public Certificate
+#   Generated: 2024/04/10 at 09:56:03 UTC
+
+    public-key = "b'6Q(49.DSycmg0:q]8T0TOJo1yg(e$5&*LfvqXSOr'"
 
 -------------------
 
