@@ -23,6 +23,6 @@ Smaller TODOs:
 - [ ] TODO 12: Be able to handle changing values of multiple parameters
 - [ ] TODO 13: Fix how commands are received
 - [ ] TODO 14: Convert the key from bytes to string
-- [ ] TODO 15: Fix the request and command status checks
+- [x] TODO 15: Fix the request and command status checks
 
 Exception Handling:

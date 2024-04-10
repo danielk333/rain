@@ -11,8 +11,9 @@ def load_info(path, file_name):
         ## TODO 9: Also find the end of the parameters
         for char in range(len(data)):
             if data[char] == '{':
-                data = data[char:len(data)]
-                break
+                if data[char+1] == '\n':
+                    data = data[char:len(data)]
+                    break
         info = json.loads(data)
     return info
 

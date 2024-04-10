@@ -57,8 +57,7 @@ if user_input == "request":
     param = input()
     for item in info["parameters"]:
         if item["name"] == param:
-            ## TODO 15: Fix the request and command status checks
-            if info["request"] == "true":
+            if item["request"] == "true":
                 command = param
                 break
             else:
@@ -69,10 +68,16 @@ elif user_input == "command":
     info = load_info(dir_info, f"{server_name}.info")
     pprint(info["parameters"], indent=4, sort_dicts=False)
     print("\nPlease enter the parameter you would like to command")
-    param = input()
-    print("Enter the value you would like to give this parameter")
-    new_value = input()
-    command = param + ":" + new_value
+    if item["command"] == "true":
+        param = input()
+        print("Enter the value you would like to give this parameter")
+        new_value = input()
+        command = param + ":" + new_value
+        # break
+    else:
+        command = None
+        print("This parameter is not commandable")
+        # break
 else:
     command = user_input
 
