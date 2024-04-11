@@ -1,4 +1,5 @@
 # Database-related files
+data/*
 infra_info/*
 public_keys/*
 private_keys/*
