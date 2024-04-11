@@ -1,21 +1,19 @@
 import zmq
 import zmq.auth
 import os
-from load import load_info
+from load import load_info, load_server
 from pprint import pprint
 
 ## TODO 8: Ask user what server to interact with
 server_name = "odyssey"
 client_name = "apollo"
 
-## TODO 16: Load server details from info file
-server_address = ('127.0.0.1', 10000)
-encoding = 'utf-8'
-
 home = os.path.dirname(__file__)
 dir_pub = os.path.join(home, 'public_keys')
 dir_prv = os.path.join(home, 'private_keys')
 dir_info = os.path.join(home, 'infra_info')
+
+server_address = load_server(dir_info, server_name)
 
 def send_message(message):
     server_file_pub = os.path.join(dir_pub, f"{server_name}.key")

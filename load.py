@@ -17,6 +17,21 @@ def load_info(path, file_name):
         info = json.loads(data)
     return info
 
+def load_server(path, server_name):
+    server_address = []
+    with open(os.path.join(dir_info, f"{server_name}.info"), 'r') as f:
+        for line in f:
+            if "Server" in line:
+                ip_address = line.split(': ')[1]
+                ip_address = ip_address[0:len(ip_address)-1]
+                server_address.append(ip_address)
+            elif "Port" in line:
+                port = line.split(': ')[1]
+                port = port[0:len(port)-1]
+                server_address.append(port)
+
+    return server_address
+
 def request_parameters(info, request):
     if info["request"] == "true":
         for item in info["parameters"]:

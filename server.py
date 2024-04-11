@@ -3,19 +3,17 @@ import zmq.auth
 import time
 import os
 from zmq.auth.thread import ThreadAuthenticator
-from load import load_info
-
-server_name = "odyssey"
-## TODO 16: Load server details from info file
-server_address = ('127.0.0.1', 10000)
-server_open = False
-encoding = 'utf-8'
+from load import load_info, load_server
 
 home = os.path.dirname(__file__)
 dir_pub = os.path.join(home, 'public_keys')
 dir_prv = os.path.join(home, 'private_keys')
 dir_info = os.path.join(home, 'infra_info')
 dir_data = os.path.join(home, 'data')
+
+server_name = "odyssey"
+server_address = load_server(dir_info, server_name)
+server_open = False
 
 ## TODO 12: Be able to handle changing values of multiple parameters
 def change_data(path, file_name, param, value):

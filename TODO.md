@@ -24,7 +24,7 @@ Smaller TODOs:
 - [x] TODO 13: Fix how commands are received
 - [x] TODO 14: Convert the key from bytes to string
 - [x] TODO 15: Fix the request and command status checks
-- [ ] TODO 16: Load server details from info file
+- [x] TODO 16: Load server details from info file
 - [ ] TODO 17: Generate the data file
 
 Exception Handling:
