@@ -15,12 +15,8 @@ def send_message(message):
 
 def receive_feedback():
     feedback = socket.recv_json(0)
-    ## TODO 6: Replace this with pprint?
     print(f'Server Response:')
-    print('{')
-    for item in feedback:
-        print(f'    {item}: {feedback[item]}')
-    print('}')
+    pprint(feedback, indent=4, sort_dicts=False)
     socket.disconnect(f'tcp://{server_address[0]}:{server_address[1]}')
 
     return

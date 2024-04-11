@@ -39,6 +39,7 @@ def load_data(path, file_name, parameter):
             if parameter in line:
                 components = line.split(' : ')
                 value = components[1]
+                value = value[0:len(value)-1]
                 break
 
     return value
