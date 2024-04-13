@@ -3,9 +3,9 @@
 Big TODOs:
 - [x] T1: Implement the request parameter process into the server-client model
 - [x] T2: Implement commands to change parameters
-- [ ] T3: Split client and server actions into separate files
+- [x] T3: Split client and server actions into separate files
 - [ ] T4: Convert clients and servers into classes
-- [ ] T5: Split the code into the established layers
+- [x] T5: Split the code into the established layers
 - [ ] T6: Split the code between the public repository and the database repository
 
 Smaller TODOs:
