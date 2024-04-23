@@ -5,10 +5,10 @@ from actions import determine_response_type, form_response
 from authenticate import setup_server
 
 home = os.path.dirname(__file__)
-dir_pub = os.path.join(home, 'public_keys')
-dir_prv = os.path.join(home, 'private_keys')
-dir_info = os.path.join(home, 'infra_info')
-dir_data = os.path.join(home, 'data')
+dir_pub = os.path.join(home, "public_keys")
+dir_prv = os.path.join(home, "private_keys")
+dir_info = os.path.join(home, "infra_info")
+dir_data = os.path.join(home, "data")
 
 server_name = "odyssey"
 server_address = load_server(dir_info, server_name)

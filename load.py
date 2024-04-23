@@ -1,10 +1,11 @@
 import os
 import json
 
+
 def load_info(path, file_name):
-    with open(os.path.join(dir_info, file_name), 'r') as f:
+    with open(os.path.join(path, file_name), "r") as f:
         data = f.read()
-        ## TODO 9: Also find the end of the parameters
+        # TODO 9: Also find the end of the parameters
         for char in range(len(data)):
             if data[char] == '{':
                 if data[char+1] == '\n':
@@ -13,9 +14,10 @@ def load_info(path, file_name):
         info = json.loads(data)
     return info
 
+
 def load_server(path, server_name):
     server_address = []
-    with open(os.path.join(dir_info, f"{server_name}.info"), 'r') as f:
+    with open(os.path.join(path, f"{server_name}.info"), "r") as f:
         for line in f:
             if "Server" in line:
                 ip_address = line.split(': ')[1]

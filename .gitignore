@@ -8,5 +8,11 @@ private_keys/*
 test/*
 test.py
 
+# Virtual environments
+venv/*
+
+# Flake8
+.flake8
+
 # Automatically generated files
 __pycache__

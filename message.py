@@ -1,11 +1,13 @@
 from load import load_info
 from pprint import pprint
 
+
 def determine_type(server_ip_address):
-    print(f'Please enter the type of message you would like to send to {server_ip_address}:')
+    print(f"Please enter the type of message you would like to send to {server_ip_address}:")
     message_type = input()
 
     return message_type
+
 
 def form_admin():
     print("Please enter the admin command you'd like to enter:")
@@ -18,6 +20,7 @@ def form_admin():
         message = None
 
     return message
+
 
 def form_request(dir_info, server_name):
     info = load_info(dir_info, f"{server_name}.info")
@@ -37,6 +40,7 @@ def form_request(dir_info, server_name):
 
     return message
 
+
 def form_command(dir_info, server_name):
     info = load_info(dir_info, f"{server_name}.info")
     pprint(info["parameters"], indent=4, sort_dicts=False)
@@ -54,6 +58,7 @@ def form_command(dir_info, server_name):
 
     return message
 
+
 def form_message(message_type, dir_info, server_name):
     if message_type == "admin":
         message = form_admin()
@@ -67,6 +72,7 @@ def form_message(message_type, dir_info, server_name):
 
     return message
 
+
 def print_response(response):
-    print(f'Server Response:')
+    print("Server Response:")
     pprint(response, indent=4, sort_dicts=False)
