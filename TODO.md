@@ -4,9 +4,11 @@ Big TODOs:
 - [x] T1: Implement the request parameter process into the server-client model
 - [x] T2: Implement commands to change parameters
 - [x] T3: Split client and server actions into separate files
-- [ ] T4: Convert clients and servers into classes
+- [ ] ~~T4: Convert clients and servers into classes~~
 - [x] T5: Split the code into the established layers
 - [ ] T6: Split the code between the public repository and the database repository
+- [ ] T7: Make a package out of the software
+- [ ] T8: Implement a Redis database
 
 Smaller TODOs:
 - [ ] ~~TODO 1: Check there is no existing instrument with this name, and no existing keypair~~
@@ -26,5 +28,6 @@ Smaller TODOs:
 - [x] TODO 15: Fix the request and command status checks
 - [x] TODO 16: Load server details from info file
 - [ ] TODO 17: Generate the data file
+- [ ] TODO 18: Be able to handle finding values of multiple parameters
 
 Exception Handling:
