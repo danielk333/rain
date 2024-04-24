@@ -11,6 +11,9 @@ test.py
 # Virtual environments
 venv/*
 
+# Distribution files
+dist/*
+
 # Flake8
 .flake8
 

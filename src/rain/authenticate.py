@@ -4,6 +4,9 @@ import os
 
 
 def setup_server(server_name, server_address, dir_pub, dir_prv):
+    global dir_pub
+    global dir_prv
+
     context = zmq.Context()
     auth = ThreadAuthenticator(context)
     auth.start()
