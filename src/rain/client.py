@@ -27,6 +27,3 @@ def run_client():
         send_message(socket, server_address, message)
         response = receive_response(socket, server_address)
         print_response(response)
-
-
-run_client()

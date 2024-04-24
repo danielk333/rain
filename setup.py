@@ -7,10 +7,10 @@ setup(
     author='Calum Lonie',
     maintainer='Daniel Kastinen',
     install_requires=[
-        'os',
-        'time',
-        'json',
-        'pprint',
+        # 'os',
+        # 'time',
+        # 'json',
+        # 'pprint',
         'zmq'
     ],
     entry_points={
