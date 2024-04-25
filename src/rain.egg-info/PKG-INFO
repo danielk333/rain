@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: rain
-Version: 0.1
-Author: Calum Lonie
-Maintainer: Daniel Kastinen
-License: GNU GPLv3
-License-File: LICENSE
-Requires-Dist: zmq
