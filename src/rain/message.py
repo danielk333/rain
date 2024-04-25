@@ -1,4 +1,4 @@
-from load import load_groups
+from .load import load_groups
 from pprint import pprint
 
 

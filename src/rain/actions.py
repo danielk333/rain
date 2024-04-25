@@ -1,6 +1,6 @@
 import time
-from load import load_groups
-from data import load_data, change_data
+from .load import load_groups
+from .data import load_data, change_data
 
 
 def find_group(message, groups):

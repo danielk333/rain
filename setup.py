@@ -11,8 +11,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'run-server = server:run_server'#,
-            # 'run-client = client:run_client'
+            'run-server = rain.server:run_server',
+            'run-client = rain.client:run_client'
         ]
     }
 )

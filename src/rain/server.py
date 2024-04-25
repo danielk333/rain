@@ -1,8 +1,8 @@
 import os
-from load import load_server
-from transport import receive_message, send_response
-from actions import form_response, message_components
-from authenticate import setup_server
+from .load import load_server
+from .transport import receive_message, send_response
+from .actions import form_response, message_components
+from .authenticate import setup_server
 
 
 def run_server():
