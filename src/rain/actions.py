@@ -2,6 +2,11 @@ import time
 from .load import load_groups
 from .data import load_data, change_data
 
+# TODO 24: Move the response functions into a packaging file
+# TODO 25: Combine the data and actions functions into one file
+# TODO 26: Create a decompose file
+# TODO 27: Rename the packaging functions
+
 
 def find_group(message, groups):
     for item in groups:

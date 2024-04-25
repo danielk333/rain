@@ -1,7 +1,8 @@
 import os
 
+# TODO 25: Combine the data and actions functions into one file
 
-# TODO 18: Be able to handle finding values of multiple parameters
+
 def load_data(path, file_name, parameter):
     with open(os.path.join(path, f"{file_name}.data"), "r") as f:
         for line in f:
@@ -14,7 +15,6 @@ def load_data(path, file_name, parameter):
     return value
 
 
-# TODO 12: Be able to handle changing values of multiple parameters
 def change_data(path, file_name, param, value):
     with open(os.path.join(path, f"{file_name}.data"), "r") as f:
         lines = []

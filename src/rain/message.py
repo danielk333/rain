@@ -1,6 +1,11 @@
 from .load import load_groups
 from pprint import pprint
 
+# TODO 22: Rename message file to packaging
+# TODO 23: Move user input functions into their own file
+# TODO 24: Move the response functions into a packaging file
+# TODO 27: Rename the packaging functions
+
 
 # TODO 20: Move the shutdown command to the server side
 def determine_type(server_ip_address):
@@ -144,6 +149,7 @@ def form_message(message_type, group, group_name):
     return message
 
 
+# TODO 26: Create a decompose file
 def print_response(response):
     print("Server Response:")
     pprint(response, indent=4, sort_dicts=False)

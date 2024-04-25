@@ -7,6 +7,7 @@ from .authenticate import setup_client
 
 def run_client():
 
+    # TODO 21: Make the paths global variables
     home = os.path.dirname(__file__)
     home = home.removesuffix("/src/rain")
     dir_pub = os.path.join(home, "public_keys")
