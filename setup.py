@@ -7,16 +7,12 @@ setup(
     author='Calum Lonie',
     maintainer='Daniel Kastinen',
     install_requires=[
-        # 'os',
-        # 'time',
-        # 'json',
-        # 'pprint',
         'zmq'
     ],
     entry_points={
         'console_scripts': [
-            'run-server = rain:run_server',
-            'run-client = rain:run_client'
+            'run-server = server:run_server'#,
+            # 'run-client = client:run_client'
         ]
     }
 )

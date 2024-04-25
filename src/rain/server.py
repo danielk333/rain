@@ -25,3 +25,8 @@ def run_server():
         response, server_open = form_response(message, response_type, server_open, server_name, dir_info, dir_data)
         send_response(socket, response)
     auth.stop()
+
+    return
+
+
+run_server()

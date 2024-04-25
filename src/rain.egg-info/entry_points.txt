@@ -1,3 +1,2 @@
 [console_scripts]
-run-client = rain:run_client
-run-server = rain:run_server
+run-server = server:run_server
