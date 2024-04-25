@@ -22,11 +22,11 @@ key_pub, key_prv = zmq.auth.load_certificate(file_prv)
 os.rename(os.path.join(home, f"{infra_name}.key"), os.path.join(dir_pub, f"{infra_name}.key"))
 os.rename(os.path.join(home, f"{infra_name}.key_secret"), os.path.join(dir_prv, f"{infra_name}.key_secret"))
 
-# Create an info file and write in it the static information, in the infra_info directory
+# Create an info file in the infra_info directory and set it up
 generate_header(dir_info, infra_name)
 generate_key(dir_info, infra_name, key_pub, gen_time)
 generate_server(dir_info, infra_name)
-generate_params(dir_info, infra_name)
+generate_params(dir_info, infra_name, 2, 2)
 # TODO 17: Generate the data file
 
 print(f'Thank you for registering {infra_name} to RAIN!')

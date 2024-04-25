@@ -33,27 +33,33 @@ def generate_server(path, name):
     return
 
 
-def generate_params(path, name):
+def generate_params(path, name, num_groups, num_params):
     with open(f'{path}/{name}.info', 'a') as f:
         f.write('#   PARAMETER GROUPS\n\n')
-        f.write('{\n')
-        f.write('    "group_name": "",\n')
-        f.write('    "parameters": [\n')
 
-        number_params = 3
-        for item in range(number_params):
-            f.write('        {\n')
-            f.write('            "name": "",\n')
-            f.write('            "request": "",\n')
-            f.write('            "command": "",\n')
-            f.write('            "subscribe": ""\n')
-            if item != number_params-1:
-                f.write('        },\n')
+        for group in range(num_groups):
+            f.write('{\n')
+            f.write('    "group_name": "",\n')
+            f.write('    "parameters": [\n')
+
+            for param in range(num_params):
+                f.write('        {\n')
+                f.write('            "name": "",\n')
+                f.write('            "request": "",\n')
+                f.write('            "command": "",\n')
+                f.write('            "subscribe": ""\n')
+                if param != num_params-1:
+                    f.write('        },\n')
+                else:
+                    f.write('        }\n')
+
+            f.write('    ]\n')
+            if group != num_groups-1:
+                f.write('},\n')
             else:
-                f.write('        }\n')
+                f.write('}\n')
 
-        f.write('    ]\n')
-        f.write('}\n')
+        f.write('\nEND\n')
 
     return
 
