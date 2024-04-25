@@ -1,12 +1,63 @@
 import time
-from load import load_info
+from load import load_groups
 from data import load_data, change_data
 
 
-def determine_response_type(message):
-    response_type = message["type"]
+def find_group(message, groups):
+    for item in groups:
+        if item["group_name"] == message["group"]:
+            group = item
+            break
 
-    return response_type
+    return group
+
+
+def message_components(dir_info, server_name, message):
+    response_type = message["type"]
+    num_params = len(message["parameters"])
+    groups = load_groups(dir_info, server_name)
+    group = find_group(message, groups)
+
+    return group, num_params, response_type
+
+
+def action_request(message, group, num_params, server_name, dir_data):
+    values = []
+    for iter in range(num_params):
+        for item in group["parameters"]:
+            if item["name"] == message["parameters"][iter]:
+                value = load_data(dir_data, server_name, message["parameters"][iter])
+                values.append(value)
+                break
+
+    return values
+
+
+def action_command(message, group, num_params, server_name, dir_data):
+    for iter in range(num_params):
+        for item in group["parameters"]:
+            if item["name"] == message["parameters"][iter]:
+                change_data(dir_data, server_name, message["parameters"][iter], message["new_values"][iter])
+
+    return
+
+
+def response_request(message, values):
+    response = {"type": "command",
+                "group": message["group"],
+                "parameters": message["parameters"],
+                "values": values}
+
+    return response
+
+
+def response_command(message):
+    response = {"type": "command",
+                "group": message["group"],
+                "parameters": message["parameters"],
+                "new_values": message["new_values"]}
+
+    return response
 
 
 def response_admin(message, server_open):
@@ -21,38 +72,14 @@ def response_admin(message, server_open):
     return response, server_open
 
 
-def response_request(dir_info, dir_data, server_name, message):
-    info = load_info(dir_info, f"{server_name}.info")
-    for item in info["parameters"]:
-        if item["name"] == message["parameter"]:
-            value = load_data(dir_data, server_name, message["parameter"])
-            response = {"type": message["type"],
-                        "parameter": message["parameter"],
-                        "value": value}
-            break
-
-    return response
-
-
-def response_command(dir_info, dir_data, server_name, message):
-    info = load_info(dir_info, f"{server_name}.info")
-    for item in info["parameters"]:
-        if item["name"] == message["parameter"]:
-            change_data(dir_data, server_name, message["parameter"], message["new_value"])
-            response = {"type": "command",
-                        "parameter": message["parameter"],
-                        "new value": message["new_value"]}
-            break
-
-    return response
-
-
-def form_response(message, response_type, server_open, server_name, dir_info, dir_data):
+def form_response(message, group, num_params, response_type, server_open, server_name, dir_data):
     if response_type == "admin":
         response, server_open = response_admin(message, server_open)
     elif response_type == "request":
-        response = response_request(dir_info, dir_data, server_name, message)
+        values = action_request(message, group, num_params, server_name, dir_data)
+        response = response_request(message, values)
     elif response_type == "command":
-        response = response_command(dir_info, dir_data, server_name, message)
+        action_command(message, group, num_params, server_name, dir_data)
+        response = response_command(message)
 
     return response, server_open

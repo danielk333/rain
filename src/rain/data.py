@@ -24,7 +24,6 @@ def change_data(path, file_name, param, value):
                 components = line_to_change.split(" : ")
                 new_line = components[0] + " : " + value + "\n"
                 lines.append(new_line)
-                break
             else:
                 lines.append(line)
 

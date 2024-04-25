@@ -1,6 +1,6 @@
 import os
 from load import load_server
-from message import determine_type, form_message, print_response
+from message import determine_type, determine_group, form_message, print_response
 from transport import send_message, receive_response
 from authenticate import setup_client
 
@@ -20,10 +20,16 @@ def run_client():
 
     # TODO 11: Make a list of each type of command and separate the responses to these in separate functions
     message_type = determine_type(server_address[0])
-    message = form_message(message_type, dir_info, server_name)
+    group, group_name = determine_group(dir_info, server_name)
+    message = form_message(message_type, group, group_name)
 
     if message:
         socket = setup_client(dir_pub, dir_prv, server_name, client_name)
         send_message(socket, server_address, message)
         response = receive_response(socket, server_address)
         print_response(response)
+
+    return
+
+
+run_client()

@@ -19,15 +19,17 @@ Smaller TODOs:
 - [x] TODO 6: Replace feedback printing with pprint
 - [x] TODO 7: Add server details to the info file
 - [x] TODO 8: Ask user what server to interact with
-- [ ] TODO 9: Also find the end of the parameters
+- [x] TODO 9: Also find the end of the parameters
 - [x] TODO 10: Add the request and command status to the pprint
 - [ ] TODO 11: Make a list of each type of command and separate the responses to these in separate functions
-- [ ] TODO 12: Be able to handle changing values of multiple parameters
+- [x] TODO 12: Be able to handle changing values of multiple parameters
 - [x] TODO 13: Fix how commands are received
 - [x] TODO 14: Convert the key from bytes to string
 - [x] TODO 15: Fix the request and command status checks
 - [x] TODO 16: Load server details from info file
 - [ ] TODO 17: Generate the data file
-- [ ] TODO 18: Be able to handle finding values of multiple parameters
+- [x] TODO 18: Be able to handle finding values of multiple parameters
+- [ ] TODO 19: Accept numerical inputs
+- [ ] TODO 20: Move the shutdown command to the server side
 
 Exception Handling:
