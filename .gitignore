@@ -13,10 +13,7 @@ venv/*
 
 # Distribution files
 dist/*
-src/rain.egg-info/*
-
-# Flake8
-.flake8
+src/rain.egg-info
 
 # Automatically generated files
 __pycache__
