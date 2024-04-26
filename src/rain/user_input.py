@@ -1,10 +1,6 @@
-from .load import load_groups
 from pprint import pprint
 
-# TODO 22: Rename message file to packaging
-# TODO 23: Move user input functions into their own file
-# TODO 24: Move the response functions into a packaging file
-# TODO 27: Rename the packaging functions
+from .decompose import load_groups
 
 
 # TODO 20: Move the shutdown command to the server side
@@ -97,59 +93,3 @@ def params_command(group):
                         params = None
 
     return params, new_values
-
-
-def form_request(params, group_name):
-    message = {"type": "request",
-               "group": group_name,
-               "parameters": params}
-
-    return message
-
-
-def form_command(params, new_values, group_name):
-    message = {"type": "command",
-               "group": group_name,
-               "parameters": params,
-               "new_values": new_values}
-
-    return message
-
-
-def form_admin():
-    print("Please enter the admin command you'd like to enter:")
-    command = input()
-    if command == "shutdown":
-        message = {"type": "admin",
-                   "command": "shutdown"}
-    else:
-        print("You have entered an invalid admin command")
-        message = None
-
-    return message
-
-
-def form_message(message_type, group, group_name):
-    if message_type == "admin":
-        message = form_admin()
-    elif message_type == "request":
-        params = params_request(group)
-        if params:
-            message = form_request(params, group_name)
-            print(message)
-    elif message_type == "command":
-        params, new_values = params_command(group)
-        if params:
-            message = form_command(params, new_values, group_name)
-            print(message)
-    else:
-        message = None
-        print("You have not entered a valid message type")
-
-    return message
-
-
-# TODO 26: Create a decompose file
-def print_response(response):
-    print("Server Response:")
-    pprint(response, indent=4, sort_dicts=False)

@@ -3,6 +3,22 @@ from zmq.auth.thread import ThreadAuthenticator
 import os
 
 
+def load_server(path, server_name):
+    server_address = []
+    with open(os.path.join(path, f"{server_name}.info"), "r") as f:
+        for line in f:
+            if "Server" in line:
+                ip_address = line.split(': ')[1]
+                ip_address = ip_address[0:len(ip_address)-1]
+                server_address.append(ip_address)
+            elif "Port" in line:
+                port = line.split(': ')[1]
+                port = port[0:len(port)-1]
+                server_address.append(port)
+
+    return server_address
+
+
 def setup_server(server_name, server_address, dir_pub, dir_prv):
     context = zmq.Context()
     auth = ThreadAuthenticator(context)

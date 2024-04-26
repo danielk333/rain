@@ -1,21 +1,15 @@
-import os
+from pprint import pprint
 import json
+import os
 
 
-def load_server(path, server_name):
-    server_address = []
-    with open(os.path.join(path, f"{server_name}.info"), "r") as f:
-        for line in f:
-            if "Server" in line:
-                ip_address = line.split(': ')[1]
-                ip_address = ip_address[0:len(ip_address)-1]
-                server_address.append(ip_address)
-            elif "Port" in line:
-                port = line.split(': ')[1]
-                port = port[0:len(port)-1]
-                server_address.append(port)
+def find_group(message, groups):
+    for item in groups:
+        if item["group_name"] == message["group"]:
+            group = item
+            break
 
-    return server_address
+    return group
 
 
 def load_groups(path, file_name):
@@ -52,3 +46,17 @@ def load_groups(path, file_name):
             groups.append(json.loads(params))
 
         return groups
+
+
+def message_components(dir_info, server_name, message):
+    response_type = message["type"]
+    num_params = len(message["parameters"])
+    groups = load_groups(dir_info, server_name)
+    group = find_group(message, groups)
+
+    return group, num_params, response_type
+
+
+def print_response(response):
+    print("Server Response:")
+    pprint(response, indent=4, sort_dicts=False)

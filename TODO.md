@@ -32,11 +32,11 @@ Smaller TODOs:
 - [ ] TODO 19: Accept numerical inputs
 - [ ] TODO 20: Move the shutdown command to the server side
 - [ ] TODO 21: Make the paths global variables
-- [ ] TODO 22: Rename message file to packaging
-- [ ] TODO 23: Move user input functions into their own file
-- [ ] TODO 24: Move the response functions into a packaging file
-- [ ] TODO 25: Combine the data and actions functions into one file
-- [ ] TODO 26: Create a decompose file
+- [x] TODO 22: Rename message file to packaging
+- [x] TODO 23: Move user input functions into their own file
+- [x] TODO 24: Move the response functions into a packaging file
+- [x] TODO 25: Combine the data and actions functions into one file
+- [x] TODO 26: Create a decompose file
 - [ ] TODO 27: Rename the packaging functions
 
 Exception Handling:
