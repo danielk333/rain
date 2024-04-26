@@ -45,8 +45,8 @@ def generate_params(path, name, num_groups, num_params):
             for param in range(num_params):
                 f.write('        {\n')
                 f.write('            "name": "",\n')
-                f.write('            "request": "",\n')
-                f.write('            "command": "",\n')
+                f.write('            "get": "",\n')
+                f.write('            "set": "",\n')
                 f.write('            "subscribe": ""\n')
                 if param != num_params-1:
                     f.write('        },\n')
