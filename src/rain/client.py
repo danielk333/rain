@@ -32,6 +32,3 @@ def run_client():
         print_response(response)
 
     return
-
-
-# run_client()

@@ -28,6 +28,3 @@ def run_server():
     auth.stop()
 
     return
-
-
-# run_server()
