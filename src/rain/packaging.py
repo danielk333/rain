@@ -87,10 +87,10 @@ def response_admin(message, server_open):
 def form_response(message, group, num_params, response_type, server_open, server_name, dir_data):
     if response_type == "admin":
         response, server_open = response_admin(message, server_open)
-    elif response_type == "request":
+    elif response_type == "get":
         values = actions_get(message, group, num_params, server_name, dir_data)
         response = response_get(message, values)
-    elif response_type == "command":
+    elif response_type == "set":
         actions_set(message, group, num_params, server_name, dir_data)
         response = response_set(message)
 
