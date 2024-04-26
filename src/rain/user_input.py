@@ -52,7 +52,7 @@ def params_get(group):
     return params
 
 
-def params_command(group):
+def params_set(group):
     print("Please enter a parameter you'd like to set:")
     pprint(group["parameters"], indent=4, sort_dicts=False)
     params = []
