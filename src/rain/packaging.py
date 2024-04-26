@@ -1,21 +1,19 @@
 import time
 
-from .user_input import params_request, params_command
-from .actions import action_request, action_command
-
-# TODO 27: Rename the packaging functions
+from .user_input import params_get, params_set
+from .actions import actions_get, actions_set
 
 
-def form_request(params, group_name):
-    message = {"type": "request",
+def message_get(params, group_name):
+    message = {"type": "get",
                "group": group_name,
                "parameters": params}
 
     return message
 
 
-def form_command(params, new_values, group_name):
-    message = {"type": "command",
+def message_set(params, new_values, group_name):
+    message = {"type": "set",
                "group": group_name,
                "parameters": params,
                "new_values": new_values}
@@ -23,7 +21,7 @@ def form_command(params, new_values, group_name):
     return message
 
 
-def form_admin():
+def message_admin():
     print("Please enter the admin command you'd like to enter:")
     command = input()
     if command == "shutdown":
@@ -38,16 +36,16 @@ def form_admin():
 
 def form_message(message_type, group, group_name):
     if message_type == "admin":
-        message = form_admin()
-    elif message_type == "request":
-        params = params_request(group)
+        message = message_admin()
+    elif message_type == "get":
+        params = params_get(group)
         if params:
-            message = form_request(params, group_name)
+            message = message_get(params, group_name)
             print(message)
-    elif message_type == "command":
-        params, new_values = params_command(group)
+    elif message_type == "set":
+        params, new_values = params_set(group)
         if params:
-            message = form_command(params, new_values, group_name)
+            message = message_set(params, new_values, group_name)
             print(message)
     else:
         message = None
@@ -56,8 +54,8 @@ def form_message(message_type, group, group_name):
     return message
 
 
-def response_request(message, values):
-    response = {"type": "command",
+def response_get(message, values):
+    response = {"type": "get",
                 "group": message["group"],
                 "parameters": message["parameters"],
                 "values": values}
@@ -65,8 +63,8 @@ def response_request(message, values):
     return response
 
 
-def response_command(message):
-    response = {"type": "command",
+def response_set(message):
+    response = {"type": "set",
                 "group": message["group"],
                 "parameters": message["parameters"],
                 "new_values": message["new_values"]}
@@ -90,10 +88,10 @@ def form_response(message, group, num_params, response_type, server_open, server
     if response_type == "admin":
         response, server_open = response_admin(message, server_open)
     elif response_type == "request":
-        values = action_request(message, group, num_params, server_name, dir_data)
-        response = response_request(message, values)
+        values = actions_get(message, group, num_params, server_name, dir_data)
+        response = response_get(message, values)
     elif response_type == "command":
-        action_command(message, group, num_params, server_name, dir_data)
-        response = response_command(message)
+        actions_set(message, group, num_params, server_name, dir_data)
+        response = response_set(message)
 
     return response, server_open

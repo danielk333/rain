@@ -1,8 +1,9 @@
 import os
-from .packaging import form_message, print_response
+from .packaging import form_message
 from .user_input import determine_type, determine_group
 from .transport import send_message, receive_response
 from .authenticate import setup_client, load_server
+from .decompose import print_response
 
 
 def run_client():

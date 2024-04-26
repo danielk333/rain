@@ -1,7 +1,5 @@
 import os
 
-# TODO 27: Rename the packaging functions
-
 
 def load_data(path, file_name, parameter):
     with open(os.path.join(path, f"{file_name}.data"), "r") as f:
@@ -34,7 +32,7 @@ def change_data(path, file_name, param, value):
     return
 
 
-def action_request(message, group, num_params, server_name, dir_data):
+def actions_get(message, group, num_params, server_name, dir_data):
     values = []
     for iter in range(num_params):
         for item in group["parameters"]:
@@ -46,7 +44,7 @@ def action_request(message, group, num_params, server_name, dir_data):
     return values
 
 
-def action_command(message, group, num_params, server_name, dir_data):
+def actions_set(message, group, num_params, server_name, dir_data):
     for iter in range(num_params):
         for item in group["parameters"]:
             if item["name"] == message["parameters"][iter]:

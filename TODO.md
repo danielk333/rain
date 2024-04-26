@@ -37,6 +37,6 @@ Smaller TODOs:
 - [x] TODO 24: Move the response functions into a packaging file
 - [x] TODO 25: Combine the data and actions functions into one file
 - [x] TODO 26: Create a decompose file
-- [ ] TODO 27: Rename the packaging functions
+- [x] TODO 27: Rename the packaging functions
 
 Exception Handling:

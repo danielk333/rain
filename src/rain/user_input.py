@@ -27,15 +27,15 @@ def determine_group(folder, file_name):
     return group, group_name
 
 
-def params_request(group):
-    print("Please enter a parameter you'd like to request:")
+def params_get(group):
+    print("Please enter a parameter you'd like to get:")
     pprint(group["parameters"], indent=4, sort_dicts=False)
     params = []
     input_param = input()
     params.append(input_param)
     input_continue = True
     while input_continue:
-        print("Please enter another parameter you'd like to request:")
+        print("Please enter another parameter you'd like to get:")
         print("Enter 'end' if there are none")
         input_param = input()
         if input_param == "end":
@@ -43,7 +43,7 @@ def params_request(group):
         else:
             for item in group["parameters"]:
                 if item["name"] == input_param:
-                    if item["request"] == "true":
+                    if item["get"] == "true":
                         params.append(input_param)
                         break
                     else:
@@ -53,7 +53,7 @@ def params_request(group):
 
 
 def params_command(group):
-    print("Please enter a parameter you'd like to command:")
+    print("Please enter a parameter you'd like to set:")
     pprint(group["parameters"], indent=4, sort_dicts=False)
     params = []
     new_values = []
@@ -62,9 +62,9 @@ def params_command(group):
     input_param = input()
     for item in group["parameters"]:
         if item["name"] == input_param:
-            if item["command"] == "true":
+            if item["set"] == "true":
                 params.append(input_param)
-                print("Please enter the value you would like to give this parameter:")
+                print("Please enter the value you would like to set this parameter:")
                 input_value = input()
                 new_values.append(input_value)
                 input_continue = True
@@ -74,7 +74,7 @@ def params_command(group):
                 params = None
 
     while input_continue:
-        print("Please enter another parameter you'd like to command:")
+        print("Please enter another parameter you'd like to set:")
         print("Enter 'end' if there are none")
         input_param = input()
         if input_param == "end":
@@ -82,9 +82,9 @@ def params_command(group):
         else:
             for item in group["parameters"]:
                 if item["name"] == input_param:
-                    if item["command"] == "true":
+                    if item["set"] == "true":
                         params.append(input_param)
-                        print("Please enter the value you would like to give this parameter:")
+                        print("Please enter the value you would like to set this parameter:")
                         input_value = input()
                         new_values.append(input_value)
                         break
