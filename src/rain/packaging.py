@@ -4,7 +4,7 @@ from .user_input import params_get, params_set
 from .actions import actions_get, actions_set
 
 
-def message_get(params, group_name):
+def request_get(params, group_name):
     message = {"type": "get",
                "group": group_name,
                "parameters": params}
@@ -12,7 +12,7 @@ def message_get(params, group_name):
     return message
 
 
-def message_set(params, new_values, group_name):
+def request_set(params, new_values, group_name):
     message = {"type": "set",
                "group": group_name,
                "parameters": params,
@@ -21,7 +21,7 @@ def message_set(params, new_values, group_name):
     return message
 
 
-def message_admin():
+def request_admin():
     print("Please enter the admin command you'd like to enter:")
     command = input()
     if command == "shutdown":
@@ -34,18 +34,18 @@ def message_admin():
     return message
 
 
-def form_message(message_type, group, group_name):
+def form_request(message_type, group, group_name):
     if message_type == "admin":
-        message = message_admin()
+        message = request_admin()
     elif message_type == "get":
         params = params_get(group)
         if params:
-            message = message_get(params, group_name)
+            message = request_get(params, group_name)
             print(message)
     elif message_type == "set":
         params, new_values = params_set(group)
         if params:
-            message = message_set(params, new_values, group_name)
+            message = request_set(params, new_values, group_name)
             print(message)
     else:
         message = None
