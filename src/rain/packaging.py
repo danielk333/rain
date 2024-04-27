@@ -1,7 +1,7 @@
 import time
 
-from .user_input import params_get, params_set
 from .actions import actions_get, actions_set
+from .user_input import params_get, params_set
 
 
 def request_get(params, group_name):

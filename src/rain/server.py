@@ -1,8 +1,9 @@
 import os
-from .transport import receive_request, send_response
+
+from .authenticate import load_server, setup_server
 from .decompose import message_components
-from .authenticate import setup_server, load_server
 from .packaging import form_response
+from .transport import receive_request, send_response
 
 
 def run_server():

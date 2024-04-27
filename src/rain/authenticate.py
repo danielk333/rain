@@ -1,6 +1,7 @@
+import os
+
 import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
-import os
 
 
 def load_server(path, server_name):

@@ -1,9 +1,10 @@
 import os
-from .packaging import form_request
-from .user_input import determine_type, determine_group
-from .transport import send_request, receive_response
-from .authenticate import setup_client, load_server
+
+from .authenticate import load_server, setup_client
 from .decompose import print_response
+from .packaging import form_request
+from .transport import send_request, receive_response
+from .user_input import determine_group, determine_type
 
 
 def run_client():

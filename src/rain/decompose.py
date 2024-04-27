@@ -1,6 +1,6 @@
-from pprint import pprint
 import json
 import os
+from pprint import pprint
 
 
 def find_group(message, groups):
