@@ -30,7 +30,7 @@ Smaller TODOs:
 - [ ] TODO 17: Generate the data file
 - [x] TODO 18: Be able to handle finding values of multiple parameters
 - [ ] TODO 19: Accept numerical inputs
-- [ ] TODO 20: Move the shutdown command to the server side
+- [ ] ~~TODO 20: Move the shutdown command to the server side~~
 - [ ] TODO 21: Make the paths global variables
 - [x] TODO 22: Rename message file to packaging
 - [x] TODO 23: Move user input functions into their own file

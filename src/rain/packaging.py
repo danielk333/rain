@@ -1,5 +1,3 @@
-import time
-
 from .actions import actions_get, actions_set
 from .user_input import params_get, params_set
 
@@ -21,23 +19,8 @@ def request_set(params, new_values, group_name):
     return message
 
 
-def request_admin():
-    print("Please enter the admin command you'd like to enter:")
-    command = input()
-    if command == "shutdown":
-        message = {"type": "admin",
-                   "command": "shutdown"}
-    else:
-        print("You have entered an invalid admin command")
-        message = None
-
-    return message
-
-
 def form_request(message_type, group, group_name):
-    if message_type == "admin":
-        message = request_admin()
-    elif message_type == "get":
+    if message_type == "get":
         params = params_get(group)
         if params:
             message = request_get(params, group_name)
@@ -72,22 +55,8 @@ def response_set(message):
     return response
 
 
-def response_admin(message, server_open):
-    response = "Shutting down the server"
-    local_time = time.localtime()
-    current_time = f"{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02} Local Time"
-    response = {"type": message["type"],
-                "response": response,
-                "time": current_time}
-    server_open = False
-
-    return response, server_open
-
-
 def form_response(message, group, num_params, response_type, server_open, server_name, dir_data):
-    if response_type == "admin":
-        response, server_open = response_admin(message, server_open)
-    elif response_type == "get":
+    if response_type == "get":
         values = actions_get(message, group, num_params, server_name, dir_data)
         response = response_get(message, values)
     elif response_type == "set":

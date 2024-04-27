@@ -3,7 +3,6 @@ from pprint import pprint
 from .decompose import load_groups
 
 
-# TODO 20: Move the shutdown command to the server side
 def determine_type(server_ip_address):
     print(f"Please enter the type of message you would like to send to {server_ip_address}:")
     message_type = input()
