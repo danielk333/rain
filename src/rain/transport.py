@@ -12,12 +12,6 @@ def receive_request(socket):
     return message
 
 
-def receive_subscribe(socket):
-    message = socket.recv_string()
-
-    return message
-
-
 def send_response(socket, response):
     socket.send_json(response, 0)
 
@@ -29,3 +23,9 @@ def receive_response(socket, server_address):
     socket.disconnect(f"tcp://{server_address[0]}:{server_address[1]}")
 
     return response
+
+
+def receive_subscribe(socket):
+    message = socket.recv_string()
+
+    return message

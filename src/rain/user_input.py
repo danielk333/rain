@@ -92,3 +92,16 @@ def params_set(group):
                         params = None
 
     return params, new_values
+
+
+def params_sub(group):
+    print("Please enter a parameter you'd like to subscribe to:")
+    pprint(group["parameters"], indent=4, sort_dicts=False)
+    input_param = input()
+    for item in group["parameters"]:
+        if item["name"] == input_param:
+            if item["subscribe"] == "true":
+                param = input_param
+                break
+
+    return param

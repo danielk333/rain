@@ -1,8 +1,9 @@
 import os
 import time
+import json
 
-from authenticate import load_server, setup_publish
 from actions import load_data
+from authenticate import load_server, setup_publish
 from decompose import load_groups
 
 home = os.path.dirname(__file__)
@@ -30,6 +31,7 @@ while server_open:
     for param in possible_sub:
         value = load_data(dir_data, server_name, param)
         response = {"type": "sub",
-                    "parameters": param,
+                    "parameter": param,
                     "value": value}
-        socket.send_string(f"{param}: {value}")
+        update = f'{response["parameter"]}${json.dumps(response)}'
+        socket.send_string(update)

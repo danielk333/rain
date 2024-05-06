@@ -64,13 +64,3 @@ def form_response(message, group, num_params, response_type, server_open, server
         response = response_set(message)
 
     return response, server_open
-
-
-def form_publish(message, group, num_params, server_name, dir_data):
-    values = actions_get(message, group, num_params, server_name, dir_data)
-    response = {"type": "get",
-                "group": message["group"],
-                "parameters": message["parameters"],
-                "values": values}
-
-    return response

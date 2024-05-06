@@ -57,6 +57,16 @@ def message_components(dir_info, server_name, message):
     return group, num_params, response_type
 
 
+def pub_split(message):
+    for char in range(len(message)):
+        if message[char] == "$":
+            break_point = char
+            break
+    actual_message = message[break_point+1:len(message)]
+
+    return actual_message
+
+
 def print_response(response):
     print("Server Response:")
     pprint(response, indent=4, sort_dicts=False)
