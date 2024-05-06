@@ -12,7 +12,9 @@ setup(
     entry_points={
         'console_scripts': [
             'run-server = rain.server:run_server',
-            'run-client = rain.client:run_client'
+            'run-client = rain.client:run_client',
+            'run-publish = rain.publish:run_publish',
+            'run-subscribe = rain.subscribe:run_subscribe'
         ]
     }
 )
