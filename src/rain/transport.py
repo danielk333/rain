@@ -12,6 +12,12 @@ def receive_request(socket):
     return message
 
 
+def receive_subscribe(socket):
+    message = socket.recv_string()
+
+    return message
+
+
 def send_response(socket, response):
     socket.send_json(response, 0)
 
