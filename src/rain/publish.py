@@ -1,19 +1,15 @@
-import os
 import time
 import json
 
 from .actions import load_data
 from .authenticate import load_server, setup_publish
+from .config import config
 from .decompose import load_groups
 
 
+# TODO 29: Split the function calls into separate files
 def run_publish():
-    home = os.path.dirname(__file__)
-    home = home.removesuffix("/src/rain")
-    dir_pub = os.path.join(home, "public_keys")
-    dir_prv = os.path.join(home, "private_keys")
-    dir_info = os.path.join(home, "infra_info")
-    dir_data = os.path.join(home, "data")
+    dir_pub, dir_prv, dir_info, dir_data = config()
 
     server_name = "odyssey"
     server_address = load_server(dir_info, server_name)

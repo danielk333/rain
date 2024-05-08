@@ -1,6 +1,5 @@
-import os
-
 from .authenticate import load_server, setup_server
+from .config import config
 from .decompose import message_components
 from .packaging import form_response
 from .transport import receive_request, send_response
@@ -8,13 +7,7 @@ from .transport import receive_request, send_response
 
 def run_server():
 
-    # TODO 21: Make the paths global variables
-    home = os.path.dirname(__file__)
-    home = home.removesuffix("/src/rain")
-    dir_pub = os.path.join(home, "public_keys")
-    dir_prv = os.path.join(home, "private_keys")
-    dir_info = os.path.join(home, "infra_info")
-    dir_data = os.path.join(home, "data")
+    dir_pub, dir_prv, dir_info, dir_data = config()
 
     server_name = "odyssey"
     server_address = load_server(dir_info, server_name)

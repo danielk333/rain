@@ -1,6 +1,5 @@
-import os
-
 from .authenticate import load_server, setup_client
+from .config import config
 from .decompose import print_response
 from .packaging import form_request
 from .transport import send_request, receive_response
@@ -9,12 +8,7 @@ from .user_input import determine_group, determine_type
 
 def run_client():
 
-    # TODO 21: Make the paths global variables
-    home = os.path.dirname(__file__)
-    home = home.removesuffix("/src/rain")
-    dir_pub = os.path.join(home, "public_keys")
-    dir_prv = os.path.join(home, "private_keys")
-    dir_info = os.path.join(home, "infra_info")
+    dir_pub, dir_prv, dir_info, dir_data = config()
 
     print("Which server would you like to interact with?")
     server_name = input()

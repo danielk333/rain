@@ -38,7 +38,7 @@ Smaller TODOs:
 - [x] TODO 25: Combine the data and actions functions into one file
 - [x] TODO 26: Create a decompose file
 - [x] TODO 27: Rename the packaging functions
-- [ ] TODO 28: Move the paths into a separate function
+- [x] TODO 28: Move the paths into a separate function
 - [ ] TODO 29: Split the function calls into separate files
 
 Exception Handling:
