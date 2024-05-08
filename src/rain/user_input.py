@@ -94,14 +94,40 @@ def params_set(group):
     return params, new_values
 
 
-def params_sub(group):
-    print("Please enter a parameter you'd like to subscribe to:")
-    pprint(group["parameters"], indent=4, sort_dicts=False)
-    input_param = input()
-    for item in group["parameters"]:
-        if item["name"] == input_param:
-            if item["subscribe"] == "true":
-                param = input_param
-                break
+# def params_sub(group):
+#     print("Please enter a parameter you'd like to subscribe to:")
+#     pprint(group["parameters"], indent=4, sort_dicts=False)
+#     input_param = input()
+#     for item in group["parameters"]:
+#         if item["name"] == input_param:
+#             if item["subscribe"] == "true":
+#                 param = input_param
+#                 break
+#
+#     return param
 
-    return param
+
+def params_sub(server_name, dir_info):
+    possible_sub = []
+    groups = load_groups(dir_info, server_name)
+    for group in groups:
+        for iter in range(len(group["parameters"])):
+            if group["parameters"][iter]["subscribe"] == "true":
+                possible_sub.append(group["parameters"][iter]["name"])
+
+    print("Please enter the parameter you would like to subscribe to:")
+    print(possible_sub)
+    filters = []
+    filters.append(input())
+    input_continue = True
+    while input_continue:
+        print("Please enter another parameter you'd like to set:")
+        print("Enter 'end' if there are none")
+        print(possible_sub)
+        user_input = input()
+        if user_input == "end":
+            input_continue = False
+        else:
+            filters.append(user_input)
+
+    return filters

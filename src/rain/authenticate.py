@@ -3,6 +3,8 @@ import os
 import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
+from .decompose import load_groups
+
 
 def load_server(path, server_name):
     server_address = []
@@ -56,7 +58,14 @@ def setup_client(dir_pub, dir_prv, server_name, client_name):
     return socket
 
 
-def setup_publish(server_name, server_address, dir_pub, dir_prv):
+def setup_publish(server_name, server_address, dir_pub, dir_prv, dir_info):
+    possible_sub = []
+    groups = load_groups(dir_info, server_name)
+    for group in groups:
+        for iter in range(len(group["parameters"])):
+            if group["parameters"][iter]["subscribe"] == "true":
+                possible_sub.append(group["parameters"][iter]["name"])
+
     context = zmq.Context()
     auth = ThreadAuthenticator(context)
     auth.start()
@@ -74,7 +83,7 @@ def setup_publish(server_name, server_address, dir_pub, dir_prv):
     print(f"I am a WIP publishing server open on {server_address[0]} " +
           f"with port {server_address[1]} ready to talk to friends")
 
-    return auth, socket, server_open
+    return auth, socket, server_open, possible_sub
 
 
 def setup_subscribe(dir_pub, dir_prv, server_name, client_name):

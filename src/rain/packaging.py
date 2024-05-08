@@ -1,4 +1,6 @@
-from .actions import actions_get, actions_set
+import json
+
+from .actions import actions_get, actions_set, load_data
 from .user_input import params_get, params_set
 
 
@@ -64,3 +66,23 @@ def form_response(message, group, num_params, response_type, server_open, server
         response = response_set(message)
 
     return response, server_open
+
+
+def publish_update(param, value):
+    update = {"parameter": param,
+              "value": value}
+    return update
+
+
+def publish_format(update):
+    response = f'{update["parameter"]}${json.dumps(update)}'
+
+    return response
+
+
+def publish_response(param, server_name, dir_data):
+    value = load_data(dir_data, server_name, param)
+    update = publish_update(param, value)
+    response = publish_format(update)
+
+    return response
