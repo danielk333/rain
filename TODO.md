@@ -6,7 +6,7 @@ Big TODOs:
 - [x] T3: Split client and server actions into separate files
 - [ ] ~~T4: Convert clients and servers into classes~~
 - [x] T5: Split the code into the established layers
-- [ ] T6: Split the code between the public package and the database package
+- [ ] T6: Separate the server and the client from the network
 - [x] T7: Make a package out of the software
 - [ ] T8: Implement a Redis database
 
@@ -31,12 +31,14 @@ Smaller TODOs:
 - [x] TODO 18: Be able to handle finding values of multiple parameters
 - [ ] TODO 19: Accept numerical inputs
 - [ ] ~~TODO 20: Move the shutdown command to the server side~~
-- [ ] TODO 21: Make the paths global variables
+- [ ] TODO 21: Setup a client/server config file
 - [x] TODO 22: Rename message file to packaging
 - [x] TODO 23: Move user input functions into their own file
 - [x] TODO 24: Move the response functions into a packaging file
 - [x] TODO 25: Combine the data and actions functions into one file
 - [x] TODO 26: Create a decompose file
 - [x] TODO 27: Rename the packaging functions
+- [ ] TODO 28: Move the paths into a separate function
+- [ ] TODO 29: Split the function calls into separate files
 
 Exception Handling:
