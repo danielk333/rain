@@ -1,6 +1,3 @@
-import zmq
-import zmq.auth
-
 from .authenticate import load_server, setup_subscribe
 from .config import config
 from .decompose import pub_split, print_response
@@ -16,9 +13,7 @@ def run_subscribe():
     client_name = "apollo"
 
     filters = params_sub(server_name, dir_info)
-    socket = setup_subscribe(dir_pub, dir_prv, server_name, client_name)
-    for iter in range(len(filters)):
-        socket.setsockopt_string(zmq.SUBSCRIBE, filters[iter])
+    socket = setup_subscribe(dir_pub, dir_prv, server_name, client_name, filters)
 
     print("Waiting for updates from the server")
     socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")

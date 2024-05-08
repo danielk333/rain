@@ -94,19 +94,6 @@ def params_set(group):
     return params, new_values
 
 
-# def params_sub(group):
-#     print("Please enter a parameter you'd like to subscribe to:")
-#     pprint(group["parameters"], indent=4, sort_dicts=False)
-#     input_param = input()
-#     for item in group["parameters"]:
-#         if item["name"] == input_param:
-#             if item["subscribe"] == "true":
-#                 param = input_param
-#                 break
-#
-#     return param
-
-
 def params_sub(server_name, dir_info):
     possible_sub = []
     groups = load_groups(dir_info, server_name)

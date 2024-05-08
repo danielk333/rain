@@ -6,6 +6,8 @@ from zmq.auth.thread import ThreadAuthenticator
 from .decompose import load_groups
 
 
+# TODO 30: Merge the setup functions
+
 def load_server(path, server_name):
     server_address = []
     with open(os.path.join(path, f"{server_name}.info"), "r") as f:
@@ -86,7 +88,7 @@ def setup_publish(server_name, server_address, dir_pub, dir_prv, dir_info):
     return auth, socket, server_open, possible_sub
 
 
-def setup_subscribe(dir_pub, dir_prv, server_name, client_name):
+def setup_subscribe(dir_pub, dir_prv, server_name, client_name, filters):
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
 
@@ -98,5 +100,8 @@ def setup_subscribe(dir_pub, dir_prv, server_name, client_name):
     server_file_pub = os.path.join(dir_pub, f"{server_name}.key")
     server_pub, _ = zmq.auth.load_certificate(server_file_pub)
     socket.curve_serverkey = server_pub
+
+    for iter in range(len(filters)):
+        socket.setsockopt_string(zmq.SUBSCRIBE, filters[iter])
 
     return socket

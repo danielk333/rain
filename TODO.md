@@ -9,6 +9,7 @@ Big TODOs:
 - [ ] T6: Separate the server and the client from the network
 - [x] T7: Make a package out of the software
 - [ ] T8: Implement a Redis database
+- [ ] T9: Write a CLI to replace the user input
 
 Smaller TODOs:
 - [ ] ~~TODO 1: Check there is no existing instrument with this name, and no existing keypair~~
@@ -40,5 +41,8 @@ Smaller TODOs:
 - [x] TODO 27: Rename the packaging functions
 - [x] TODO 28: Move the paths into a separate function
 - [x] TODO 29: Split the function calls into separate files
+- [ ] TODO 30: Merge the setup functions
+- [ ] TODO 31: Send subscription updates when changes occur
+- [ ] TODO 32: Rename function parameters so they no longer match runtime variables
 
 Exception Handling:
