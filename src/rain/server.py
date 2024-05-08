@@ -1,4 +1,4 @@
-from .authenticate import load_server, setup_server
+from .authenticate import load_server, setup
 from .config import config
 from .decompose import message_components
 from .packaging import form_response
@@ -11,9 +11,10 @@ def run_server():
 
     server_name = "odyssey"
     server_address = load_server(dir_info, server_name)
-    server_open = False
+    host_type = "server"
 
-    auth, socket, server_open = setup_server(server_name, server_address, dir_pub, dir_prv)
+    auth, socket = setup(host_type, server_name, server_address, None, None, dir_pub, dir_prv)
+    server_open = True
     while server_open:
         message = receive_request(socket)
         group, num_params, response_type = message_components(dir_info, server_name, message)

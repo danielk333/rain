@@ -22,7 +22,7 @@ Smaller TODOs:
 - [x] TODO 8: Ask user what server to interact with
 - [x] TODO 9: Also find the end of the parameters
 - [x] TODO 10: Add the request and command status to the pprint
-- [ ] TODO 11: Make a list of each type of command and separate the responses to these in separate functions
+- [x] TODO 11: Make a list of each type of command and separate the responses to these in separate functions
 - [x] TODO 12: Be able to handle changing values of multiple parameters
 - [x] TODO 13: Fix how commands are received
 - [x] TODO 14: Convert the key from bytes to string
@@ -41,9 +41,13 @@ Smaller TODOs:
 - [x] TODO 27: Rename the packaging functions
 - [x] TODO 28: Move the paths into a separate function
 - [x] TODO 29: Split the function calls into separate files
-- [ ] TODO 30: Merge the setup functions
+- [x] TODO 30: Merge the setup functions
 - [ ] TODO 31: Send subscription updates when changes occur
 - [ ] TODO 32: Rename function parameters so they no longer match runtime variables
 - [ ] TODO 33: Write proper headers for each file
+- [ ] TODO 34: Combine the client, server, publish and subscribe run functions into one file
+- [ ] TODO 35: Add timestamps to responses
+- [ ] TODO 36: Move the load_groups and subscribable_params functions into a different file
+- [ ] TODO 37: For each request type only show the suitable parameters
 
 Exception Handling:

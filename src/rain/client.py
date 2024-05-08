@@ -1,4 +1,4 @@
-from .authenticate import load_server, setup_client
+from .authenticate import load_server, setup
 from .config import config
 from .decompose import print_response
 from .packaging import form_request
@@ -14,6 +14,7 @@ def run_client():
     server_name = input()
     server_address = load_server(dir_info, server_name)
     client_name = "apollo"
+    host_type = "client"
 
     # TODO 11: Make a list of each type of command and separate the responses to these in separate functions
     message_type = determine_type(server_address[0])
@@ -21,7 +22,7 @@ def run_client():
     message = form_request(message_type, group, group_name)
 
     if message:
-        socket = setup_client(dir_pub, dir_prv, server_name, client_name)
+        _, socket = setup(host_type, server_name, server_address, client_name, None, dir_pub, dir_prv)
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
         print_response(response)

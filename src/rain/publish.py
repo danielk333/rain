@@ -1,6 +1,6 @@
 import time
 
-from .authenticate import load_server, setup_publish
+from .authenticate import load_server, setup, subscribable_params
 from .config import config
 from .packaging import publish_response
 
@@ -10,9 +10,11 @@ def run_publish():
 
     server_name = "odyssey"
     server_address = load_server(dir_info, server_name)
-    server_open = False
+    host_type = "publish"
 
-    auth, socket, server_open, possible_sub = setup_publish(server_name, server_address, dir_pub, dir_prv, dir_info)
+    auth, socket = setup(host_type, server_name, server_address, None, None, dir_pub, dir_prv)
+    possible_sub = subscribable_params(server_name, dir_info)
+    server_open = True
 
     while server_open:
         # TODO 31: Send subscription updates when changes occur
