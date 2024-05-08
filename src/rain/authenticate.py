@@ -1,5 +1,3 @@
-import os
-
 import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
@@ -10,7 +8,7 @@ from .decompose import load_groups
 
 def load_server(path, server_name):
     server_address = []
-    with open(os.path.join(path, f"{server_name}.info"), "r") as f:
+    with open(path.joinpath(f"{server_name}.info"), "r") as f:
         for line in f:
             if "Server" in line:
                 ip_address = line.split(': ')[1]
@@ -32,7 +30,7 @@ def setup_server(server_name, server_address, dir_pub, dir_prv):
     auth.configure_curve(domain="*", location=dir_pub)
 
     socket = context.socket(zmq.REP)
-    server_file_prv = os.path.join(dir_prv, f"{server_name}.key_secret")
+    server_file_prv = dir_prv.joinpath(f"{server_name}.key_secret")
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
     socket.curve_secretkey = server_prv
     socket.curve_publickey = server_pub
@@ -48,12 +46,12 @@ def setup_client(dir_pub, dir_prv, server_name, client_name):
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
 
-    client_file_prv = os.path.join(dir_prv, f"{client_name}.key_secret")
+    client_file_prv = dir_prv.joinpath(f"{client_name}.key_secret")
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub
 
-    server_file_pub = os.path.join(dir_pub, f"{server_name}.key")
+    server_file_pub = dir_pub.joinpath(f"{server_name}.key")
     server_pub, _ = zmq.auth.load_certificate(server_file_pub)
     socket.curve_serverkey = server_pub
 
@@ -75,7 +73,7 @@ def setup_publish(server_name, server_address, dir_pub, dir_prv, dir_info):
     auth.configure_curve(domain="*", location=dir_pub)
 
     socket = context.socket(zmq.PUB)
-    server_file_prv = os.path.join(dir_prv, f"{server_name}.key_secret")
+    server_file_prv = dir_prv.joinpath("{server_name}.key_secret")
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
     socket.curve_secretkey = server_prv
     socket.curve_publickey = server_pub
@@ -92,12 +90,12 @@ def setup_subscribe(dir_pub, dir_prv, server_name, client_name, filters):
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
 
-    client_file_prv = os.path.join(dir_prv, f"{client_name}.key_secret")
+    client_file_prv = dir_prv.joinpath(f"{client_name}.key_secret")
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub
 
-    server_file_pub = os.path.join(dir_pub, f"{server_name}.key")
+    server_file_pub = dir_pub.joinpath(f"{server_name}.key")
     server_pub, _ = zmq.auth.load_certificate(server_file_pub)
     socket.curve_serverkey = server_pub
 

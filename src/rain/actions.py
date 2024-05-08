@@ -1,8 +1,5 @@
-import os
-
-
 def load_data(path, file_name, parameter):
-    with open(os.path.join(path, f"{file_name}.data"), "r") as f:
+    with open(path / f"{file_name}.data", "r") as f:
         for line in f:
             if parameter in line:
                 components = line.split(' : ')
@@ -14,7 +11,7 @@ def load_data(path, file_name, parameter):
 
 
 def change_data(path, file_name, param, value):
-    with open(os.path.join(path, f"{file_name}.data"), "r") as f:
+    with open(path / f"{file_name}.data", "r") as f:
         lines = []
         for line in f:
             if param in line:
@@ -25,7 +22,7 @@ def change_data(path, file_name, param, value):
             else:
                 lines.append(line)
 
-    with open(os.path.join(path, f"{file_name}.data"), "w") as f:
+    with open(path / f"{file_name}.data", "w") as f:
         for item in lines:
             f.write(item)
 

@@ -16,7 +16,7 @@ Smaller TODOs:
 - [x] TODO 2: Add the time the keypair was generated
 - [x] TODO 3: Delete the automatically generated files
 - [x] TODO 4: Add the new info file to a directory with other info files
-- [ ] TODO 5: Replace os library with Pathlib
+- [x] TODO 5: Replace os library with Pathlib
 - [x] TODO 6: Replace feedback printing with pprint
 - [x] TODO 7: Add server details to the info file
 - [x] TODO 8: Ask user what server to interact with
@@ -44,5 +44,6 @@ Smaller TODOs:
 - [ ] TODO 30: Merge the setup functions
 - [ ] TODO 31: Send subscription updates when changes occur
 - [ ] TODO 32: Rename function parameters so they no longer match runtime variables
+- [ ] TODO 33: Write proper headers for each file
 
 Exception Handling:

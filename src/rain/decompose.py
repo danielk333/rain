@@ -1,5 +1,4 @@
 import json
-import os
 from pprint import pprint
 
 
@@ -13,7 +12,7 @@ def find_group(message, groups):
 
 
 def load_groups(path, file_name):
-    with open(os.path.join(path, f"{file_name}.info"), "r") as f:
+    with open(path.joinpath(f"{file_name}.info"), "r") as f:
         data = f.read()
         end_found = False
         pos_list = []
