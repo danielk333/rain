@@ -9,6 +9,10 @@ from .transport import receive_request, send_response
 
 
 def run_server():
+    """Runs the response socket using the supplied configuration
+
+    TODO: write docstring
+    """
 
     config = load_config("./rain.cfg")
     load_plugins(config.get("Plugins", "plugin_folder"))
