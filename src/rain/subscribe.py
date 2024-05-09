@@ -1,5 +1,5 @@
 from .authenticate import load_server, setup
-from .config import config
+from .config import load_config
 from .decompose import pub_split, print_response
 from .transport import receive_subscribe
 from .user_input import params_sub

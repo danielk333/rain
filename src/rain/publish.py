@@ -1,7 +1,7 @@
 import time
 
 from .authenticate import load_server, setup, subscribable_params
-from .config import config
+from .config import load_config
 from .packaging import publish_response
 
 

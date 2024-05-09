@@ -17,3 +17,7 @@ src/rain.egg-info
 
 # Automatically generated files
 __pycache__
+
+# Examples
+examples/public_keys/*
+examples/private_keys_keys/*
