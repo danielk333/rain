@@ -21,9 +21,9 @@ def request_set(params, new_values, group_name):
     return message
 
 
-def form_request(message_type, group, group_name):
+def form_request(message_type, group, group_name, params):
     if message_type == "get":
-        params = params_get(group)
+        # params = params_get(group)
         if params:
             message = request_get(params, group_name)
             print(message)
