@@ -9,7 +9,7 @@ Big TODOs:
 - [ ] T6: Separate the server and the client from the network
 - [x] T7: Make a package out of the software
 - [ ] T8: Implement a Redis database
-- [ ] T9: Write a CLI to replace the user input
+- [x] T9: Write a CLI to replace the user input
 
 Smaller TODOs:
 - [ ] ~~TODO 1: Check there is no existing instrument with this name, and no existing keypair~~

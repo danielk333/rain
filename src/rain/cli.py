@@ -4,7 +4,7 @@ import argparse
 def client_cli():
     parser = argparse.ArgumentParser(
         prog="RAIN",
-        description="RAIN User Interface"
+        description="RAIN Client Interface"
     )
 
     parser.add_argument(
@@ -30,6 +30,29 @@ def client_cli():
         metavar="-p",
         nargs="+",
         help="the parameters to investigate"
+    )
+
+    args = parser.parse_args()
+
+    return args
+
+
+def server_cli():
+    parser = argparse.ArgumentParser(
+        prog="RAIN",
+        description="RAIN Server Interface"
+    )
+
+    parser.add_argument(
+        "instrument",
+        choices=["odyssey"],
+        help="the instrument server to connect to"
+    )
+
+    parser.add_argument(
+        "interaction",
+        choices=["rep", "pub"],
+        help="the type of interaction with the server"
     )
 
     args = parser.parse_args()
