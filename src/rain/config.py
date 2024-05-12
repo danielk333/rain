@@ -53,16 +53,6 @@ def load_config(config_file=None):
     return config
 
 
-def temp_config():
-    home = Path.cwd()
-    dir_pub = home / "public_keys"
-    dir_prv = home / "private_keys"
-    dir_info = home / "infra_info"
-    dir_data = home / "data"
-
-    return dir_pub, dir_prv, dir_info, dir_data
-
-
 def reduced_config():
     home = Path.cwd()
     dir_info = home / "infra_info"

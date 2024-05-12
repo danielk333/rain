@@ -30,7 +30,7 @@ Smaller TODOs:
 - [x] TODO 16: Load server details from info file
 - [ ] TODO 17: Generate the data file
 - [x] TODO 18: Be able to handle finding values of multiple parameters
-- [ ] TODO 19: Accept numerical inputs
+- [ ] ~~TODO 19: Accept numerical inputs~~
 - [ ] ~~TODO 20: Move the shutdown command to the server side~~
 - [ ] TODO 21: Setup a client/server config file
 - [x] TODO 22: Rename message file to packaging
@@ -45,7 +45,7 @@ Smaller TODOs:
 - [ ] TODO 31: Send subscription updates when changes occur
 - [ ] TODO 32: Rename function parameters so they no longer match runtime variables
 - [ ] TODO 33: Write proper headers for each file
-- [ ] TODO 34: Combine the client, server, publish and subscribe run functions into one file
+- [x] TODO 34: Combine the client, server, publish and subscribe run functions into one file
 - [ ] TODO 35: Add timestamps to responses
 - [x] TODO 36: Move the load_groups and subscribable_params functions into a different file
 - [ ] TODO 37: For each request type only show the suitable parameters

@@ -1,7 +1,7 @@
 import json
+from pprint import pprint
 
 from .actions import actions_get, actions_set, load_data
-from .user_input import params_get, params_set
 
 
 def request_get(params, group_name):
@@ -21,17 +21,15 @@ def request_set(params, new_values, group_name):
     return message
 
 
-def form_request(message_type, group, group_name, params):
+def form_request(message_type, group, group_name, params, new_values):
     if message_type == "get":
-        # params = params_get(group)
         if params:
             message = request_get(params, group_name)
-            print(message)
+            pprint(message, indent=4, sort_dicts=False)
     elif message_type == "set":
-        params, new_values = params_set(group)
         if params:
             message = request_set(params, new_values, group_name)
-            print(message)
+            pprint(message, indent=4, sort_dicts=False)
     else:
         message = None
         print("You have not entered a valid message type")

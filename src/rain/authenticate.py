@@ -12,12 +12,12 @@ def setup_auth(context, server_address, dir_pub):
 
 
 def setup_socket(context, host_type):
-    if host_type == "server":
-        socket = context.socket(zmq.REP)
-    elif host_type == "client":
-        socket = context.socket(zmq.REQ)
-    elif host_type == "publish":
+    if host_type == "publish":
         socket = context.socket(zmq.PUB)
+    elif host_type == "request":
+        socket = context.socket(zmq.REQ)
+    elif host_type == "response":
+        socket = context.socket(zmq.REP)
     elif host_type == "subscribe":
         socket = context.socket(zmq.SUB)
 
@@ -49,20 +49,26 @@ def open_connection(socket, server_address):
           f"with port {server_address[1]} ready to talk to friends")
 
 
-def setup(host_type, server_name, server_address, client_name, filters, dir_pub, dir_prv):
+def setup_client(host_type, server_name, client_name, filters, dir_pub, dir_prv):
     context = zmq.Context()
     socket = setup_socket(context, host_type)
 
-    if host_type == "server" or host_type == "publish":
-        auth = setup_auth(context, server_address, dir_pub)
-        auth_server(socket, server_name, dir_prv)
-        open_connection(socket, server_address)
-    elif host_type == "client" or host_type == "subscribe":
-        auth_client(socket, server_name, client_name, dir_pub, dir_prv)
-        auth = None
+    host_type == "client" or host_type == "subscribe"
+    auth_client(socket, server_name, client_name, dir_pub, dir_prv)
 
     if host_type == "subscribe":
         for iter in range(len(filters)):
             socket.setsockopt_string(zmq.SUBSCRIBE, filters[iter])
+
+    return socket
+
+
+def setup_server(host_type, server_name, server_address, dir_pub, dir_prv):
+    context = zmq.Context()
+    socket = setup_socket(context, host_type)
+
+    auth = setup_auth(context, server_address, dir_pub)
+    auth_server(socket, server_name, dir_prv)
+    open_connection(socket, server_address)
 
     return auth, socket
