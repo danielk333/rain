@@ -60,16 +60,16 @@ def run_publish(server_name, config, dir_pub, dir_prv, dir_info, dir_data):
 
 
 def server():
+    args = server_cli()
+    server_name = args.instrument
+    interaction = args.interaction
+
     config = load_config("./rain.cfg")
     # load_plugins(config.get("Plugins", "plugin_folder"))
 
     dir_pub = Path(config.get("Security", "public_keys"))
     dir_prv = Path(config.get("Security", "private_keys"))
     dir_info, dir_data = reduced_config()
-
-    args = server_cli()
-    server_name = args.instrument
-    interaction = args.interaction
 
     if interaction == "rep":
         run_response(server_name, config, dir_pub, dir_prv, dir_info, dir_data)

@@ -44,12 +44,6 @@ def run_subscribe(server_name, client_name, config, params, dir_pub, dir_prv):
 
 
 def client():
-    config = load_config("./rain.cfg")
-
-    dir_pub = Path(config.get("Security", "public_keys"))
-    dir_prv = Path(config.get("Security", "private_keys"))
-    dir_info, dir_data = reduced_config()
-
     args = client_cli()
     server_name = args.instrument
     client_name = "apollo"
@@ -57,6 +51,12 @@ def client():
     group_name = args.group
     params = args.param
     new_values = None
+
+    config = load_config("./rain.cfg")
+
+    dir_pub = Path(config.get("Security", "public_keys"))
+    dir_prv = Path(config.get("Security", "private_keys"))
+    dir_info, dir_data = reduced_config()
 
     if interaction == "get" or interaction == "set":
         run_request(server_name, client_name, config, interaction, group_name, params, new_values, dir_pub, dir_info, dir_prv)
