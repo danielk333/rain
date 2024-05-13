@@ -17,7 +17,7 @@ def run_request(server_name, client_name, config, interaction, group_name, param
     message = form_request(interaction, group, group_name, params, new_values)
 
     if message:
-        _, socket = setup_client(
+        socket = setup_client(
             "request", server_name, client_name, None, dir_pub, dir_prv
         )
         send_request(socket, server_address, message)
