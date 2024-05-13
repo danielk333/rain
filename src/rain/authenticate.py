@@ -53,7 +53,6 @@ def setup_client(host_type, server_name, client_name, filters, dir_pub, dir_prv)
     context = zmq.Context()
     socket = setup_socket(context, host_type)
 
-    host_type == "client" or host_type == "subscribe"
     auth_client(socket, server_name, client_name, dir_pub, dir_prv)
 
     if host_type == "subscribe":
