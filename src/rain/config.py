@@ -1,9 +1,27 @@
 import pathlib
-from pathlib import Path
+import os
 import configparser
 import warnings
+import logging
 
-DEFAULT = {
+logger = logging.getLogger(__name__)
+
+HOME = pathlib.Path(os.path.expanduser("~"))
+CONF_FOLDER = (HOME / ".config" / "rain").resolve()
+
+if not CONF_FOLDER.is_dir():
+    CONF_FOLDER.mkdir()
+
+# Default paths
+HOSTS_CFG = CONF_FOLDER / "hosts.cfg"
+SERVER_CFG = CONF_FOLDER / "server.cfg"
+PLUGIN_FOLDER = CONF_FOLDER / "plugins"
+AUTHORIZED_KEYS_FOLDER = CONF_FOLDER / "authorized_keys"
+KNOWN_HOSTS_FOLDER = CONF_FOLDER / "known_hosts"
+KEYPAIRS_FOLDER = CONF_FOLDER / "keypairs"
+
+
+DEFAULT_SERVER_CFG = {
     "Response": {
         "port": "1234",
         "hostname": "127.0.0.1",
@@ -33,7 +51,7 @@ def load_config(config_file=None):
 
     config = configparser.ConfigParser()
 
-    config.read_dict(DEFAULT)
+    config.read_dict(DEFAULT_SERVER_CFG)
 
     if config_file is not None:
         if not isinstance(config_file, pathlib.Path):
@@ -54,7 +72,7 @@ def load_config(config_file=None):
 
 
 def reduced_config():
-    home = Path.cwd()
+    home = pathlib.Path.cwd()
     dir_info = home / "infra_info"
     dir_data = home / "data"
 
