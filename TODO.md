@@ -49,5 +49,6 @@ Smaller TODOs:
 - [ ] TODO 35: Add timestamps to responses
 - [x] TODO 36: Move the load_groups and subscribable_params functions into a different file
 - [ ] TODO 37: For each request type only show the suitable parameters
+- [ ] TODO 38: Write a CLI for the new user code
 
 Exception Handling:
