@@ -26,8 +26,7 @@ def client_cli():
     )
 
     parser.add_argument(
-        "--param",
-        metavar="-p",
+        "param",
         nargs="+",
         help="the parameters to investigate"
     )
