@@ -30,7 +30,7 @@ def run_subscribe(server_name, client_name, config, params, dir_pub, dir_prv):
         config.get("Publish", "hostname"),
         config.get("Publish", "port"),
     ]
-    _, socket = setup_client(
+    socket = setup_client(
         "subscribe", server_name, client_name, params, dir_pub, dir_prv
     )
 

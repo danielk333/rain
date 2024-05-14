@@ -16,26 +16,26 @@ if not CONF_FOLDER.is_dir():
 HOSTS_CFG = CONF_FOLDER / "hosts.cfg"
 SERVER_CFG = CONF_FOLDER / "server.cfg"
 PLUGIN_FOLDER = CONF_FOLDER / "plugins"
-AUTHORIZED_KEYS_FOLDER = CONF_FOLDER / "authorized_keys"
+AUTHORISED_KEYS_FOLDER = CONF_FOLDER / "authorised_keys"
 KNOWN_HOSTS_FOLDER = CONF_FOLDER / "known_hosts"
 KEYPAIRS_FOLDER = CONF_FOLDER / "keypairs"
 
 
 DEFAULT_SERVER_CFG = {
     "Response": {
-        "port": "1234",
         "hostname": "127.0.0.1",
+        "port": "1234"
     },
     "Publish": {
-        "port": "1235",
         "hostname": "127.0.0.1",
+        "port": "1235"
     },
     "Security": {
-        "public_keys": "./public_keys",
-        "private_keys": "./private_keys",
+        "public_keys": AUTHORISED_KEYS_FOLDER,
+        "private_keys": KEYPAIRS_FOLDER,
     },
     "Plugins": {
-        "plugin_folder": "./plugins",
+        "plugin_folder": PLUGIN_FOLDER,
     },
 }
 
