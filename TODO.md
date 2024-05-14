@@ -48,7 +48,10 @@ Smaller TODOs:
 - [x] TODO 34: Combine the client, server, publish and subscribe run functions into one file
 - [ ] TODO 35: Add timestamps to responses
 - [x] TODO 36: Move the load_groups and subscribable_params functions into a different file
-- [ ] TODO 37: For each request type only show the suitable parameters
+- [ ] ~~TODO 37: For each request type only show the suitable parameters~~
 - [ ] TODO 38: Write a CLI for the new user code
+- [ ] TODO 39: Add logging messages
+- [x] TODO 40: Remove groups
+- [ ] TODO 41: Implement a way for a server to nicely shut itself down
 
 Exception Handling:

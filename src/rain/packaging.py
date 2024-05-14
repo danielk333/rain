@@ -4,32 +4,28 @@ from pprint import pprint
 from .actions import actions_get, actions_set, load_data
 
 
-def request_get(params, group_name):
+def request_get(params):
     message = {"type": "get",
-               "group": group_name,
                "parameters": params}
 
     return message
 
 
-def request_set(params, new_values, group_name):
+def request_set(params, new_values):
     message = {"type": "set",
-               "group": group_name,
                "parameters": params,
                "new_values": new_values}
 
     return message
 
 
-def form_request(message_type, group, group_name, params, new_values):
+def form_request(message_type, params, new_values):
     if message_type == "get":
-        if params:
-            message = request_get(params, group_name)
-            pprint(message, indent=4, sort_dicts=False)
+        message = request_get(params)
+        pprint(message, indent=4, sort_dicts=False)
     elif message_type == "set":
-        if params:
-            message = request_set(params, new_values, group_name)
-            pprint(message, indent=4, sort_dicts=False)
+        message = request_set(params, new_values)
+        pprint(message, indent=4, sort_dicts=False)
     else:
         message = None
         print("You have not entered a valid message type")
@@ -39,7 +35,6 @@ def form_request(message_type, group, group_name, params, new_values):
 
 def response_get(message, values):
     response = {"type": "get",
-                "group": message["group"],
                 "parameters": message["parameters"],
                 "values": values}
 
@@ -48,19 +43,18 @@ def response_get(message, values):
 
 def response_set(message):
     response = {"type": "set",
-                "group": message["group"],
                 "parameters": message["parameters"],
                 "new_values": message["new_values"]}
 
     return response
 
 
-def form_response(message, group, num_params, response_type, server_open, server_name, dir_data):
+def form_response(message, params, num_params, response_type, server_open, server_name, dir_data):
     if response_type == "get":
-        values = actions_get(message, group, num_params, server_name, dir_data)
+        values = actions_get(message, params, num_params, server_name, dir_data)
         response = response_get(message, values)
     elif response_type == "set":
-        actions_set(message, group, num_params, server_name, dir_data)
+        actions_set(message, params, num_params, server_name, dir_data)
         response = response_set(message)
 
     return response, server_open

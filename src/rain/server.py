@@ -24,10 +24,10 @@ def run_response(server_name, config, dir_pub, dir_prv, dir_info, dir_data):
     server_open = True
     while server_open:
         message = receive_request(socket)
-        group, num_params, response_type = message_components(
+        params, num_params, response_type = message_components(
             dir_info, server_name, message
         )
-        response, server_open = form_response(message, group, num_params, response_type, server_open, server_name, dir_data)
+        response, server_open = form_response(message, params, num_params, response_type, server_open, server_name, dir_data)
         # data = []
         # for name in message["parameters"]:
         #     func = PLUGINS[message["type"]][name]

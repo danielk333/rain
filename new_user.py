@@ -26,7 +26,7 @@ os.rename(os.path.join(home, f"{infra_name}.key_secret"), os.path.join(dir_prv, 
 generate_header(dir_info, infra_name)
 generate_key(dir_info, infra_name, key_pub, gen_time)
 generate_server(dir_info, infra_name)
-generate_params(dir_info, infra_name, 2, 2)
+generate_params(dir_info, infra_name, 3)
 # TODO 17: Generate the data file
 
 print(f'Thank you for registering {infra_name} to RAIN!')

@@ -29,10 +29,10 @@ def change_data(path, file_name, param, value):
     return
 
 
-def actions_get(message, group, num_params, server_name, dir_data):
+def actions_get(message, params, num_params, server_name, dir_data):
     values = []
     for iter in range(num_params):
-        for item in group["parameters"]:
+        for item in params["parameters"]:
             if item["name"] == message["parameters"][iter]:
                 value = load_data(dir_data, server_name, message["parameters"][iter])
                 values.append(value)
@@ -41,9 +41,9 @@ def actions_get(message, group, num_params, server_name, dir_data):
     return values
 
 
-def actions_set(message, group, num_params, server_name, dir_data):
+def actions_set(message, params, num_params, server_name, dir_data):
     for iter in range(num_params):
-        for item in group["parameters"]:
+        for item in params["parameters"]:
             if item["name"] == message["parameters"][iter]:
                 change_data(dir_data, server_name, message["parameters"][iter], message["new_values"][iter])
 

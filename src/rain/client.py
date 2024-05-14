@@ -3,18 +3,18 @@ from pathlib import Path
 from .authenticate import setup_client
 from .cli import client_cli
 from .config import load_config, reduced_config
-from .decompose import load_groups, print_response, pub_split
+from .decompose import print_response, pub_split
 from .packaging import form_request
 from .transport import send_request, receive_response, receive_subscribe
 
 
-def run_request(server_name, client_name, config, interaction, group_name, params, new_values, dir_pub, dir_info, dir_prv):
+def run_request(server_name, client_name, config, interaction, params, new_values, dir_pub, dir_info, dir_prv):
     server_address = [
         config.get("Response", "hostname"),
         config.get("Response", "port"),
     ]
-    group = load_groups(dir_info, server_name)
-    message = form_request(interaction, group, group_name, params, new_values)
+
+    message = form_request(interaction, params, new_values)
 
     if message:
         socket = setup_client(
@@ -48,7 +48,6 @@ def client():
     server_name = args.instrument
     client_name = "apollo"
     interaction = args.interaction
-    group_name = args.group
     params = args.param
     new_values = None
 
@@ -59,6 +58,6 @@ def client():
     dir_info, dir_data = reduced_config()
 
     if interaction == "get" or interaction == "set":
-        run_request(server_name, client_name, config, interaction, group_name, params, new_values, dir_pub, dir_info, dir_prv)
+        run_request(server_name, client_name, config, interaction, params, new_values, dir_pub, dir_info, dir_prv)
     elif interaction == "sub":
         run_subscribe(server_name, client_name, config, params, dir_pub, dir_prv)

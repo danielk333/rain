@@ -20,12 +20,6 @@ def client_cli():
     )
 
     parser.add_argument(
-        "group",
-        choices=["propulsion", "shields"],
-        help="the group of parameters to interact with"
-    )
-
-    parser.add_argument(
         "param",
         nargs="+",
         help="the parameters to investigate"
