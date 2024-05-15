@@ -1,5 +1,5 @@
-def send_request(socket, server_address, message):
-    socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
+def send_request(socket, address, message):
+    socket.connect(f"tcp://{address[0]}:{address[1]}")
     socket.send_json(message, 0)
 
     return
@@ -18,11 +18,11 @@ def send_response(socket, response):
     return
 
 
-def receive_response(socket, server_address):
-    response = socket.recv_json(0)
-    socket.disconnect(f"tcp://{server_address[0]}:{server_address[1]}")
+def receive_response(socket, address):
+    message = socket.recv_json(0)
+    socket.disconnect(f"tcp://{address[0]}:{address[1]}")
 
-    return response
+    return message
 
 
 def receive_subscribe(socket):

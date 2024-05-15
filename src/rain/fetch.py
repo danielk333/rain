@@ -1,28 +1,27 @@
-from .decompose import load_groups
+from .decompose import load_params
 
 
-def load_server(path, server_name):
-    server_address = []
-    with open(path.joinpath(f"{server_name}.info"), "r") as f:
+def load_server(path, name):
+    address = []
+    with open(path.joinpath(f"{name}.info"), "r") as f:
         for line in f:
             if "Server" in line:
-                ip_address = line.split(': ')[1]
-                ip_address = ip_address[0:len(ip_address)-1]
-                server_address.append(ip_address)
+                hostname = line.split(': ')[1]
+                hostname = hostname[0:len(hostname)-1]
+                address.append(hostname)
             elif "Port" in line:
                 port = line.split(': ')[1]
                 port = port[0:len(port)-1]
-                server_address.append(port)
+                address.append(port)
 
-    return server_address
+    return address
 
 
-def subscribable_params(server_name, dir_info):
-    possible_sub = []
-    groups = load_groups(dir_info, server_name)
-    for group in groups:
-        for iter in range(len(group["parameters"])):
-            if group["parameters"][iter]["subscribe"] == "true":
-                possible_sub.append(group["parameters"][iter]["name"])
+def subscribable_params(path, name):
+    subsc_params = []
+    avail_params = load_params(path, name)
+    for item in avail_params["parameters"]:
+        if item["subscribe"] == "true":
+            subsc_params.append(item["name"])
 
-    return possible_sub
+    return subsc_params

@@ -4,77 +4,77 @@ from pprint import pprint
 from .actions import actions_get, actions_set, load_data
 
 
-def request_get(params):
-    message = {"type": "get",
-               "parameters": params}
+def request_get(req_params):
+    request = {"type": "get",
+               "parameters": req_params}
 
-    return message
+    return request
 
 
-def request_set(params, new_values):
-    message = {"type": "set",
-               "parameters": params,
+def request_set(req_params, new_values):
+    request = {"type": "set",
+               "parameters": req_params,
                "new_values": new_values}
 
-    return message
+    return request
 
 
-def form_request(message_type, params, new_values):
+def form_request(message_type, req_params, new_values):
     if message_type == "get":
-        message = request_get(params)
-        pprint(message, indent=4, sort_dicts=False)
+        request = request_get(req_params)
+        pprint(request, indent=4, sort_dicts=False)
     elif message_type == "set":
-        message = request_set(params, new_values)
-        pprint(message, indent=4, sort_dicts=False)
+        request = request_set(req_params, new_values)
+        pprint(request, indent=4, sort_dicts=False)
     else:
-        message = None
+        request = None
         print("You have not entered a valid message type")
 
-    return message
+    return request
 
 
-def response_get(message, values):
+def response_get(request, values):
     response = {"type": "get",
-                "parameters": message["parameters"],
+                "parameters": request["parameters"],
                 "values": values}
 
     return response
 
 
-def response_set(message):
+def response_set(request):
     response = {"type": "set",
-                "parameters": message["parameters"],
-                "new_values": message["new_values"]}
+                "parameters": request["parameters"],
+                "new_values": request["new_values"]}
 
     return response
 
 
-def form_response(message, params, num_params, response_type, server_open, server_name, dir_data):
+def form_response(request, avail_params, response_type, server_name, dir_data):
     if response_type == "get":
-        values = actions_get(message, params, num_params, server_name, dir_data)
-        response = response_get(message, values)
+        values = actions_get(request, avail_params, server_name, dir_data)
+        response = response_get(request, values)
     elif response_type == "set":
-        actions_set(message, params, num_params, server_name, dir_data)
-        response = response_set(message)
+        actions_set(request, avail_params, server_name, dir_data)
+        response = response_set(request)
 
-    return response, server_open
+    return response
 
 
-def publish_update(param, value):
-    update = {"parameter": param,
+def publish_update(sub_param, value):
+    update = {"parameter": sub_param,
               "value": value}
     return update
 
 
 def publish_format(update):
-    response = f'{update["parameter"]}${json.dumps(update)}'
+    publish = f'{update["parameter"]}${json.dumps(update)}'
 
-    return response
+    return publish
 
 
-def publish_response(param, server_name, dir_data):
-    value = load_data(dir_data, server_name, param)
-    update = publish_update(param, value)
-    response = publish_format(update)
+def publish_response(sub_param, server_name, dir_data):
+    value = load_data(dir_data, server_name, sub_param)
+    update = publish_update(sub_param, value)
+    publish = publish_format(update)
 
-    return response
+    return publish

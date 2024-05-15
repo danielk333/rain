@@ -43,7 +43,7 @@ Smaller TODOs:
 - [x] TODO 29: Split the function calls into separate files
 - [x] TODO 30: Merge the setup functions
 - [ ] TODO 31: Send subscription updates when changes occur
-- [ ] TODO 32: Rename function parameters so they no longer match runtime variables
+- [x] TODO 32: Rename function parameters so they no longer match runtime variables
 - [ ] TODO 33: Write proper headers for each file
 - [x] TODO 34: Combine the client, server, publish and subscribe run functions into one file
 - [ ] TODO 35: Add timestamps to responses
@@ -53,5 +53,7 @@ Smaller TODOs:
 - [ ] TODO 39: Add logging messages
 - [x] TODO 40: Remove groups
 - [ ] TODO 41: Implement a way for a server to nicely shut itself down
+- [ ] TODO 42: Rework the request_components function
+- [ ] TODO 43: Rework the pub_split function
 
 Exception Handling:

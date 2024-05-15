@@ -2,44 +2,8 @@ import json
 from pprint import pprint
 
 
-def load_groups(path, file_name):
-    with open(path.joinpath(f"{file_name}.info"), "r") as f:
-        data = f.read()
-        end_found = False
-        pos_list = []
-        while not end_found:  # Until the document END is found
-            start_found = False
-            for char in range(len(data)):
-                # Until the start of a parameter group has been found
-                if not start_found:
-                    if data[char] == '{':
-                        if data[char+1] == '\n':
-                            positions = []
-                            positions.append(char)
-                            start_found = True
-
-                    # If no start to a parameter group, check for the END of the document
-                    elif data[char:char+3] == 'END':
-                        end_found = True
-
-                # Now find the end of a parameter group
-                if data[char] == ']':
-                    if data[char+1:char+3] == '\n}':
-                        positions.append(char+2)
-                        pos_list.append(positions)
-                        # Reset the value for the start of the parameter group
-                        start_found = False
-
-        groups = []
-        for item in pos_list:
-            params = data[item[0]:item[1]+1]
-            groups.append(json.loads(params))
-
-        return groups
-
-
-def load_params(path, file_name):
-    with open(path.joinpath(f"{file_name}.info"), "r") as f:
+def load_params(path_info, server):
+    with open(path_info.joinpath(f"{server}.info"), "r") as f:
         data = f.read()
         start_found = False
         for char in range(len(data)):
@@ -57,27 +21,28 @@ def load_params(path, file_name):
                     if data[char+1:char+3] == '\n}':
                         positions.append(char+2)
 
-        params = json.loads(data[positions[0]:positions[1]+1])
+        avail_params = json.loads(data[positions[0]:positions[1]+1])
 
-    return params
-
-
-def message_components(dir_info, server_name, message):
-    response_type = message["type"]
-    num_params = len(message["parameters"])
-    params = load_params(dir_info, server_name)
-
-    return params, num_params, response_type
+    return avail_params
 
 
-def pub_split(message):
-    for char in range(len(message)):
-        if message[char] == "$":
+# TODO 42: Rework the request_components function
+def request_components(path_info, server, request):
+    response_type = request["type"]
+    avail_params = load_params(path_info, server)
+
+    return avail_params, response_type
+
+
+# TODO 43: Rework the pub_split function
+def pub_split(publish):
+    for char in range(len(publish)):
+        if publish[char] == "$":
             break_point = char
             break
-    actual_message = message[break_point+1:len(message)]
+    update = publish[break_point+1:len(publish)]
 
-    return actual_message
+    return update
 
 
 def print_response(response):

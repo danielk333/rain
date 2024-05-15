@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import zmq
+
 from .authenticate import setup_client
 from .cli import client_cli
 from .config import load_config, reduced_config
@@ -8,7 +10,7 @@ from .packaging import form_request
 from .transport import send_request, receive_response, receive_subscribe
 
 
-def run_request(server_name, client_name, config, interaction, params, new_values, dir_pub, dir_info, dir_prv):
+def run_request(server, client, config, interaction, params, new_values, path_pub, path_prv):
     server_address = [
         config.get("Response", "hostname"),
         config.get("Response", "port"),
@@ -18,21 +20,24 @@ def run_request(server_name, client_name, config, interaction, params, new_value
 
     if message:
         socket = setup_client(
-            "request", server_name, client_name, None, dir_pub, dir_prv
+            "request", server, client, path_pub, path_prv
         )
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
         print_response(response)
 
 
-def run_subscribe(server_name, client_name, config, params, dir_pub, dir_prv):
+def run_subscribe(server, client, config, params, path_pub, path_prv):
     server_address = [
         config.get("Publish", "hostname"),
         config.get("Publish", "port"),
     ]
     socket = setup_client(
-        "subscribe", server_name, client_name, params, dir_pub, dir_prv
+        "subscribe", server, client, path_pub, path_prv
     )
+
+    for iter in range(len(params)):
+        socket.setsockopt_string(zmq.SUBSCRIBE, params[iter])
 
     print("Waiting for updates from the server")
     socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
@@ -58,6 +63,6 @@ def client():
     dir_info, dir_data = reduced_config()
 
     if interaction == "get" or interaction == "set":
-        run_request(server_name, client_name, config, interaction, params, new_values, dir_pub, dir_info, dir_prv)
+        run_request(server_name, client_name, config, interaction, params, new_values, dir_pub, dir_prv)
     elif interaction == "sub":
         run_subscribe(server_name, client_name, config, params, dir_pub, dir_prv)

@@ -4,30 +4,28 @@ import time
 from .authenticate import setup_server
 from .cli import server_cli
 from .config import load_config, reduced_config
-from .decompose import message_components
+from .decompose import request_components
 from .fetch import subscribable_params
 from .packaging import form_response, publish_response
 # from .plugins import load_plugins, PLUGINS
 from .transport import receive_request, send_response
 
 
-def run_response(server_name, config, dir_pub, dir_prv, dir_info, dir_data):
+def run_response(server, config, path_pub, path_prv, path_info, path_data):
     server_address = [
         config.get("Response", "hostname"),
         config.get("Response", "port"),
     ]
 
     auth, socket = setup_server(
-        "response", server_name, server_address, dir_pub, dir_prv
+        "response", server, server_address, path_pub, path_prv
     )
 
     server_open = True
     while server_open:
         message = receive_request(socket)
-        params, num_params, response_type = message_components(
-            dir_info, server_name, message
-        )
-        response, server_open = form_response(message, params, num_params, response_type, server_open, server_name, dir_data)
+        params, response_type = request_components(path_info, server, message)
+        response = form_response(message, params, response_type, server, path_data)
         # data = []
         # for name in message["parameters"]:
         #     func = PLUGINS[message["type"]][name]
@@ -37,23 +35,23 @@ def run_response(server_name, config, dir_pub, dir_prv, dir_info, dir_data):
     auth.stop()
 
 
-def run_publish(server_name, config, dir_pub, dir_prv, dir_info, dir_data):
+def run_publish(server, config, path_pub, path_prv, path_info, path_data):
     server_address = [
         config.get("Publish", "hostname"),
         config.get("Publish", "port"),
     ]
 
     auth, socket = setup_server(
-        "publish", server_name, server_address, dir_pub, dir_prv
+        "publish", server, server_address, path_pub, path_prv
     )
-    possible_sub = subscribable_params(server_name, dir_info)
+    possible_sub = subscribable_params(path_info, server)
     server_open = True
 
     while server_open:
         # TODO 31: Send subscription updates when changes occur
         time.sleep(2)
         for param in possible_sub:
-            response = publish_response(param, server_name, dir_data)
+            response = publish_response(param, server, path_data)
             socket.send_string(response)
 
     auth.stop()
