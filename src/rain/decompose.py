@@ -26,13 +26,8 @@ def load_params(path_info, server):
     return avail_params
 
 
-# TODO 43: Rework the pub_split function
 def pub_split(publish):
-    for char in range(len(publish)):
-        if publish[char] == "$":
-            break_point = char
-            break
-    update = publish[break_point+1:len(publish)]
+    [_, update] = publish.split('$', maxsplit=1)
 
     return update
 

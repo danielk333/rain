@@ -55,6 +55,6 @@ Smaller TODOs:
 - [x] TODO 40: Remove groups
 - [ ] TODO 41: Implement a way for a server to nicely shut itself down
 - [x] TODO 42: Rework the request_components function
-- [ ] TODO 43: Rework the pub_split function
+- [x] TODO 43: Rework the pub_split function
 
 Exception Handling:
