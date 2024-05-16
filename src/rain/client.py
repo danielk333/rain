@@ -5,8 +5,7 @@ import zmq
 from .authenticate import setup_client
 from .cli import client_cli
 from .config import load_config, reduced_config
-from .decompose import print_response, pub_split
-from .packaging import form_request
+from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 
 

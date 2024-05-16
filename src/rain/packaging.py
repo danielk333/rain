@@ -2,7 +2,7 @@ import json
 from pprint import pprint
 
 from .actions import actions_get, actions_set, load_data
-from .decompose import load_params
+from .fetch import load_params
 
 
 def request_get(req_params):
@@ -80,3 +80,14 @@ def publish_response(sub_param, server_name, dir_data):
     publish = publish_format(update)
 
     return publish
+
+
+def pub_split(publish):
+    [_, update] = publish.split('$', maxsplit=1)
+
+    return update
+
+
+def print_response(response):
+    print("Server Response:")
+    pprint(response, indent=4, sort_dicts=False)
