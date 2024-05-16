@@ -10,6 +10,7 @@ Big TODOs:
 - [x] T7: Make a package out of the software
 - [ ] T8: Implement a Redis database
 - [x] T9: Write a CLI to replace the user input
+- [ ] T10: Upload to PyPI
 
 Smaller TODOs:
 - [ ] ~~TODO 1: Check there is no existing instrument with this name, and no existing keypair~~
@@ -53,7 +54,7 @@ Smaller TODOs:
 - [ ] TODO 39: Add logging messages
 - [x] TODO 40: Remove groups
 - [ ] TODO 41: Implement a way for a server to nicely shut itself down
-- [ ] TODO 42: Rework the request_components function
+- [x] TODO 42: Rework the request_components function
 - [ ] TODO 43: Rework the pub_split function
 
 Exception Handling:

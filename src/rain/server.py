@@ -4,7 +4,6 @@ import time
 from .authenticate import setup_server
 from .cli import server_cli
 from .config import load_config, reduced_config
-from .decompose import request_components
 from .fetch import subscribable_params
 from .packaging import form_response, publish_response
 # from .plugins import load_plugins, PLUGINS
@@ -24,8 +23,7 @@ def run_response(server, config, path_pub, path_prv, path_info, path_data):
     server_open = True
     while server_open:
         message = receive_request(socket)
-        params, response_type = request_components(path_info, server, message)
-        response = form_response(message, params, response_type, server, path_data)
+        response = form_response(message, server, path_info, path_data)
         # data = []
         # for name in message["parameters"]:
         #     func = PLUGINS[message["type"]][name]

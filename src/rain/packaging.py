@@ -2,6 +2,7 @@ import json
 from pprint import pprint
 
 from .actions import actions_get, actions_set, load_data
+from .decompose import load_params
 
 
 def request_get(req_params):
@@ -49,12 +50,13 @@ def response_set(request):
     return response
 
 
-def form_response(request, avail_params, response_type, server_name, dir_data):
-    if response_type == "get":
-        values = actions_get(request, avail_params, server_name, dir_data)
+def form_response(request, server, path_info, path_data):
+    avail_params = load_params(path_info, server)
+    if request["type"] == "get":
+        values = actions_get(request, avail_params, server, path_data)
         response = response_get(request, values)
-    elif response_type == "set":
-        actions_set(request, avail_params, server_name, dir_data)
+    elif request["type"] == "set":
+        actions_set(request, avail_params, server, path_data)
         response = response_set(request)
 
     return response

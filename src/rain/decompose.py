@@ -26,14 +26,6 @@ def load_params(path_info, server):
     return avail_params
 
 
-# TODO 42: Rework the request_components function
-def request_components(path_info, server, request):
-    response_type = request["type"]
-    avail_params = load_params(path_info, server)
-
-    return avail_params, response_type
-
-
 # TODO 43: Rework the pub_split function
 def pub_split(publish):
     for char in range(len(publish)):
