@@ -3,7 +3,7 @@ import time
 
 from .authenticate import setup_server
 from .cli import server_cli
-from .config import load_config, reduced_config
+from .config import load_config, reduced_config, CONF_FOLDER
 from .fetch import subscribable_params
 from .packaging import form_response, publish_response
 # from .plugins import load_plugins, PLUGINS
@@ -60,7 +60,8 @@ def server():
     server_name = args.instrument
     interaction = args.interaction
 
-    config = load_config("./rain.cfg")
+    conf_loc = CONF_FOLDER / f"{server_name}-server.cfg"
+    config = load_config(conf_loc)
     # load_plugins(config.get("Plugins", "plugin_folder"))
 
     dir_pub = Path(config.get("Security", "public_keys"))

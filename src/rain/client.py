@@ -4,7 +4,7 @@ import zmq
 
 from .authenticate import setup_client
 from .cli import client_cli
-from .config import load_config, reduced_config
+from .config import load_config, reduced_config, CONF_FOLDER
 from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 
@@ -55,7 +55,8 @@ def client():
     params = args.param
     new_values = None
 
-    config = load_config("./rain.cfg")
+    conf_loc = CONF_FOLDER / f"{client_name}-hosts.cfg"
+    config = load_config(conf_loc)
 
     dir_pub = Path(config.get("Security", "public_keys"))
     dir_prv = Path(config.get("Security", "private_keys"))

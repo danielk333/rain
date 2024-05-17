@@ -51,3 +51,26 @@ def server_cli():
     args = parser.parse_args()
 
     return args
+
+
+def new_user_cli():
+    parser = argparse.ArgumentParser(
+        prog="RAIN",
+        description="RAIN User Registration"
+    )
+
+    parser.add_argument(
+        "name",
+        help="the name of the instrument"
+    )
+
+    parser.add_argument(
+        "mode",
+        nargs='+',
+        choices=["server", "client"],
+        help="whether the instrument can act as a server, a client or both"
+    )
+
+    args = parser.parse_args()
+
+    return args

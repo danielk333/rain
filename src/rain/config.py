@@ -28,21 +28,31 @@ DEFAULT_SERVER_CFG = {
     },
     "Publish": {
         "hostname": "127.0.0.1",
-        "port": "1235"
+        "port": "2468"
     },
     "Security": {
         "public_keys": AUTHORISED_KEYS_FOLDER,
-        "private_keys": KEYPAIRS_FOLDER,
+        "private_keys": KEYPAIRS_FOLDER
     },
     "Plugins": {
-        "plugin_folder": PLUGIN_FOLDER,
+        "plugin_folder": PLUGIN_FOLDER
+    }
+}
+
+DEFAULT_CLIENT_CFG = {
+    "Security": {
+        "public_keys": KNOWN_HOSTS_FOLDER,
+        "private_keys": KEYPAIRS_FOLDER
     },
+    "Plugins": {
+        "plugin_folder": PLUGIN_FOLDER
+    }
 }
 
 _CFG_PATHS = [
     ("Security", "public_keys"),
     ("Security", "private_keys"),
-    ("Plugins", "plugin_folder"),
+    ("Plugins", "plugin_folder")
 ]
 
 

@@ -33,7 +33,7 @@ Smaller TODOs:
 - [x] TODO 18: Be able to handle finding values of multiple parameters
 - [ ] ~~TODO 19: Accept numerical inputs~~
 - [ ] ~~TODO 20: Move the shutdown command to the server side~~
-- [ ] TODO 21: Setup a client/server config file
+- [x] TODO 21: Setup a client/server config file
 - [x] TODO 22: Rename message file to packaging
 - [x] TODO 23: Move user input functions into their own file
 - [x] TODO 24: Move the response functions into a packaging file
@@ -50,7 +50,7 @@ Smaller TODOs:
 - [ ] TODO 35: Add timestamps to responses
 - [x] TODO 36: Move the load_groups and subscribable_params functions into a different file
 - [ ] ~~TODO 37: For each request type only show the suitable parameters~~
-- [ ] TODO 38: Write a CLI for the new user code
+- [x] TODO 38: Write a CLI for the new user code
 - [ ] TODO 39: Add logging messages
 - [x] TODO 40: Remove groups
 - [ ] TODO 41: Implement a way for a server to nicely shut itself down
