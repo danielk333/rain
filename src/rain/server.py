@@ -3,7 +3,7 @@ import time
 
 from .authenticate import setup_server
 from .cli import server_cli
-from .config import load_config, reduced_config, CONF_FOLDER
+from .config import load_config, reduced_config, DEFAULT_FOLDER
 from .fetch import subscribable_params
 from .packaging import form_response, publish_response
 # from .plugins import load_plugins, PLUGINS
@@ -61,7 +61,7 @@ def server():
     interaction = args.interaction
 
     if args.cfgpath is None:
-        conf_folder = CONF_FOLDER
+        conf_folder = DEFAULT_FOLDER
     else:
         conf_folder = args.cfgpath
     conf_loc = conf_folder / f"{server_name}-server.cfg"

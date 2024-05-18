@@ -1,4 +1,5 @@
 import argparse
+import pathlib
 
 
 def client_cli():
@@ -79,6 +80,18 @@ def new_user_cli():
         nargs='+',
         choices=["server", "client"],
         help="whether the instrument can act as a server, a client or both"
+    )
+
+    parser.add_argument(
+        "-c", "--cfgpath",
+        type=pathlib.PosixPath,
+        help="the path to your RAIN config folder"
+    )
+
+    parser.add_argument(
+        "-k", "--keypath",
+        type=pathlib.PosixPath,
+        help="the path to your keypair folder"
     )
 
     args = parser.parse_args()

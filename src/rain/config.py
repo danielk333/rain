@@ -7,18 +7,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 HOME = pathlib.Path(os.path.expanduser("~"))
-CONF_FOLDER = (HOME / ".config" / "rain").resolve()
+# CONF_FOLDER = (HOME / ".config" / "rain").resolve()
 
-if not CONF_FOLDER.is_dir():
-    CONF_FOLDER.mkdir()
+# if not CONF_FOLDER.is_dir():
+#     CONF_FOLDER.mkdir()
 
 # Default paths
-HOSTS_CFG = CONF_FOLDER / "hosts.cfg"
-SERVER_CFG = CONF_FOLDER / "server.cfg"
-PLUGIN_FOLDER = CONF_FOLDER / "plugins"
-AUTHORISED_KEYS_FOLDER = CONF_FOLDER / "authorised_keys"
-KNOWN_HOSTS_FOLDER = CONF_FOLDER / "known_hosts"
-KEYPAIRS_FOLDER = CONF_FOLDER / "keypairs"
+DEFAULT_FOLDER = (HOME / ".config" / "rain").resolve()
+# HOSTS_CFG = CONF_FOLDER / "hosts.cfg"
+# SERVER_CFG = CONF_FOLDER / "server.cfg"
+PLUGIN_FOLDER = DEFAULT_FOLDER / "plugins"
+AUTHORISED_KEYS_FOLDER = DEFAULT_FOLDER / "authorised_keys"
+KNOWN_HOSTS_FOLDER = DEFAULT_FOLDER / "known_hosts"
+KEYPAIRS_FOLDER = DEFAULT_FOLDER / "keypairs"
 
 
 DEFAULT_SERVER_CFG = {

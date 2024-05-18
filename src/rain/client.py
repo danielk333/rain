@@ -4,7 +4,7 @@ import zmq
 
 from .authenticate import setup_client
 from .cli import client_cli
-from .config import load_config, reduced_config, CONF_FOLDER
+from .config import load_config, reduced_config, DEFAULT_FOLDER
 from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 
@@ -56,7 +56,7 @@ def client():
     new_values = None
 
     if args.cfgpath is None:
-        conf_folder = CONF_FOLDER
+        conf_folder = DEFAULT_FOLDER
     else:
         conf_folder = args.cfgpath
 
