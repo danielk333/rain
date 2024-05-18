@@ -60,7 +60,11 @@ def server():
     server_name = args.instrument
     interaction = args.interaction
 
-    conf_loc = CONF_FOLDER / f"{server_name}-server.cfg"
+    if args.cfgpath is None:
+        conf_folder = CONF_FOLDER
+    else:
+        conf_folder = args.cfgpath
+    conf_loc = conf_folder / f"{server_name}-server.cfg"
     config = load_config(conf_loc)
     # load_plugins(config.get("Plugins", "plugin_folder"))
 

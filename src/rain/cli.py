@@ -25,6 +25,11 @@ def client_cli():
         help="the parameters to investigate"
     )
 
+    parser.add_argument(
+        "-c", "--cfgpath",
+        help="the path to your RAIN config folder"
+    )
+
     args = parser.parse_args()
 
     return args
@@ -46,6 +51,11 @@ def server_cli():
         "interaction",
         choices=["rep", "pub"],
         help="the type of interaction with the server"
+    )
+
+    parser.add_argument(
+        "-c", "--cfgpath",
+        help="the path to your RAIN config folder"
     )
 
     args = parser.parse_args()

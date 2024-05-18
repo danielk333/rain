@@ -55,7 +55,12 @@ def client():
     params = args.param
     new_values = None
 
-    conf_loc = CONF_FOLDER / f"{client_name}-hosts.cfg"
+    if args.cfgpath is None:
+        conf_folder = CONF_FOLDER
+    else:
+        conf_folder = args.cfgpath
+
+    conf_loc = conf_folder / f"{client_name}-hosts.cfg"
     config = load_config(conf_loc)
 
     dir_pub = Path(config.get("Security", "public_keys"))
