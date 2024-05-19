@@ -50,6 +50,7 @@ def response_set(request):
     return response
 
 
+# TODO 47: Load parameters from somewhere other than an info file
 def form_response(request, server, path_info, path_data):
     avail_params = load_params(path_info, server)
     if request["type"] == "get":

@@ -56,5 +56,9 @@ Smaller TODOs:
 - [ ] TODO 41: Implement a way for a server to nicely shut itself down
 - [x] TODO 42: Rework the request_components function
 - [x] TODO 43: Rework the pub_split function
+- [ ] TODO 44: Improve the layout of the --help command
+- [ ] TODO 45: Move the argument handling into functions
+- [ ] TODO 46: Move the config handling into functions
+- [ ] TODO 47: Load parameters from somewhere other than an info file
 
 Exception Handling:
