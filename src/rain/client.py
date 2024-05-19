@@ -47,13 +47,23 @@ def run_subscribe(server, client, config, params, path_pub, path_prv):
         print_response(update)
 
 
+# TODO 45: Move the argument handling into functions
+# TODO 46: Move the config handling into functions
 def client():
     args = client_cli()
-    server_name = args.instrument
+    server_name = args.server
     client_name = "apollo"
     interaction = args.interaction
-    params = args.param
-    new_values = None
+
+    if interaction == "get" or interaction == "sub":
+        params = args.param
+        new_values = None
+    elif interaction == "set":
+        params = []
+        new_values = []
+        for item in args.p:
+            params.append(item[0])
+            new_values.append(item[1])
 
     if args.cfgpath is None:
         conf_folder = DEFAULT_FOLDER

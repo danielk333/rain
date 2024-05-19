@@ -55,6 +55,7 @@ def run_publish(server, config, path_pub, path_prv, path_info, path_data):
     auth.stop()
 
 
+# TODO 46: Move the config handling into functions
 def server():
     args = server_cli()
     server_name = args.instrument

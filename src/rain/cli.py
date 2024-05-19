@@ -1,6 +1,8 @@
 import argparse
 import pathlib
 
+# TODO 44: Improve the layout of the --help command
+
 
 def client_cli():
     parser = argparse.ArgumentParser(
@@ -9,26 +11,57 @@ def client_cli():
     )
 
     parser.add_argument(
-        "instrument",
-        choices=["odyssey"],
-        help="the instrument server to connect to"
-    )
-
-    parser.add_argument(
-        "interaction",
-        choices=["get", "sub", "set"],
-        help="the type of interaction with the server"
-    )
-
-    parser.add_argument(
-        "param",
-        nargs="+",
-        help="the parameters to investigate"
-    )
-
-    parser.add_argument(
         "-c", "--cfgpath",
         help="the path to your RAIN config folder"
+    )
+
+    subparsers = parser.add_subparsers(
+        title="RAIN Interactions",
+        description="List of interactions",
+        dest='interaction'
+    )
+
+    parser_get = subparsers.add_parser(
+        'get',
+        help='get the values of parameters'
+    )
+    parser_get.add_argument(
+        "server",
+        help="the instrument server to connect to"
+    )
+    parser_get.add_argument(
+        'param',
+        nargs='+',
+        help='the parameters to get'
+    )
+
+    parser_set = subparsers.add_parser(
+        'set',
+        help='set the values of parameters'
+    )
+    parser_set.add_argument(
+        "server",
+        help="the instrument server to connect to"
+    )
+    parser_set.add_argument(
+        '-p',
+        action='append',
+        nargs=2,
+        help='the parameter to set and the value to set it to'
+    )
+
+    parser_sub = subparsers.add_parser(
+        'sub',
+        help='subscribe to the values of parameters'
+    )
+    parser_sub.add_argument(
+        "server",
+        help="the instrument server to connect to"
+    )
+    parser_sub.add_argument(
+        'param',
+        nargs='+',
+        help='the parameters to subscribe to'
     )
 
     args = parser.parse_args()
@@ -43,15 +76,14 @@ def server_cli():
     )
 
     parser.add_argument(
-        "instrument",
-        choices=["odyssey"],
-        help="the instrument server to connect to"
-    )
-
-    parser.add_argument(
         "interaction",
         choices=["rep", "pub"],
         help="the type of interaction with the server"
+    )
+
+    parser.add_argument(
+        "instrument",
+        help="the instrument server to connect to"
     )
 
     parser.add_argument(
