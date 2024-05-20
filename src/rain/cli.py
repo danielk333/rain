@@ -5,6 +5,13 @@ import pathlib
 
 
 def client_cli():
+    ''' The CLI for a user wanting to use the client side of RAIN
+
+    Returns
+    -------
+    args : Namespace
+        The command line arguments entered by the user
+    '''
     parser = argparse.ArgumentParser(
         prog="RAIN",
         description="RAIN Client Interface"
@@ -70,6 +77,13 @@ def client_cli():
 
 
 def server_cli():
+    ''' The CLI for a user wanting to use the server side of RAIN
+
+    Returns
+    -------
+    args: Namespace
+        The command line arguments entered by the user
+    '''
     parser = argparse.ArgumentParser(
         prog="RAIN",
         description="RAIN Server Interface"
@@ -97,6 +111,13 @@ def server_cli():
 
 
 def new_user_cli():
+    ''' The CLI for users who want to register an instrument to RAIN
+
+    Returns
+    -------
+    args : Namespace
+        The command line arguments entered by the user
+    '''
     parser = argparse.ArgumentParser(
         prog="RAIN",
         description="RAIN User Registration"

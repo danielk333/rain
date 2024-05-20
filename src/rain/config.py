@@ -59,6 +59,18 @@ _CFG_PATHS = [
 
 # TODO 21: Setup a client/server config file
 def load_config(config_file=None):
+    ''' Loads the configurations of a server or client
+
+    Parameters
+    ----------
+    config_file : Posix path
+        The path to the config file
+
+    Returns
+    -------
+    config : ConfigParser
+        The set of configs
+    '''
 
     config = configparser.ConfigParser()
 

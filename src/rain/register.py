@@ -10,6 +10,9 @@ from .generate import generate_server_config, generate_client_config
 
 
 def run_register():
+    ''' The top-level function handling the registration of new instruments to
+        RAIN
+    '''
     args = new_user_cli()
 
     if args.cfgpath is None:
@@ -48,6 +51,7 @@ def run_register():
     file_pub, file_prv = zmq.auth.create_certificates(path_conf, args.name)
     key_pub, key_prv = zmq.auth.load_certificate(file_prv)
 
+    # TODO 48: Change the name of the private key file to include 'curve'
     Path.rename(
         path_conf / f"{args.name}.key_secret",
         path_pair / f"{args.name}.key_secret"

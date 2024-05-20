@@ -18,6 +18,21 @@ def load_server(path, name):
 
 
 def load_params(path_info, server):
+    ''' Returns all parameters made available by the server, including whether
+        each parameter can be requested, commanded or subscribed to
+
+    Parameters
+    ----------
+    path_info : Posix path
+        The path to the folder containing the server's info file
+    server : string
+        The name of the server
+
+    Returns
+    -------
+    avail_params : JSON
+        The parameters (and their details) provided by the server
+    '''
     with open(path_info.joinpath(f"{server}.info"), "r") as f:
         data = f.read()
         start_found = False
@@ -41,9 +56,19 @@ def load_params(path_info, server):
     return avail_params
 
 
-def subscribable_params(path, name):
+def subscribable_params(path_info, server):
+    ''' Returns the parameters provided by the server that a client can
+        subscribe to
+
+    Parameters
+    ----------
+    path_info : Posix path
+        The path to the folder containing the server's info file
+    server : string
+        The name of the server
+    '''
     subsc_params = []
-    avail_params = load_params(path, name)
+    avail_params = load_params(path_info, server)
     for item in avail_params["parameters"]:
         if item["subscribe"] == "true":
             subsc_params.append(item["name"])

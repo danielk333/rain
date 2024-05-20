@@ -3,6 +3,22 @@ from zmq.auth.thread import ThreadAuthenticator
 
 
 def setup_auth(context, address, path_pub):
+    ''' Set up the thread used as part of the authentication process
+
+    Parameters
+    ----------
+    context : zmq.Context
+        The ZMQ Context establishing the basis of the communication
+    address : list of strings
+        The hostname and port of the server
+    path_pub : Posix path
+        The path to the folder containing the authorised public keys
+
+    Returns
+    -------
+    auth : thread
+        The thread that the authenticator uses to authenticate conenctions
+    '''
     auth = ThreadAuthenticator(context)
     auth.start()
     auth.allow(address[0])
@@ -12,6 +28,20 @@ def setup_auth(context, address, path_pub):
 
 
 def setup_socket(context, host_type):
+    ''' Sets the socket type depending on the kind of connection to create
+
+    Parameters
+    ----------
+    context : zmq.Context
+        The ZMQ Context establishing the basis of the communication
+    host_type : string
+        The type of socket to create: PUB, REQ, REP, SUB
+
+    Returns
+    -------
+    socket : zmq.Socket
+        The socket for this desired connection
+    '''
     if host_type == "publish":
         socket = context.socket(zmq.PUB)
     elif host_type == "request":
@@ -25,6 +55,17 @@ def setup_socket(context, host_type):
 
 
 def auth_server(socket, server, path_prv):
+    ''' Sets up the authentication side to the server connection
+
+    Parameters
+    ----------
+    socket : zmq.Socket
+        The connection socket
+    server : string
+        The name of the server
+    path_prv : Posix path
+        The path to the folder containing the server's private key
+    '''
     server_file_prv = path_prv.joinpath(f"{server}.key_secret")
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
     socket.curve_secretkey = server_prv
@@ -33,6 +74,21 @@ def auth_server(socket, server, path_prv):
 
 
 def auth_client(socket, server, client, path_pub, path_prv):
+    ''' Sets up the authentication side to the client connection
+
+    Parameters
+    ----------
+    socket : zmq.Socket
+        The connection socket
+    server : string
+        The name of the server
+    client : string
+        The name of the client
+    path_pub : Posix path
+        The path to the folder containg the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containg the client's private key
+    '''
     client_file_prv = path_prv.joinpath(f"{client}.key_secret")
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
@@ -44,12 +100,42 @@ def auth_client(socket, server, client, path_pub, path_prv):
 
 
 def open_connection(socket, address):
+    ''' Opens the socket connection on the server side
+
+    Parameters
+    ----------
+    socket : zmq.Socket
+        The connection socket
+    address : list of strings
+        The hostname and port number of the server
+    '''
     socket.bind(f"tcp://{address[0]}:{address[1]}")
     print(f"I am a WIP publishing server open on {address[0]} " +
           f"with port {address[1]} ready to talk to friends")
 
 
 def setup_client(host_type, server, client, path_pub, path_prv):
+    ''' The top-level function that organises the initialisation of the client
+        connection
+
+    Parameters
+    ----------
+    host_type : string
+        The type of socket to create: PUB, REQ, REP, SUB
+    server : string
+        The name of the server
+    client : string
+        The name of the client
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the client's private key'
+
+    Returns
+    -------
+    socket : zmq.Socket
+        The connection socket
+    '''
     context = zmq.Context()
     socket = setup_socket(context, host_type)
 
@@ -59,6 +145,29 @@ def setup_client(host_type, server, client, path_pub, path_prv):
 
 
 def setup_server(host_type, server, address, path_pub, path_prv):
+    ''' The top-level function that organises the initialisation of the server
+        connection
+
+    Parameters
+    ----------
+    host_type : string
+        The type of socket to create: PUB, REQ, REP, SUB
+    server : string
+        The name of the server
+    address : list of strings
+        The hostname and port of the server
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the server's private key'
+
+    Returns
+    -------
+    auth : thread
+        The thread that the authenticator uses to authenticate connections
+    socket : zmq.Socket
+        The connection socket
+    '''
     context = zmq.Context()
     socket = setup_socket(context, host_type)
 

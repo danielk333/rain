@@ -10,6 +10,28 @@ from .transport import send_request, receive_response, receive_subscribe
 
 
 def run_request(server, client, config, interaction, params, new_values, path_pub, path_prv):
+    ''' The function used to run all functions relevant to the handling of the
+        user requesting parameters provided by the server
+
+    Parameters
+    ----------
+    server : string
+        The name of the server
+    client : string
+        The name of the client
+    config : ConfigParser
+        The set of client configs
+    interaction : string
+        The type of interaction: get or set
+    params : list of strings
+        The parameters to interact with
+    new_values : list of strings
+        The new values to give to parameters (if interaction is set)
+    path_pub: Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the client's private key
+    '''
     server_address = [
         config.get("Response", "hostname"),
         config.get("Response", "port"),
@@ -27,6 +49,26 @@ def run_request(server, client, config, interaction, params, new_values, path_pu
 
 
 def run_subscribe(server, client, config, params, path_pub, path_prv):
+    ''' The function used to run all functions relevant to the handling of the
+        user subscribing to parameters provided by the server
+
+    Parameters
+    ----------
+    server : string
+        The name of the server
+    client : string
+        The name of the client
+    config : ConfigParser
+        The set of client configs
+    interaction : string
+        The type of interaction: get or set
+    params : list of strings
+        The parameters to interact with
+    path_pub: Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the client's private key
+    '''
     server_address = [
         config.get("Publish", "hostname"),
         config.get("Publish", "port"),
@@ -50,6 +92,8 @@ def run_subscribe(server, client, config, params, path_pub, path_prv):
 # TODO 45: Move the argument handling into functions
 # TODO 46: Move the config handling into functions
 def client():
+    ''' The top-level function handling the function of the RAIN client
+    '''
     args = client_cli()
     server_name = args.server
     client_name = "apollo"

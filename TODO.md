@@ -45,7 +45,7 @@ Smaller TODOs:
 - [x] TODO 30: Merge the setup functions
 - [ ] TODO 31: Send subscription updates when changes occur
 - [x] TODO 32: Rename function parameters so they no longer match runtime variables
-- [ ] TODO 33: Write proper headers for each file
+- [x] TODO 33: Write proper headers for each file
 - [x] TODO 34: Combine the client, server, publish and subscribe run functions into one file
 - [ ] TODO 35: Add timestamps to responses
 - [x] TODO 36: Move the load_groups and subscribable_params functions into a different file
@@ -60,5 +60,6 @@ Smaller TODOs:
 - [ ] TODO 45: Move the argument handling into functions
 - [ ] TODO 46: Move the config handling into functions
 - [ ] TODO 47: Load parameters from somewhere other than an info file
+- [ ] TODO 48: Change the name of the private key file to include 'curve'
 
 Exception Handling:

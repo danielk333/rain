@@ -11,6 +11,24 @@ from .transport import receive_request, send_response
 
 
 def run_response(server, config, path_pub, path_prv, path_info, path_data):
+    ''' The function used to run all functions relevant to the handling of a
+        client requesting parameters provided by this server
+
+    Parameters
+    ----------
+    server : string
+        The name of the server
+    config : ConfigParser
+        The set of server configs
+    path_pub: Posix path
+        The path to the folder containing the public keys of the authorised hosts
+    path_prv : Posix path
+        The path to the folder containing the server's private key
+    path_info : Posix path
+        The path to the folder containing the server's info file
+    path_data : Posix path
+        The path to the folder containing the server's data file
+    '''
     server_address = [
         config.get("Response", "hostname"),
         config.get("Response", "port"),
@@ -34,6 +52,24 @@ def run_response(server, config, path_pub, path_prv, path_info, path_data):
 
 
 def run_publish(server, config, path_pub, path_prv, path_info, path_data):
+    ''' The function used to run all functions relevant to the handling of a
+        client requesting parameters provided by this server
+
+    Parameters
+    ----------
+    server : string
+        The name of the server
+    config : ConfigParser
+        The set of server configs
+    path_pub: Posix path
+        The path to the folder containing the public keys of the authorised hosts
+    path_prv : Posix path
+        The path to the folder containing the server's private key
+    path_info : Posix path
+        The path to the folder containing the server's info file
+    path_data : Posix path
+        The path to the folder containing the server's data file
+    '''
     server_address = [
         config.get("Publish", "hostname"),
         config.get("Publish", "port"),
@@ -57,6 +93,8 @@ def run_publish(server, config, path_pub, path_prv, path_info, path_data):
 
 # TODO 46: Move the config handling into functions
 def server():
+    ''' The top-level function handling the function of the RAIN server
+    '''
     args = server_cli()
     server_name = args.instrument
     interaction = args.interaction
