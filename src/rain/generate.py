@@ -37,12 +37,12 @@ def generate_server_config(name, path_conf, path_pub, path_prv, path_plug):
         'plugins': path_plug
     }
 
-    filename = path_conf / f"{name}-server.cfg"
+    filename = path_conf / "server.cfg"
     with open(filename, 'w') as configfile:
         config.write(configfile)
 
 
-def generate_client_config(name, path_conf, path_pub, path_prv, path_plug):
+def generate_client_config(name, path_conf, path_pub, path_prv):
     ''' Generates a configuration file for the client, containing the
         locations of the folders holding the public keys of the known hosts,
         private keys and plugins
@@ -57,18 +57,13 @@ def generate_client_config(name, path_conf, path_pub, path_prv, path_plug):
         The path to the folder containing the known hosts' public keys
     path_prv : Posix path
         The path to the folder containing the client's private key
-    path_plug : Posix path
-        The path to the folder containing the plugins
     '''
     config = configparser.ConfigParser()
     config['Security'] = {
         'public-keys': path_pub,
         'private-keys': path_prv
     }
-    config['Plugins'] = {
-        'plugins': path_plug
-    }
 
-    filename = path_conf / f"{name}-hosts.cfg"
+    filename = path_conf / "hosts.cfg"
     with open(filename, 'w') as configfile:
         config.write(configfile)

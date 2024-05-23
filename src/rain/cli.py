@@ -1,6 +1,10 @@
 import argparse
 import pathlib
 
+from .client import client
+from .register import run_register
+from .server import server
+
 # TODO 44: Improve the layout of the --help command
 
 
@@ -73,7 +77,9 @@ def client_cli():
 
     args = parser.parse_args()
 
-    return args
+    client(args)
+
+    return
 
 
 def server_cli():
@@ -107,7 +113,9 @@ def server_cli():
 
     args = parser.parse_args()
 
-    return args
+    server(args)
+
+    return
 
 
 def new_user_cli():
@@ -149,4 +157,6 @@ def new_user_cli():
 
     args = parser.parse_args()
 
-    return args
+    run_register(args)
+
+    return

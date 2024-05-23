@@ -3,7 +3,6 @@ from pathlib import Path
 import zmq
 
 from .authenticate import setup_client
-from .cli import client_cli
 from .config import load_config, reduced_config, DEFAULT_FOLDER
 from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
@@ -91,10 +90,14 @@ def run_subscribe(server, client, config, params, path_pub, path_prv):
 
 # TODO 45: Move the argument handling into functions
 # TODO 46: Move the config handling into functions
-def client():
+def client(args):
     ''' The top-level function handling the function of the RAIN client
+
+    Parameters
+    ----------
+    args : Namespace
+        The command line arguments entered by the user
     '''
-    args = client_cli()
     server_name = args.server
     client_name = "apollo"
     interaction = args.interaction
@@ -114,7 +117,7 @@ def client():
     else:
         conf_folder = args.cfgpath
 
-    conf_loc = conf_folder / f"{client_name}-hosts.cfg"
+    conf_loc = conf_folder / "hosts.cfg"
     config = load_config(conf_loc)
 
     dir_pub = Path(config.get("Security", "public_keys"))

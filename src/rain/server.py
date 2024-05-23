@@ -2,7 +2,6 @@ from pathlib import Path
 import time
 
 from .authenticate import setup_server
-from .cli import server_cli
 from .config import load_config, reduced_config, DEFAULT_FOLDER
 from .fetch import subscribable_params
 from .packaging import form_response, publish_response
@@ -92,10 +91,14 @@ def run_publish(server, config, path_pub, path_prv, path_info, path_data):
 
 
 # TODO 46: Move the config handling into functions
-def server():
+def server(args):
     ''' The top-level function handling the function of the RAIN server
+
+    Parameters
+    ----------
+    args : Namespace
+        The command line arguments entered by the user
     '''
-    args = server_cli()
     server_name = args.instrument
     interaction = args.interaction
 
@@ -103,7 +106,7 @@ def server():
         conf_folder = DEFAULT_FOLDER
     else:
         conf_folder = args.cfgpath
-    conf_loc = conf_folder / f"{server_name}-server.cfg"
+    conf_loc = conf_folder / "server.cfg"
     config = load_config(conf_loc)
     # load_plugins(config.get("Plugins", "plugin_folder"))
 

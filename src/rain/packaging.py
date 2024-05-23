@@ -242,6 +242,7 @@ def pub_split(publish):
         The JSON data containing the updated parameter
     '''
     [_, update] = publish.split('$', maxsplit=1)
+    update = json.loads(update)
 
     return update
 
