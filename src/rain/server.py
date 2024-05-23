@@ -5,11 +5,11 @@ from .authenticate import setup_server
 from .config import load_config, reduced_config, DEFAULT_FOLDER
 from .fetch import subscribable_params
 from .packaging import form_response, publish_response
-# from .plugins import load_plugins, PLUGINS
+from .plugins import load_plugins  # , PLUGINS
 from .transport import receive_request, send_response
 
 
-def run_response(server, config, path_pub, path_prv, path_info, path_data):
+def run_response(server, config, path_pub, path_prv, path_info, path_data, path_plug):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -27,6 +27,8 @@ def run_response(server, config, path_pub, path_prv, path_info, path_data):
         The path to the folder containing the server's info file
     path_data : Posix path
         The path to the folder containing the server's data file
+    path_plug : Posix path
+        The path to the folder containing the server's plugins
     '''
     server_address = [
         config.get("Response", "hostname"),
@@ -40,7 +42,8 @@ def run_response(server, config, path_pub, path_prv, path_info, path_data):
     server_open = True
     while server_open:
         message = receive_request(socket)
-        response = form_response(message, server, path_info, path_data)
+        response = form_response(message, server, path_info, path_data, path_plug)
+        print(response)
         # data = []
         # for name in message["parameters"]:
         #     func = PLUGINS[message["type"]][name]
@@ -108,15 +111,15 @@ def server(args):
         conf_folder = Path(args.cfgpath)
     conf_loc = conf_folder / "server.cfg"
     config = load_config(conf_loc, "server")
-    # load_plugins(config.get("Plugins", "plugin_folder"))
 
     dir_pub = Path(config.get("Security", "public-keys"))
     dir_prv = Path(config.get("Security", "private-keys"))
+    dir_plug = Path(config.get("Plugins", "plugins"))
+    load_plugins(dir_plug)
+
     dir_info, dir_data = reduced_config()
-    print(dir_pub)
-    print(dir_prv)
 
     if interaction == "rep":
-        run_response(server_name, config, dir_pub, dir_prv, dir_info, dir_data)
+        run_response(server_name, config, dir_pub, dir_prv, dir_info, dir_data, dir_plug)
     elif interaction == "pub":
         run_publish(server_name, config, dir_pub, dir_prv, dir_info, dir_data)

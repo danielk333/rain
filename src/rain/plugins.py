@@ -14,11 +14,11 @@ def add_plugin(action, name, func):
 
 
 def register_plugin(action, name):
-    def register_warpper(func):
+    def register_wrapper(func):
         add_plugin(action, name, func)
         return func
 
-    return register_warpper
+    return register_wrapper
 
 
 def load_plugins(plugins_folder):
