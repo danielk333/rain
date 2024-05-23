@@ -47,7 +47,7 @@ Smaller TODOs:
 - [x] TODO 32: Rename function parameters so they no longer match runtime variables
 - [x] TODO 33: Write proper headers for each file
 - [x] TODO 34: Combine the client, server, publish and subscribe run functions into one file
-- [ ] TODO 35: Add timestamps to responses
+- [x] TODO 35: Add timestamps to responses
 - [x] TODO 36: Move the load_groups and subscribable_params functions into a different file
 - [ ] ~~TODO 37: For each request type only show the suitable parameters~~
 - [x] TODO 38: Write a CLI for the new user code

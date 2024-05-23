@@ -2,7 +2,7 @@ import json
 from pprint import pprint
 
 from .actions import actions_get, actions_set, load_data
-from .fetch import load_params
+from .fetch import get_datetime, load_params
 
 
 def request_get(req_params):
@@ -78,7 +78,7 @@ def form_request(message_type, req_params, new_values):
     return request
 
 
-def response_get(request, values):
+def response_get(request, values, current_datetime):
     ''' Forms the response to send in the case of a GET command
 
     Parameters
@@ -87,33 +87,41 @@ def response_get(request, values):
         The request made by the client
     values : list of strings
         The values of the parameters requested by the client
+    current_datetime : list of strings
+        The server's current local date and time
 
     Returns
     -------
     response : JSON
         The formatted response to be sent by the server to the client
     '''
-    response = {"type": "get",
+    response = {"date": current_datetime[0],
+                "time": current_datetime[1],
+                "type": "get",
                 "parameters": request["parameters"],
                 "values": values}
 
     return response
 
 
-def response_set(request):
+def response_set(request, current_datetime):
     ''' Forms the response to send in the case of a SET command
 
     Parameters
     ----------
     request : JSON
         The request made by the client
+    current_datetime : list of strings
+        The server's current local date and time
 
     Returns
     -------
     response : JSON
         The formatted response to be sent by the server to the client
     '''
-    response = {"type": "set",
+    response = {"date": current_datetime[0],
+                "time": current_datetime[1],
+                "type": "set",
                 "parameters": request["parameters"],
                 "new_values": request["new_values"]}
 
@@ -142,17 +150,18 @@ def form_response(request, server, path_info, path_data):
         The formatted response to be sent by the server to the client
     '''
     avail_params = load_params(path_info, server)
+    date_time = get_datetime()
     if request["type"] == "get":
         values = actions_get(request, avail_params, server, path_data)
-        response = response_get(request, values)
+        response = response_get(request, values, date_time)
     elif request["type"] == "set":
         actions_set(request, avail_params, server, path_data)
-        response = response_set(request)
+        response = response_set(request, date_time)
 
     return response
 
 
-def publish_update(sub_param, value):
+def publish_update(sub_param, value, current_datetime):
     ''' Creates a JSON blob containing the updated value of a parameter
 
     Parameters
@@ -161,14 +170,19 @@ def publish_update(sub_param, value):
         The parameter whose value has been updated
     value : string
         The new values this parameter has
+    current_datetime : list of strings
+        The server's current local date and time
 
     Returns
     -------
     update : JSON
         The update to be published by the server
     '''
-    update = {"parameter": sub_param,
+    update = {"date": current_datetime[0],
+              "time": current_datetime[1],
+              "parameter": sub_param,
               "value": value}
+
     return update
 
 
@@ -206,7 +220,8 @@ def publish_response(sub_param, server, path_data):
         The path to the folder containing the server's data file
     '''
     value = load_data(path_data, server, sub_param)
-    update = publish_update(sub_param, value)
+    date_time = get_datetime()
+    update = publish_update(sub_param, value, date_time)
     publish = publish_format(update)
 
     return publish

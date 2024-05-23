@@ -1,20 +1,22 @@
 import json
+import time
 
 
-def load_server(path, name):
-    address = []
-    with open(path.joinpath(f"{name}.info"), "r") as f:
-        for line in f:
-            if "Server" in line:
-                hostname = line.split(': ')[1]
-                hostname = hostname[0:len(hostname)-1]
-                address.append(hostname)
-            elif "Port" in line:
-                port = line.split(': ')[1]
-                port = port[0:len(port)-1]
-                address.append(port)
+def get_datetime():
+    ''' Finds the current date and local time and return an array with these
+        values
 
-    return address
+    Returns
+    -------
+    current_datetime : list of strings
+        The current local date and time
+    '''
+    local_time = time.localtime()
+    current_datetime = []
+    current_datetime.append(f"{local_time[0]:04}-{local_time[1]:02}-{local_time[2]:02}")
+    current_datetime.append(f"{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02} Local Time")
+
+    return current_datetime
 
 
 def load_params(path_info, server):
