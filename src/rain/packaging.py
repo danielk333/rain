@@ -230,7 +230,9 @@ def publish_response(sub_param, server, path_data):
     path_data : Posix path
         The path to the folder containing the server's data file
     '''
-    value = load_data(path_data, server, sub_param)
+    func = PLUGINS["get"][sub_param]
+    value = func()
+    # value = load_data(path_data, server, sub_param)
     date_time = get_datetime()
     update = publish_update(sub_param, value, date_time)
     publish = publish_format(update)
