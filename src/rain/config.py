@@ -32,39 +32,47 @@ DEFAULT_SERVER_CFG = {
         "port": "2468"
     },
     "Security": {
-        "public_keys": AUTHORISED_KEYS_FOLDER,
-        "private_keys": KEYPAIRS_FOLDER
+        "public-keys": AUTHORISED_KEYS_FOLDER,
+        "private-keys": KEYPAIRS_FOLDER
     },
     "Plugins": {
-        "plugin_folder": PLUGIN_FOLDER
+        "plugins": PLUGIN_FOLDER
     }
 }
 
 DEFAULT_CLIENT_CFG = {
     "Security": {
-        "public_keys": KNOWN_HOSTS_FOLDER,
-        "private_keys": KEYPAIRS_FOLDER
+        "public-keys": KNOWN_HOSTS_FOLDER,
+        "private-keys": KEYPAIRS_FOLDER
     },
     "Plugins": {
-        "plugin_folder": PLUGIN_FOLDER
+        "plugins": PLUGIN_FOLDER
     }
 }
 
-_CFG_PATHS = [
-    ("Security", "public_keys"),
-    ("Security", "private_keys"),
-    ("Plugins", "plugin_folder")
+_CFG_PATHS_SERVER = [
+    ("Security", "public-keys"),
+    ("Security", "private-keys"),
+    ("Plugins", "plugins")
+]
+
+_CFG_PATHS_CLIENT = [
+    ("Security", "public-keys"),
+    ("Security", "private-keys")
 ]
 
 
 # TODO 21: Setup a client/server config file
-def load_config(config_file=None):
+# def load_config(config_file=None):
+def load_config(config_file, host_type):
     ''' Loads the configurations of a server or client
 
     Parameters
     ----------
     config_file : Posix path
         The path to the config file
+    host_type : string
+        Whether a server or client config is being loaded
 
     Returns
     -------
@@ -74,22 +82,34 @@ def load_config(config_file=None):
 
     config = configparser.ConfigParser()
 
-    config.read_dict(DEFAULT_SERVER_CFG)
+    # config.read_dict(DEFAULT_SERVER_CFG)
 
     if config_file is not None:
         if not isinstance(config_file, pathlib.Path):
             config_file = pathlib.Path(config_file)
         config.read([config_file])
 
-    for section, key in _CFG_PATHS:
-        _path = pathlib.Path(config.get(section, key)).resolve()
-        config.set(
-            section,
-            key,
-            str(_path),
-        )
-        if not _path.exists():
-            warnings.warn(f"configured path '{_path}' does not exist")
+    if host_type == "server":
+        for section, key in _CFG_PATHS_SERVER:
+            _path = pathlib.Path(config.get(section, key)).resolve()
+            config.set(
+                section,
+                key,
+                str(_path),
+            )
+            if not _path.exists():
+                warnings.warn(f"configured path '{_path}' does not exist")
+
+    elif host_type == "client":
+        for section, key in _CFG_PATHS_CLIENT:
+            _path = pathlib.Path(config.get(section, key)).resolve()
+            config.set(
+                section,
+                key,
+                str(_path),
+            )
+            if not _path.exists():
+                warnings.warn(f"configured path '{_path}' does not exist")
 
     return config
 

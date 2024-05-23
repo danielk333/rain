@@ -105,14 +105,16 @@ def server(args):
     if args.cfgpath is None:
         conf_folder = DEFAULT_FOLDER
     else:
-        conf_folder = args.cfgpath
+        conf_folder = Path(args.cfgpath)
     conf_loc = conf_folder / "server.cfg"
-    config = load_config(conf_loc)
+    config = load_config(conf_loc, "server")
     # load_plugins(config.get("Plugins", "plugin_folder"))
 
-    dir_pub = Path(config.get("Security", "public_keys"))
-    dir_prv = Path(config.get("Security", "private_keys"))
+    dir_pub = Path(config.get("Security", "public-keys"))
+    dir_prv = Path(config.get("Security", "private-keys"))
     dir_info, dir_data = reduced_config()
+    print(dir_pub)
+    print(dir_prv)
 
     if interaction == "rep":
         run_response(server_name, config, dir_pub, dir_prv, dir_info, dir_data)

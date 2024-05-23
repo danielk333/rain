@@ -8,7 +8,7 @@ from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 
 
-def run_request(server, client, config, interaction, params, new_values, path_pub, path_prv):
+def run_request(server, config, interaction, params, new_values, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -16,8 +16,6 @@ def run_request(server, client, config, interaction, params, new_values, path_pu
     ----------
     server : string
         The name of the server
-    client : string
-        The name of the client
     config : ConfigParser
         The set of client configs
     interaction : string
@@ -40,14 +38,14 @@ def run_request(server, client, config, interaction, params, new_values, path_pu
 
     if message:
         socket = setup_client(
-            "request", server, client, path_pub, path_prv
+            "request", server, path_pub, path_prv
         )
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
         print_response(response)
 
 
-def run_subscribe(server, client, config, params, path_pub, path_prv):
+def run_subscribe(server, config, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
@@ -55,8 +53,6 @@ def run_subscribe(server, client, config, params, path_pub, path_prv):
     ----------
     server : string
         The name of the server
-    client : string
-        The name of the client
     config : ConfigParser
         The set of client configs
     interaction : string
@@ -73,7 +69,7 @@ def run_subscribe(server, client, config, params, path_pub, path_prv):
         config.get("Publish", "port"),
     ]
     socket = setup_client(
-        "subscribe", server, client, path_pub, path_prv
+        "subscribe", server, path_pub, path_prv
     )
 
     for iter in range(len(params)):
@@ -99,7 +95,6 @@ def client(args):
         The command line arguments entered by the user
     '''
     server_name = args.server
-    client_name = "apollo"
     interaction = args.interaction
 
     if interaction == "get" or interaction == "sub":
@@ -118,13 +113,13 @@ def client(args):
         conf_folder = args.cfgpath
 
     conf_loc = conf_folder / "hosts.cfg"
-    config = load_config(conf_loc)
+    config = load_config(conf_loc, "client")
 
-    dir_pub = Path(config.get("Security", "public_keys"))
-    dir_prv = Path(config.get("Security", "private_keys"))
+    dir_pub = Path(config.get("Security", "public-keys"))
+    dir_prv = Path(config.get("Security", "private-keys"))
     dir_info, dir_data = reduced_config()
 
     if interaction == "get" or interaction == "set":
-        run_request(server_name, client_name, config, interaction, params, new_values, dir_pub, dir_prv)
+        run_request(server_name, config, interaction, params, new_values, dir_pub, dir_prv)
     elif interaction == "sub":
-        run_subscribe(server_name, client_name, config, params, dir_pub, dir_prv)
+        run_subscribe(server_name, config, params, dir_pub, dir_prv)

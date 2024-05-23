@@ -73,7 +73,7 @@ def auth_server(socket, server, path_prv):
     socket.curve_server = True
 
 
-def auth_client(socket, server, client, path_pub, path_prv):
+def auth_client(socket, server, path_pub, path_prv):
     ''' Sets up the authentication side to the client connection
 
     Parameters
@@ -82,14 +82,13 @@ def auth_client(socket, server, client, path_pub, path_prv):
         The connection socket
     server : string
         The name of the server
-    client : string
-        The name of the client
     path_pub : Posix path
         The path to the folder containg the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containg the client's private key
     '''
-    client_file_prv = path_prv.joinpath(f"{client}.key_secret")
+    client_file_prv = list(path_prv.iterdir())[0]
+    # client_file_prv = path_prv.joinpath(f"{client}.key_secret")
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub
@@ -114,7 +113,7 @@ def open_connection(socket, address):
           f"with port {address[1]} ready to talk to friends")
 
 
-def setup_client(host_type, server, client, path_pub, path_prv):
+def setup_client(host_type, server, path_pub, path_prv):
     ''' The top-level function that organises the initialisation of the client
         connection
 
@@ -124,8 +123,6 @@ def setup_client(host_type, server, client, path_pub, path_prv):
         The type of socket to create: PUB, REQ, REP, SUB
     server : string
         The name of the server
-    client : string
-        The name of the client
     path_pub : Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
@@ -139,7 +136,7 @@ def setup_client(host_type, server, client, path_pub, path_prv):
     context = zmq.Context()
     socket = setup_socket(context, host_type)
 
-    auth_client(socket, server, client, path_pub, path_prv)
+    auth_client(socket, server, path_pub, path_prv)
 
     return socket
 
