@@ -162,7 +162,11 @@ def form_response(request, server, path_info, path_data, path_plug):
 
         response = response_get(request, values, date_time)
     elif request["type"] == "set":
-        actions_set(request, avail_params, server, path_data)
+        for iter in range(len(request["parameters"])):
+            param = request["parameters"][iter]
+            func = PLUGINS["set"][param]
+            func(request["new_values"][iter])
+        # actions_set(request, avail_params, server, path_data)
         response = response_set(request, date_time)
 
     return response
