@@ -1,10 +1,11 @@
-import pathlib
 import importlib
+import pathlib
 import sys
 
 PLUGINS = {
     "set": {},
     "get": {},
+    "sub": {}
 }
 
 
@@ -22,7 +23,14 @@ def register_plugin(action, name):
 
 
 def load_plugins(plugins_folder):
+    ''' Loads the files in the plugins folder, making available the functions
+        they contain
 
+    Parameters
+    ----------
+    plugins_folder : Posix path
+        The path to the folder containg the plugin files
+    '''
     if not isinstance(plugins_folder, pathlib.Path):
         plugins_folder = pathlib.Path(plugins_folder)
 

@@ -1,6 +1,8 @@
 import json
 import time
 
+from .plugins import PLUGINS
+
 
 def get_datetime():
     ''' Finds the current date and local time and return an array with these
@@ -17,6 +19,12 @@ def get_datetime():
     current_datetime.append(f"{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02} Local Time")
 
     return current_datetime
+
+
+def sub_params():
+    list_params = PLUGINS["sub"].keys()
+
+    return list_params
 
 
 def load_params(path_info, server):

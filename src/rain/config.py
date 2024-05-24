@@ -1,21 +1,15 @@
-import pathlib
-import os
 import configparser
-import warnings
 import logging
+import os
+import pathlib
+import warnings
 
 logger = logging.getLogger(__name__)
 
 HOME = pathlib.Path(os.path.expanduser("~"))
-# CONF_FOLDER = (HOME / ".config" / "rain").resolve()
-
-# if not CONF_FOLDER.is_dir():
-#     CONF_FOLDER.mkdir()
 
 # Default paths
 DEFAULT_FOLDER = (HOME / ".config" / "rain").resolve()
-# HOSTS_CFG = CONF_FOLDER / "hosts.cfg"
-# SERVER_CFG = CONF_FOLDER / "server.cfg"
 PLUGIN_FOLDER = DEFAULT_FOLDER / "plugins"
 AUTHORISED_KEYS_FOLDER = DEFAULT_FOLDER / "authorised_keys"
 KNOWN_HOSTS_FOLDER = DEFAULT_FOLDER / "known_hosts"
@@ -23,6 +17,13 @@ KEYPAIRS_FOLDER = DEFAULT_FOLDER / "keypairs"
 
 
 DEFAULT_SERVER_CFG = {
+    "Security": {
+        "public-keys": AUTHORISED_KEYS_FOLDER,
+        "private-keys": KEYPAIRS_FOLDER
+    },
+    "Plugins": {
+        "plugins": PLUGIN_FOLDER
+    },
     "Response": {
         "hostname": "127.0.0.1",
         "port": "1234"
@@ -30,13 +31,6 @@ DEFAULT_SERVER_CFG = {
     "Publish": {
         "hostname": "127.0.0.1",
         "port": "2468"
-    },
-    "Security": {
-        "public-keys": AUTHORISED_KEYS_FOLDER,
-        "private-keys": KEYPAIRS_FOLDER
-    },
-    "Plugins": {
-        "plugins": PLUGIN_FOLDER
     }
 }
 
@@ -112,11 +106,3 @@ def load_config(config_file, host_type):
                 warnings.warn(f"configured path '{_path}' does not exist")
 
     return config
-
-
-def reduced_config():
-    home = pathlib.Path.cwd()
-    dir_info = home / "infra_info"
-    dir_data = home / "data"
-
-    return dir_info, dir_data

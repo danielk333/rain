@@ -21,6 +21,13 @@ def generate_server_config(name, path_conf, path_pub, path_prv, path_plug):
         The path to the folder containing the plugins
     '''
     config = configparser.ConfigParser()
+    config['Security'] = {
+        'public-keys': path_pub,
+        'private-keys': path_prv
+    }
+    config['Plugins'] = {
+        'plugins': path_plug
+    }
     config['Response'] = {
         'hostname': '127.0.0.1',
         'port': '1234',
@@ -28,13 +35,6 @@ def generate_server_config(name, path_conf, path_pub, path_prv, path_plug):
     config['Publish'] = {
         'hostname': '127.0.0.1',
         'port': '2468'
-    }
-    config['Security'] = {
-        'public-keys': path_pub,
-        'private-keys': path_prv
-    }
-    config['Plugins'] = {
-        'plugins': path_plug
     }
 
     filename = path_conf / "server.cfg"

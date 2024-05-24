@@ -1,9 +1,9 @@
 import argparse
 import pathlib
 
-from .client import client
-from .register import run_register
-from .server import server
+from .client import rain_client
+from .register import rain_register
+from .server import rain_server
 
 # TODO 44: Improve the layout of the --help command
 
@@ -77,7 +77,7 @@ def client_cli():
 
     args = parser.parse_args()
 
-    client(args)
+    rain_client(args)
 
     return
 
@@ -113,7 +113,7 @@ def server_cli():
 
     args = parser.parse_args()
 
-    server(args)
+    rain_server(args)
 
     return
 
@@ -157,6 +157,6 @@ def new_user_cli():
 
     args = parser.parse_args()
 
-    run_register(args)
+    rain_register(args)
 
     return

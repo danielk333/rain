@@ -3,7 +3,7 @@ from pathlib import Path
 import zmq
 
 from .authenticate import setup_client
-from .config import load_config, reduced_config, DEFAULT_FOLDER
+from .config import load_config, DEFAULT_FOLDER
 from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 
@@ -37,9 +37,7 @@ def run_request(server, config, interaction, params, new_values, path_pub, path_
     message = form_request(interaction, params, new_values)
 
     if message:
-        socket = setup_client(
-            "request", server, path_pub, path_prv
-        )
+        socket = setup_client("request", server, path_pub, path_prv)
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
         print_response(response)
@@ -68,9 +66,7 @@ def run_subscribe(server, config, params, path_pub, path_prv):
         config.get("Publish", "hostname"),
         config.get("Publish", "port"),
     ]
-    socket = setup_client(
-        "subscribe", server, path_pub, path_prv
-    )
+    socket = setup_client("subscribe", server, path_pub, path_prv)
 
     for iter in range(len(params)):
         socket.setsockopt_string(zmq.SUBSCRIBE, params[iter])
@@ -86,7 +82,7 @@ def run_subscribe(server, config, params, path_pub, path_prv):
 
 # TODO 45: Move the argument handling into functions
 # TODO 46: Move the config handling into functions
-def client(args):
+def rain_client(args):
     ''' The top-level function handling the function of the RAIN client
 
     Parameters
@@ -117,7 +113,6 @@ def client(args):
 
     dir_pub = Path(config.get("Security", "public-keys"))
     dir_prv = Path(config.get("Security", "private-keys"))
-    dir_info, dir_data = reduced_config()
 
     if interaction == "get" or interaction == "set":
         run_request(server_name, config, interaction, params, new_values, dir_pub, dir_prv)

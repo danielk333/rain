@@ -4,11 +4,11 @@ from pathlib import Path
 from shutil import copy
 
 from .config import DEFAULT_FOLDER, PLUGIN_FOLDER
-from .config import AUTHORISED_KEYS_FOLDER, KNOWN_HOSTS_FOLDER  # , KEYPAIRS_FOLDER
+from .config import AUTHORISED_KEYS_FOLDER, KNOWN_HOSTS_FOLDER
 from .generate import generate_server_config, generate_client_config
 
 
-def run_register(args):
+def rain_register(args):
     ''' The top-level function handling the registration of new instruments to
         RAIN
 

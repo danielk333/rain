@@ -1,8 +1,7 @@
 import json
 from pprint import pprint
 
-from .actions import actions_get, actions_set, load_data
-from .fetch import get_datetime, load_params
+from .fetch import get_datetime
 from .plugins import PLUGINS
 
 
@@ -130,7 +129,7 @@ def response_set(request, current_datetime):
 
 
 # TODO 47: Load parameters from somewhere other than an info file
-def form_response(request, server, path_info, path_data, path_plug):
+def form_response(request):
     ''' A higher level function that handles the forming of a response in the
         case where a client makes a request to a server
 
@@ -138,35 +137,25 @@ def form_response(request, server, path_info, path_data, path_plug):
     ----------
     request : JSON
         The request made by the client
-    server : string
-        The name of the server
-    path_info : Posix path
-        The path to the folder containing the server's info file
-    path_data : Posix path
-        The path to the folder containing the server's data file
-    path_plug : Posix path
-        The path to the folder containing the server's plugins
 
     Returns
     -------
     response : JSON
         The formatted response to be sent by the server to the client
     '''
-    avail_params = load_params(path_info, server)
     date_time = get_datetime()
     if request["type"] == "get":
         values = []
         for param in request["parameters"]:
             func = PLUGINS["get"][param]
             values.append(func())
-
         response = response_get(request, values, date_time)
+
     elif request["type"] == "set":
         for iter in range(len(request["parameters"])):
             param = request["parameters"][iter]
             func = PLUGINS["set"][param]
             func(request["new_values"][iter])
-        # actions_set(request, avail_params, server, path_data)
         response = response_set(request, date_time)
 
     return response
@@ -217,7 +206,7 @@ def publish_format(update):
     return publish
 
 
-def publish_response(sub_param, server, path_data):
+def publish_response(sub_param):
     ''' A higher level function that handles the formatting of an update for
         the server to publish
 
@@ -225,14 +214,9 @@ def publish_response(sub_param, server, path_data):
     ----------
     sub_param : string
         The name of the parameter whose value has just changed
-    server : string
-        The name of the server
-    path_data : Posix path
-        The path to the folder containing the server's data file
     '''
     func = PLUGINS["get"][sub_param]
     value = func()
-    # value = load_data(path_data, server, sub_param)
     date_time = get_datetime()
     update = publish_update(sub_param, value, date_time)
     publish = publish_format(update)
