@@ -35,7 +35,7 @@ def setup_socket(context, host_type):
     context : zmq.Context
         The ZMQ Context establishing the basis of the communication
     host_type : string
-        The type of socket to create: PUB, REQ, REP, SUB
+        The type of connection to create: publish, request, response, subscribe
 
     Returns
     -------
@@ -54,19 +54,17 @@ def setup_socket(context, host_type):
     return socket
 
 
-def auth_server(socket, server, path_prv):
+def auth_server(socket, path_prv):
     ''' Sets up the authentication side to the server connection
 
     Parameters
     ----------
     socket : zmq.Socket
         The connection socket
-    server : string
-        The name of the server
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    server_file_prv = path_prv.joinpath(f"{server}.key_secret")
+    server_file_prv = list(path_prv.iterdir())[0]
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
     socket.curve_secretkey = server_prv
     socket.curve_publickey = server_pub
@@ -120,7 +118,7 @@ def setup_client(host_type, server, path_pub, path_prv):
     Parameters
     ----------
     host_type : string
-        The type of socket to create: PUB, REQ, REP, SUB
+        The type of connection to create: publish, request, response, subscribe
     server : string
         The name of the server
     path_pub : Posix path
@@ -141,16 +139,14 @@ def setup_client(host_type, server, path_pub, path_prv):
     return socket
 
 
-def setup_server(host_type, server, address, path_pub, path_prv):
+def setup_server(host_type, address, path_pub, path_prv):
     ''' The top-level function that organises the initialisation of the server
         connection
 
     Parameters
     ----------
     host_type : string
-        The type of socket to create: PUB, REQ, REP, SUB
-    server : string
-        The name of the server
+        The type of connection to create: publish, request, response, subscribe
     address : list of strings
         The hostname and port of the server
     path_pub : Posix path
@@ -169,7 +165,7 @@ def setup_server(host_type, server, address, path_pub, path_prv):
     socket = setup_socket(context, host_type)
 
     auth = setup_auth(context, address, path_pub)
-    auth_server(socket, server, path_prv)
+    auth_server(socket, path_prv)
     open_connection(socket, address)
 
     return auth, socket

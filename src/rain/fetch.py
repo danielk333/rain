@@ -30,7 +30,6 @@ def convert_client_args(args):
 
 
 def convert_server_args(args):
-    server = args.server
     interaction = args.interaction
 
     if args.cfgpath is None:
@@ -38,7 +37,7 @@ def convert_server_args(args):
     else:
         folder = args.cfgpath
 
-    return server, interaction, folder
+    return interaction, folder
 
 
 def get_datetime():

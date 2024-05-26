@@ -6,14 +6,12 @@ from .packaging import form_response, publish_response
 from .transport import receive_request, send_response
 
 
-def run_response(server, address, path_pub, path_prv):
+def run_response(address, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
     Parameters
     ----------
-    server : string
-        The name of the server
     address : list of strings
         The server's hostname and port
     path_pub: Posix path
@@ -23,9 +21,7 @@ def run_response(server, address, path_pub, path_prv):
         The path to the folder containing the server's private key
     '''
 
-    auth, socket = setup_server(
-        "response", server, address, path_pub, path_prv
-    )
+    auth, socket = setup_server("response", address, path_pub, path_prv)
 
     server_open = True
     while server_open:
@@ -36,14 +32,12 @@ def run_response(server, address, path_pub, path_prv):
     auth.stop()
 
 
-def run_publish(server, address, path_pub, path_prv):
+def run_publish(address, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
     Parameters
     ----------
-    server : string
-        The name of the server
     address : list of strings
         The server's hostname and port
     path_pub: Posix path
@@ -52,7 +46,7 @@ def run_publish(server, address, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    auth, socket = setup_server("publish", server, address, path_pub, path_prv)
+    auth, socket = setup_server("publish", address, path_pub, path_prv)
     possible_sub = sub_params()
     server_open = True
 
@@ -74,10 +68,10 @@ def rain_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name, interaction, conf_folder = convert_server_args(args)
+    interaction, conf_folder = convert_server_args(args)
     dir_pub, dir_prv, server_address = get_server_config(conf_folder, interaction)
 
     if interaction == "rep":
-        run_response(server_name, server_address, dir_pub, dir_prv)
+        run_response(server_address, dir_pub, dir_prv)
     elif interaction == "pub":
-        run_publish(server_name, server_address, dir_pub, dir_prv)
+        run_publish(server_address, dir_pub, dir_prv)

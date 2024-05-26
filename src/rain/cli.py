@@ -102,11 +102,6 @@ def server_cli():
     )
 
     parser.add_argument(
-        "server",
-        help="the instrument server to connect to"
-    )
-
-    parser.add_argument(
         "-c", "--cfgpath",
         help="the path to your RAIN config folder"
     )
