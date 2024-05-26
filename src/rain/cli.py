@@ -102,7 +102,7 @@ def server_cli():
     )
 
     parser.add_argument(
-        "instrument",
+        "server",
         help="the instrument server to connect to"
     )
 

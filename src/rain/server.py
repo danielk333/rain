@@ -1,15 +1,12 @@
-from pathlib import Path
 import time
 
 from .authenticate import setup_server
-from .config import load_config, DEFAULT_FOLDER
-from .fetch import sub_params
+from .fetch import convert_server_args, get_server_config, sub_params
 from .packaging import form_response, publish_response
-from .plugins import load_plugins  # , PLUGINS
 from .transport import receive_request, send_response
 
 
-def run_response(server, config, path_pub, path_prv):
+def run_response(server, address, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -17,21 +14,17 @@ def run_response(server, config, path_pub, path_prv):
     ----------
     server : string
         The name of the server
-    config : ConfigParser
-        The set of server configs
+    address : list of strings
+        The server's hostname and port
     path_pub: Posix path
         The path to the folder containing the public keys of the authorised
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    server_address = [
-        config.get("Response", "hostname"),
-        config.get("Response", "port"),
-    ]
 
     auth, socket = setup_server(
-        "response", server, server_address, path_pub, path_prv
+        "response", server, address, path_pub, path_prv
     )
 
     server_open = True
@@ -43,7 +36,7 @@ def run_response(server, config, path_pub, path_prv):
     auth.stop()
 
 
-def run_publish(server, config, path_pub, path_prv):
+def run_publish(server, address, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -51,22 +44,15 @@ def run_publish(server, config, path_pub, path_prv):
     ----------
     server : string
         The name of the server
-    config : ConfigParser
-        The set of server configs
+    address : list of strings
+        The server's hostname and port
     path_pub: Posix path
         The path to the folder containing the public keys of the authorised
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    server_address = [
-        config.get("Publish", "hostname"),
-        config.get("Publish", "port"),
-    ]
-
-    auth, socket = setup_server(
-        "publish", server, server_address, path_pub, path_prv
-    )
+    auth, socket = setup_server("publish", server, address, path_pub, path_prv)
     possible_sub = sub_params()
     server_open = True
 
@@ -80,7 +66,6 @@ def run_publish(server, config, path_pub, path_prv):
     auth.stop()
 
 
-# TODO 46: Move the config handling into functions
 def rain_server(args):
     ''' The top-level function handling the function of the RAIN server
 
@@ -89,22 +74,10 @@ def rain_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name = args.instrument
-    interaction = args.interaction
-
-    if args.cfgpath is None:
-        conf_folder = DEFAULT_FOLDER
-    else:
-        conf_folder = Path(args.cfgpath)
-    conf_loc = conf_folder / "server.cfg"
-    config = load_config(conf_loc, "server")
-
-    dir_pub = Path(config.get("Security", "public-keys"))
-    dir_prv = Path(config.get("Security", "private-keys"))
-    dir_plug = Path(config.get("Plugins", "plugins"))
-    load_plugins(dir_plug)
+    server_name, interaction, conf_folder = convert_server_args(args)
+    dir_pub, dir_prv, server_address = get_server_config(conf_folder, interaction)
 
     if interaction == "rep":
-        run_response(server_name, config, dir_pub, dir_prv)
+        run_response(server_name, server_address, dir_pub, dir_prv)
     elif interaction == "pub":
-        run_publish(server_name, config, dir_pub, dir_prv)
+        run_publish(server_name, server_address, dir_pub, dir_prv)

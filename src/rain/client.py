@@ -1,14 +1,12 @@
-from pathlib import Path
-
 import zmq
 
 from .authenticate import setup_client
-from .config import load_config, DEFAULT_FOLDER
+from .fetch import convert_client_args, get_client_config
 from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 
 
-def run_request(server, config, interaction, params, new_values, path_pub, path_prv):
+def run_request(server, server_address, interaction, params, new_values, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -16,8 +14,6 @@ def run_request(server, config, interaction, params, new_values, path_pub, path_
     ----------
     server : string
         The name of the server
-    config : ConfigParser
-        The set of client configs
     interaction : string
         The type of interaction: get or set
     params : list of strings
@@ -29,11 +25,6 @@ def run_request(server, config, interaction, params, new_values, path_pub, path_
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    server_address = [
-        config.get("Response", "hostname"),
-        config.get("Response", "port"),
-    ]
-
     message = form_request(interaction, params, new_values)
 
     if message:
@@ -43,7 +34,7 @@ def run_request(server, config, interaction, params, new_values, path_pub, path_
         print_response(response)
 
 
-def run_subscribe(server, config, params, path_pub, path_prv):
+def run_subscribe(server, server_address, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
@@ -51,10 +42,8 @@ def run_subscribe(server, config, params, path_pub, path_prv):
     ----------
     server : string
         The name of the server
-    config : ConfigParser
-        The set of client configs
-    interaction : string
-        The type of interaction: get or set
+    server_address : list of strings
+        The server's hostname and port
     params : list of strings
         The parameters to interact with
     path_pub: Posix path
@@ -62,10 +51,7 @@ def run_subscribe(server, config, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    server_address = [
-        config.get("Publish", "hostname"),
-        config.get("Publish", "port"),
-    ]
+
     socket = setup_client("subscribe", server, path_pub, path_prv)
 
     for iter in range(len(params)):
@@ -80,8 +66,6 @@ def run_subscribe(server, config, params, path_pub, path_prv):
         print_response(update)
 
 
-# TODO 45: Move the argument handling into functions
-# TODO 46: Move the config handling into functions
 def rain_client(args):
     ''' The top-level function handling the function of the RAIN client
 
@@ -90,31 +74,10 @@ def rain_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name = args.server
-    interaction = args.interaction
-
-    if interaction == "get" or interaction == "sub":
-        params = args.param
-        new_values = None
-    elif interaction == "set":
-        params = []
-        new_values = []
-        for item in args.p:
-            params.append(item[0])
-            new_values.append(item[1])
-
-    if args.cfgpath is None:
-        conf_folder = DEFAULT_FOLDER
-    else:
-        conf_folder = args.cfgpath
-
-    conf_loc = conf_folder / "hosts.cfg"
-    config = load_config(conf_loc, "client")
-
-    dir_pub = Path(config.get("Security", "public-keys"))
-    dir_prv = Path(config.get("Security", "private-keys"))
+    server_name, interaction, params, new_values, conf_folder = convert_client_args(args)
+    dir_pub, dir_prv, server_address = get_client_config(conf_folder, interaction)
 
     if interaction == "get" or interaction == "set":
-        run_request(server_name, config, interaction, params, new_values, dir_pub, dir_prv)
+        run_request(server_name, server_address, interaction, params, new_values, dir_pub, dir_prv)
     elif interaction == "sub":
-        run_subscribe(server_name, config, params, dir_pub, dir_prv)
+        run_subscribe(server_name, server_address, params, dir_pub, dir_prv)

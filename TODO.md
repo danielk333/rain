@@ -8,7 +8,7 @@ Big TODOs:
 - [x] T5: Split the code into the established layers
 - [ ] T6: Separate the server and the client from the network
 - [x] T7: Make a package out of the software
-- [ ] T8: Implement a Redis database
+- [ ] ~~T8: Implement a Redis database~~
 - [x] T9: Write a CLI to replace the user input
 - [ ] T10: Upload to PyPI
 
@@ -57,9 +57,9 @@ Smaller TODOs:
 - [x] TODO 42: Rework the request_components function
 - [x] TODO 43: Rework the pub_split function
 - [ ] TODO 44: Improve the layout of the --help command
-- [ ] TODO 45: Move the argument handling into functions
-- [ ] TODO 46: Move the config handling into functions
-- [ ] TODO 47: Load parameters from somewhere other than an info file
+- [x] TODO 45: Move the argument handling into functions
+- [x] TODO 46: Move the config handling into functions
+- [x] TODO 47: Load parameters from somewhere other than an info file
 - [ ] TODO 48: Change the name of the private key file to include 'curve'
 
 Exception Handling:

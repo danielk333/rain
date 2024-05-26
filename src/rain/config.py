@@ -1,8 +1,6 @@
-import configparser
 import logging
 import os
 import pathlib
-import warnings
 
 logger = logging.getLogger(__name__)
 
@@ -54,55 +52,3 @@ _CFG_PATHS_CLIENT = [
     ("Security", "public-keys"),
     ("Security", "private-keys")
 ]
-
-
-# TODO 21: Setup a client/server config file
-# def load_config(config_file=None):
-def load_config(config_file, host_type):
-    ''' Loads the configurations of a server or client
-
-    Parameters
-    ----------
-    config_file : Posix path
-        The path to the config file
-    host_type : string
-        Whether a server or client config is being loaded
-
-    Returns
-    -------
-    config : ConfigParser
-        The set of configs
-    '''
-
-    config = configparser.ConfigParser()
-
-    # config.read_dict(DEFAULT_SERVER_CFG)
-
-    if config_file is not None:
-        if not isinstance(config_file, pathlib.Path):
-            config_file = pathlib.Path(config_file)
-        config.read([config_file])
-
-    if host_type == "server":
-        for section, key in _CFG_PATHS_SERVER:
-            _path = pathlib.Path(config.get(section, key)).resolve()
-            config.set(
-                section,
-                key,
-                str(_path),
-            )
-            if not _path.exists():
-                warnings.warn(f"configured path '{_path}' does not exist")
-
-    elif host_type == "client":
-        for section, key in _CFG_PATHS_CLIENT:
-            _path = pathlib.Path(config.get(section, key)).resolve()
-            config.set(
-                section,
-                key,
-                str(_path),
-            )
-            if not _path.exists():
-                warnings.warn(f"configured path '{_path}' does not exist")
-
-    return config

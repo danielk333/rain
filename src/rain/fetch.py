@@ -1,7 +1,44 @@
-import json
+import configparser
+from pathlib import Path
 import time
+import warnings
 
-from .plugins import PLUGINS
+from .config import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
+from .plugins import PLUGINS, load_plugins
+
+
+def convert_client_args(args):
+    server = args.server
+    interaction = args.interaction
+
+    if interaction == "get" or interaction == "sub":
+        params = args.param
+        new_values = None
+    elif interaction == "set":
+        params = []
+        new_values = []
+        for item in args.p:
+            params.append(item[0])
+            new_values.append(item[1])
+
+    if args.cfgpath is None:
+        folder = DEFAULT_FOLDER
+    else:
+        folder = args.cfgpath
+
+    return server, interaction, params, new_values, folder
+
+
+def convert_server_args(args):
+    server = args.server
+    interaction = args.interaction
+
+    if args.cfgpath is None:
+        folder = DEFAULT_FOLDER
+    else:
+        folder = args.cfgpath
+
+    return server, interaction, folder
 
 
 def get_datetime():
@@ -21,66 +58,102 @@ def get_datetime():
     return current_datetime
 
 
+# def load_config(config_file=None):
+def load_config(config_file, host_type):
+    ''' Loads the configurations of a server or client
+
+    Parameters
+    ----------
+    config_file : Posix path
+        The path to the config file
+    host_type : string
+        Whether a server or client config is being loaded
+
+    Returns
+    -------
+    config : ConfigParser
+        The set of configs
+    '''
+
+    config = configparser.ConfigParser()
+
+    # config.read_dict(DEFAULT_SERVER_CFG)
+
+    if config_file is not None:
+        if not isinstance(config_file, Path):
+            config_file = Path(config_file)
+        config.read([config_file])
+
+    if host_type == "server":
+        for section, key in _CFG_PATHS_SERVER:
+            _path = Path(config.get(section, key)).resolve()
+            config.set(
+                section,
+                key,
+                str(_path),
+            )
+            if not _path.exists():
+                warnings.warn(f"configured path '{_path}' does not exist")
+
+    elif host_type == "client":
+        for section, key in _CFG_PATHS_CLIENT:
+            _path = Path(config.get(section, key)).resolve()
+            config.set(
+                section,
+                key,
+                str(_path),
+            )
+            if not _path.exists():
+                warnings.warn(f"configured path '{_path}' does not exist")
+
+    return config
+
+
+def get_client_config(folder, interaction):
+    conf_loc = folder / "hosts.cfg"
+    config = load_config(conf_loc, "client")
+
+    path_pub = Path(config.get("Security", "public-keys"))
+    path_prv = Path(config.get("Security", "private-keys"))
+
+    if interaction == "get" or interaction == "set":
+        address = [
+            config.get("Response", "hostname"),
+            config.get("Response", "port"),
+        ]
+    elif interaction == "sub":
+        address = [
+            config.get("Publish", "hostname"),
+            config.get("Publish", "port"),
+        ]
+
+    return path_pub, path_prv, address
+
+
+def get_server_config(folder, interaction):
+    conf_loc = folder / "server.cfg"
+    config = load_config(conf_loc, "server")
+
+    path_pub = Path(config.get("Security", "public-keys"))
+    path_prv = Path(config.get("Security", "private-keys"))
+    path_plug = Path(config.get("Plugins", "plugins"))
+    load_plugins(path_plug)
+
+    if interaction == "rep":
+        address = [
+            config.get("Response", "hostname"),
+            config.get("Response", "port"),
+        ]
+    elif interaction == "pub":
+        address = [
+            config.get("Publish", "hostname"),
+            config.get("Publish", "port"),
+        ]
+
+    return path_pub, path_prv, address
+
+
 def sub_params():
     list_params = PLUGINS["sub"].keys()
 
     return list_params
-
-
-def load_params(path_info, server):
-    ''' Returns all parameters made available by the server, including whether
-        each parameter can be requested, commanded or subscribed to
-
-    Parameters
-    ----------
-    path_info : Posix path
-        The path to the folder containing the server's info file
-    server : string
-        The name of the server
-
-    Returns
-    -------
-    avail_params : JSON
-        The parameters (and their details) provided by the server
-    '''
-    with open(path_info.joinpath(f"{server}.info"), "r") as f:
-        data = f.read()
-        start_found = False
-        for char in range(len(data)):
-            # Until the start of a parameter group has been found
-            if not start_found:
-                if data[char] == '{':
-                    if data[char+1] == '\n':
-                        positions = []
-                        positions.append(char)
-                        start_found = True
-
-            # Now find the end of a parameter group
-            if start_found:
-                if data[char] == ']':
-                    if data[char+1:char+3] == '\n}':
-                        positions.append(char+2)
-
-        avail_params = json.loads(data[positions[0]:positions[1]+1])
-
-    return avail_params
-
-
-def subscribable_params(path_info, server):
-    ''' Returns the parameters provided by the server that a client can
-        subscribe to
-
-    Parameters
-    ----------
-    path_info : Posix path
-        The path to the folder containing the server's info file
-    server : string
-        The name of the server
-    '''
-    subsc_params = []
-    avail_params = load_params(path_info, server)
-    for item in avail_params["parameters"]:
-        if item["subscribe"] == "true":
-            subsc_params.append(item["name"])
-
-    return subsc_params
