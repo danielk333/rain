@@ -8,6 +8,26 @@ from .plugins import PLUGINS, load_plugins
 
 
 def convert_client_args(args):
+    ''' Assigns the client CLI arguments to variables
+
+    Parameters
+    ----------
+    args : Namespace
+        The client CLI arguments
+
+    Returns
+    -------
+    server : string
+        The server name
+    interaction : string
+        The type of interaction with the server: get, set, sub
+    params : list of strings
+        The parameters to interact with
+    new_values : list of strings
+        The new values to assign to params (in a SET interaction)
+    folder : Posix path
+        The path to the folder containing the client's config file
+    '''
     server = args.server
     interaction = args.interaction
 
@@ -30,6 +50,20 @@ def convert_client_args(args):
 
 
 def convert_server_args(args):
+    ''' Assigns the server CLI arguments to variables
+
+    Parameters
+    ----------
+    args : Namespace
+        The server CLI arguments
+
+    Returns
+    -------
+    interaction : string
+        The type of interaction to allow with clients: pub, rep
+    folder : Posix path
+        The path to the folder containing the server's config file
+    '''
     interaction = args.interaction
 
     if args.cfgpath is None:
@@ -109,6 +143,24 @@ def load_config(config_file, host_type):
 
 
 def get_client_config(folder, interaction):
+    ''' Load the values inside the client's config file
+
+    Parameters
+    ----------
+    folder : Posix path
+        The path to the folder containing the client's config file
+    interaction : string
+        The type of interaction with the server: get, set, sub
+
+    Returns
+    -------
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the client's private key
+    address : list of strings
+        The server's hostname and port
+    '''
     conf_loc = folder / "hosts.cfg"
     config = load_config(conf_loc, "client")
 
@@ -130,6 +182,25 @@ def get_client_config(folder, interaction):
 
 
 def get_server_config(folder, interaction):
+    ''' Load the values inside the server's config file and loads the server's
+        plugins
+
+    Parameters
+    ----------
+    folder : Posix path
+        The path to the folder containing the client's config file
+    interaction : string
+        The type of interaction to allow with clients: pub, rep
+
+    Returns
+    -------
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the client's private key
+    address : list of strings
+        The server's hostname and port
+    '''
     conf_loc = folder / "server.cfg"
     config = load_config(conf_loc, "server")
 
@@ -153,6 +224,14 @@ def get_server_config(folder, interaction):
 
 
 def sub_params():
+    ''' Returns a list of the parameters that the server has made available for
+        clients to subscribe to
+
+    Returns
+    -------
+    list_params : list of strings
+        A list of parameters that can be subscribed to
+    '''
     list_params = PLUGINS["sub"].keys()
 
     return list_params
