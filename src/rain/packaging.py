@@ -215,7 +215,7 @@ def publish_response(sub_param):
     sub_param : string
         The name of the parameter whose value has just changed
     '''
-    func = PLUGINS["get"][sub_param]
+    func = PLUGINS["sub"][sub_param]
     value = func()
     date_time = get_datetime()
     update = publish_update(sub_param, value, date_time)
