@@ -6,7 +6,7 @@ from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 
 
-def run_request(server, server_address, interaction, params, new_values, path_pub, path_prv):
+def run_request(server, server_address, interaction, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -18,14 +18,12 @@ def run_request(server, server_address, interaction, params, new_values, path_pu
         The type of interaction: get or set
     params : list of strings
         The parameters to interact with
-    new_values : list of strings
-        The new values to give to parameters (if interaction is set)
     path_pub: Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    message = form_request(interaction, params, new_values)
+    message = form_request(interaction, params)
 
     if message:
         socket = setup_client("request", server, path_pub, path_prv)
@@ -74,10 +72,10 @@ def rain_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name, interaction, params, new_values, conf_folder = convert_client_args(args)
+    server_name, interaction, params, conf_folder = convert_client_args(args)
     dir_pub, dir_prv, server_address = get_client_config(conf_folder, interaction)
 
     if interaction == "get" or interaction == "set":
-        run_request(server_name, server_address, interaction, params, new_values, dir_pub, dir_prv)
+        run_request(server_name, server_address, interaction, params, dir_pub, dir_prv)
     elif interaction == "sub":
         run_subscribe(server_name, server_address, params, dir_pub, dir_prv)

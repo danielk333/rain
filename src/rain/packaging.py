@@ -5,50 +5,8 @@ from .fetch import get_datetime
 from .plugins import PLUGINS
 
 
-def request_get(req_params):
-    ''' Forms the request to send in the case of a GET command
-
-    Parameters
-    ----------
-    req_params : list of strings
-        The parameters whose values have been requested
-
-    Returns
-    -------
-    request : JSON
-        The formatted request to be sent by the client to the server
-    '''
-    request = {"type": "get",
-               "parameters": req_params}
-
-    return request
-
-
-def request_set(req_params, new_values):
-    ''' Forms the request to send in the case of a SET command
-
-    Parameters
-    ----------
-    req_params : list of strings
-        The parameters whose values are to be changed
-    new_values : list of strings
-        The values to assign to req_params
-
-    Returns
-    -------
-    request : JSON
-        The formatted request to be sent by the client to the server
-    '''
-    request = {"type": "set",
-               "parameters": req_params,
-               "new_values": new_values}
-
-    return request
-
-
-def form_request(message_type, req_params, new_values):
-    ''' A higher level function that handles the forming of a request in the
-        case where a client makes a request to a server
+def form_request(message_type, req_params):
+    ''' Creates the request message for the client to send to a server
 
     Parameters
     ----------
@@ -56,82 +14,23 @@ def form_request(message_type, req_params, new_values):
         Whether the request is in the form of a GET or a SET command
     req_params : list of strings
         The parameters that are the subject of the request
-    new_values : list of string
-        The values to assign to req_params in the event of a SET command,
-        else None
 
     Returns
     -------
     request : JSON
         The formatted request to be sent by the client to the server
     '''
-    if message_type == "get":
-        request = request_get(req_params)
-        pprint(request, indent=4, sort_dicts=False)
-    elif message_type == "set":
-        request = request_set(req_params, new_values)
-        pprint(request, indent=4, sort_dicts=False)
-    else:
-        request = None
-        print("You have not entered a valid message type")
+    request = {"type": message_type}
+    for iter in range(len(req_params)):
+        request.update({f"param{iter+1}": req_params[iter]})
+    pprint(request, indent=4, sort_dicts=False)
 
     return request
 
 
-def response_get(request, values, current_datetime):
-    ''' Forms the response to send in the case of a GET command
-
-    Parameters
-    ----------
-    request : JSON
-        The request made by the client
-    values : list of strings
-        The values of the parameters requested by the client
-    current_datetime : list of strings
-        The server's current local date and time
-
-    Returns
-    -------
-    response : JSON
-        The formatted response to be sent by the server to the client
-    '''
-    response = {"date": current_datetime[0],
-                "time": current_datetime[1],
-                "type": "get",
-                "parameters": request["parameters"],
-                "values": values}
-
-    return response
-
-
-def response_set(request, current_datetime):
-    ''' Forms the response to send in the case of a SET command
-
-    Parameters
-    ----------
-    request : JSON
-        The request made by the client
-    current_datetime : list of strings
-        The server's current local date and time
-
-    Returns
-    -------
-    response : JSON
-        The formatted response to be sent by the server to the client
-    '''
-    response = {"date": current_datetime[0],
-                "time": current_datetime[1],
-                "type": "set",
-                "parameters": request["parameters"],
-                "new_values": request["new_values"]}
-
-    return response
-
-
-# TODO 47: Load parameters from somewhere other than an info file
 def form_response(request):
-    ''' A higher level function that handles the forming of a response in the
-        case where a client makes a request to a server
+    ''' Creates the response message following from the reception of a request
+        from a client. This response message will later be sent to the client
 
     Parameters
     ----------
@@ -144,19 +43,33 @@ def form_response(request):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
+    keys = list(request.keys())
+    keys.remove("type")
+    params = list(request.values())
+
+    response = {"date": date_time[0],
+                "time": date_time[1]}
+
     if request["type"] == "get":
         values = []
-        for param in request["parameters"]:
+        params.remove("get")
+        for param in params:
             func = PLUGINS["get"][param]
             values.append(func())
-        response = response_get(request, values, date_time)
+
+        response.update({"type": "get"})
+        for iter in range(len(params)):
+            response.update({keys[iter]: [params[iter], values[iter]]})
 
     elif request["type"] == "set":
-        for iter in range(len(request["parameters"])):
-            param = request["parameters"][iter]
+        params.remove("set")
+        for param, value in params:
             func = PLUGINS["set"][param]
-            func(request["new_values"][iter])
-        response = response_set(request, date_time)
+            func(value)
+
+        response.update({"type": "set"})
+        for iter in range(len(params)):
+            response.update({keys[iter]: [params[iter][0], params[iter][1]]})
 
     return response
 

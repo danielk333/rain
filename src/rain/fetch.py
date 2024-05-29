@@ -33,20 +33,20 @@ def convert_client_args(args):
 
     if interaction == "get" or interaction == "sub":
         params = args.param
-        new_values = None
+        # new_values = None
     elif interaction == "set":
-        params = []
-        new_values = []
-        for item in args.p:
-            params.append(item[0])
-            new_values.append(item[1])
+        params = args.p
+        # new_values = []
+        # for item in args.p:
+        #     params.append(item[0])
+        #     new_values.append(item[1])
 
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
     else:
         folder = args.cfgpath
 
-    return server, interaction, params, new_values, folder
+    return server, interaction, params, folder
 
 
 def convert_server_args(args):
