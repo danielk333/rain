@@ -8,21 +8,6 @@ PLUGINS = {
     "sub": {}
 }
 
-SCHEMA = {}
-
-
-def add_schema(action, func):
-    global SCHEMA
-    SCHEMA[action] = func
-
-
-def register_schema(action):
-    def schema_wrapper(func):
-        add_schema(action, func)
-        return func
-
-    return register_schema
-
 
 def add_plugin(action, name, func):
     global PLUGINS

@@ -4,7 +4,8 @@ from pprint import pprint
 from jsonschema import validate
 
 from .fetch import get_datetime
-from .plugins import PLUGINS, SCHEMA
+from .plugins import PLUGINS
+from .validate import set_req_schema
 
 
 def form_request(message_type, req_params):
@@ -24,10 +25,15 @@ def form_request(message_type, req_params):
     '''
     request = {"action": message_type}
     if message_type == "get":
-        request.update({"parameters": req_params})
-    elif message_type == "set":
+        request.update({"name": req_params})
+    if message_type == "set":
+        names = []
+        values = []
         for name, value in req_params:
-            request.update({name: value})
+            names.append(name)
+            values.append(value)
+        request.update({"name": names})
+        request.update({"data": values})
     pprint(request, indent=4, sort_dicts=False)
 
     return request
@@ -52,23 +58,27 @@ def form_response(request):
                 "time": date_time[1]}
 
     if request["action"] == "get":
-        for param in request["parameters"]:
+        response.update({"action": "get"})
+        response.update({"name": request["name"]})
+        data = []
+        for param in request["name"]:
             func = PLUGINS["get"][param]
-            response.update({param: func()})
+            data.append(func())
+        response.update({"data": data})
 
     elif request["action"] == "set":
         # request.update({"wrong": 0})
-        validate(instance=request, schema=SCHEMA)
-        pprint(SCHEMA, indent=4, sort_dicts=False)
-        params = list(request.keys())
-        params.remove("action")
-        values = list(request.values())
-        values.remove("set")
+        validate(instance=request, schema=set_req_schema)
+        # pprint(SCHEMA, indent=4, sort_dicts=False)
+
         response.update({"action": "set"})
-        for iter in range(len(params)):
-            func = PLUGINS["set"][params[iter]]
-            func(values[iter])
-            response.update({params[iter]: values[iter]})
+        response.update({"name": request["name"]})
+        data = []
+        for item, value in zip(request["name"], request["data"]):
+            func = PLUGINS["set"][item]
+            response_value = func(value)
+            data.append(response_value)
+        response.update({"data": data})
 
     return response
 
