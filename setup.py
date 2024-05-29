@@ -7,7 +7,8 @@ setup(
     author='Calum Lonie',
     maintainer='Daniel Kastinen',
     install_requires=[
-        'zmq'
+        'zmq',
+        'jsonschema',
     ],
     entry_points={
         'console_scripts': [
