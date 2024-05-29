@@ -73,7 +73,7 @@ def rain_client(args):
         The command line arguments entered by the user
     '''
     server_name, interaction, params, conf_folder = convert_client_args(args)
-    dir_pub, dir_prv, server_address = get_client_config(conf_folder, server_name)
+    dir_pub, dir_prv, server_address = get_client_config(conf_folder, server_name, interaction)
 
     if interaction == "get" or interaction == "set":
         run_request(server_name, server_address, interaction, params, dir_pub, dir_prv)

@@ -142,15 +142,16 @@ def load_config(config_file, host_type):
     return config
 
 
-def get_client_config(folder, target_host):
+def get_client_config(folder, server, interaction):
     ''' Load the values inside the client's config file
 
     Parameters
     ----------
     folder : Posix path
         The path to the folder containing the client's config file
-    target_host : string
-        Name of the target host given in the hosts.cfg file
+    server : string
+        The name of the server
+    interaction : "string"
 
     Returns
     -------
@@ -167,9 +168,13 @@ def get_client_config(folder, target_host):
     path_pub = Path(config.get("Security", "public-keys"))
     path_prv = Path(config.get("Security", "private-keys"))
 
+    if interaction == "set" or interaction == "get":
+        act_type = "response"
+    elif interaction == "sub":
+        act_type = "publish"
     address = [
-        config.get(target_host, "hostname"),
-        config.get(target_host, "port"),
+        config.get(f"{server}-{act_type}", "hostname"),
+        config.get(f"{server}-{act_type}", "port")
     ]
 
     return path_pub, path_prv, address
