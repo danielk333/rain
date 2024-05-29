@@ -1,11 +1,10 @@
-from jsonschema import validate
 import zmq
 
 from .authenticate import setup_client
 from .fetch import convert_client_args, get_client_config
 from .packaging import form_request, print_response, pub_split
 from .transport import send_request, receive_response, receive_subscribe
-from .validate import get_rep_schema, set_rep_schema
+from .validate import validate_response, validate_update
 
 
 def run_request(server, server_address, interaction, params, path_pub, path_prv):
@@ -31,10 +30,7 @@ def run_request(server, server_address, interaction, params, path_pub, path_prv)
         socket = setup_client("request", server, path_pub, path_prv)
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
-        if interaction == "get":
-            validate(instance=response, schema=get_rep_schema)
-        elif interaction == "set":
-            validate(instance=response, schema=set_rep_schema)
+        validate_response(response)
         print_response(response)
 
 
@@ -67,6 +63,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
     while client_connected:
         formatted_update = receive_subscribe(socket)
         update = pub_split(formatted_update)
+        validate_update(update)
         print_response(update)
 
 

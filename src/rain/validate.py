@@ -1,3 +1,24 @@
+from jsonschema import validate
+
+
+def validate_request(request):
+    if request["action"] == "get":
+        validate(instance=request, schema=get_req_schema)
+    elif request["action"] == "set":
+        validate(instance=request, schema=set_req_schema)
+
+
+def validate_response(response):
+    if response["action"] == "get":
+        validate(instance=response, schema=get_rep_schema)
+    elif response["action"] == "set":
+        validate(instance=response, schema=set_rep_schema)
+
+
+def validate_update(update):
+    validate(instance=update, schema=pub_schema)
+
+
 set_req_schema = {
     "type": "object",
     "description": "",

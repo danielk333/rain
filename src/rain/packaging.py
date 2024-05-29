@@ -1,11 +1,9 @@
 import json
 from pprint import pprint
 
-from jsonschema import validate
-
 from .fetch import get_datetime
 from .plugins import PLUGINS
-from .validate import set_req_schema, get_req_schema
+from .validate import validate_request, validate_response, validate_update
 
 
 def form_request(message_type, req_params):
@@ -34,6 +32,7 @@ def form_request(message_type, req_params):
             values.append(value)
         request.update({"name": names})
         request.update({"data": values})
+    validate_request(request)
     pprint(request, indent=4, sort_dicts=False)
 
     return request
@@ -58,7 +57,7 @@ def form_response(request):
                 "time": date_time[1]}
 
     if request["action"] == "get":
-        validate(instance=request, schema=get_req_schema)
+        validate_request(request)
 
         response.update({"action": "get"})
         response.update({"name": request["name"]})
@@ -69,7 +68,7 @@ def form_response(request):
         response.update({"data": data})
 
     elif request["action"] == "set":
-        validate(instance=request, schema=set_req_schema)
+        validate_request(request)
 
         response.update({"action": "set"})
         response.update({"name": request["name"]})
@@ -79,6 +78,8 @@ def form_response(request):
             response_value = func(value)
             data.append(response_value)
         response.update({"data": data})
+
+    validate_response(response)
 
     return response
 
@@ -141,6 +142,7 @@ def publish_response(sub_param):
     value = func()
     date_time = get_datetime()
     update = publish_update(sub_param, value, date_time)
+    validate_update(update)
     publish = publish_format(update)
 
     return publish
