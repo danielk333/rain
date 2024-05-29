@@ -1,8 +1,10 @@
 import json
 from pprint import pprint
 
+from jsonschema import validate
+
 from .fetch import get_datetime
-from .plugins import PLUGINS
+from .plugins import PLUGINS, SCHEMA
 
 
 def form_request(message_type, req_params):
@@ -20,9 +22,12 @@ def form_request(message_type, req_params):
     request : JSON
         The formatted request to be sent by the client to the server
     '''
-    request = {"type": message_type}
-    for iter in range(len(req_params)):
-        request.update({f"param{iter+1}": req_params[iter]})
+    request = {"action": message_type}
+    if message_type == "get":
+        request.update({"parameters": req_params})
+    elif message_type == "set":
+        for name, value in req_params:
+            request.update({name: value})
     pprint(request, indent=4, sort_dicts=False)
 
     return request
@@ -43,33 +48,27 @@ def form_response(request):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    keys = list(request.keys())
-    keys.remove("type")
-    params = list(request.values())
-
     response = {"date": date_time[0],
                 "time": date_time[1]}
 
-    if request["type"] == "get":
-        values = []
-        params.remove("get")
-        for param in params:
+    if request["action"] == "get":
+        for param in request["parameters"]:
             func = PLUGINS["get"][param]
-            values.append(func())
+            response.update({param: func()})
 
-        response.update({"type": "get"})
+    elif request["action"] == "set":
+        # request.update({"wrong": 0})
+        validate(instance=request, schema=SCHEMA)
+        pprint(SCHEMA, indent=4, sort_dicts=False)
+        params = list(request.keys())
+        params.remove("action")
+        values = list(request.values())
+        values.remove("set")
+        response.update({"action": "set"})
         for iter in range(len(params)):
-            response.update({keys[iter]: [params[iter], values[iter]]})
-
-    elif request["type"] == "set":
-        params.remove("set")
-        for param, value in params:
-            func = PLUGINS["set"][param]
-            func(value)
-
-        response.update({"type": "set"})
-        for iter in range(len(params)):
-            response.update({keys[iter]: [params[iter][0], params[iter][1]]})
+            func = PLUGINS["set"][params[iter]]
+            func(values[iter])
+            response.update({params[iter]: values[iter]})
 
     return response
 

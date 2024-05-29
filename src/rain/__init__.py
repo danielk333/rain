@@ -1,2 +1,2 @@
 from .cli import client_cli, server_cli, new_user_cli
-from .plugins import register_plugin, PLUGINS
+from .plugins import register_plugin, PLUGINS, register_schema, SCHEMA
