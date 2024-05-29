@@ -29,7 +29,7 @@ Smaller TODOs:
 - [x] TODO 14: Convert the key from bytes to string
 - [x] TODO 15: Fix the request and command status checks
 - [x] TODO 16: Load server details from info file
-- [ ] TODO 17: Generate the data file
+- [ ] ~~TODO 17: Generate the data file~~
 - [x] TODO 18: Be able to handle finding values of multiple parameters
 - [ ] ~~TODO 19: Accept numerical inputs~~
 - [ ] ~~TODO 20: Move the shutdown command to the server side~~
@@ -60,6 +60,6 @@ Smaller TODOs:
 - [x] TODO 45: Move the argument handling into functions
 - [x] TODO 46: Move the config handling into functions
 - [x] TODO 47: Load parameters from somewhere other than an info file
-- [ ] TODO 48: Change the name of the private key file to include 'curve'
+- [x] TODO 48: Change the name of the private key file to include 'curve'
 
 Exception Handling:

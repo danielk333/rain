@@ -1,7 +1,6 @@
 import zmq.auth
 
 from pathlib import Path
-from shutil import copy
 
 from .config import DEFAULT_FOLDER, PLUGIN_FOLDER
 from .config import AUTHORISED_KEYS_FOLDER, KNOWN_HOSTS_FOLDER
@@ -45,29 +44,14 @@ def rain_register(args):
     file_pub, file_prv = zmq.auth.create_certificates(path_conf, args.name)
     key_pub, key_prv = zmq.auth.load_certificate(file_prv)
 
-    # TODO 48: Change the name of the private key file to include 'curve'
+    Path.rename(
+        path_conf / f"{args.name}.key",
+        path_pair / f"{args.name}.key"
+    )
     Path.rename(
         path_conf / f"{args.name}.key_secret",
-        path_pair / f"{args.name}.key_secret"
+        path_pair / f"{args.name}-curve.key_secret"
     )
-
-    if "server" in args.mode and "client" in args.mode:
-        copy(path_conf / f"{args.name}.key", path_auth / f"{args.name}.key")
-        Path.rename(
-            path_conf / f"{args.name}.key",
-            path_host / f"{args.name}.key"
-        )
-    else:
-        if "server" in args.mode:
-            Path.rename(
-                path_conf / f"{args.name}.key",
-                path_auth / f"{args.name}.key"
-            )
-        elif "client" in args.mode:
-            Path.rename(
-                path_conf / f"{args.name}.key",
-                path_host / f"{args.name}.key"
-            )
 
     if "server" in args.mode:
         if not path_plug.is_dir():
