@@ -9,14 +9,17 @@ PLUGINS = {
 }
 
 
-def add_plugin(action, name, func):
+def add_plugin(action, name, func, data_description):
     global PLUGINS
-    PLUGINS[action][name] = func
+    if name not in PLUGINS[action]:
+        PLUGINS[action][name] = {}
+    PLUGINS[action][name]["function"] = func
+    PLUGINS[action][name]["data_description"] = data_description
 
 
-def register_plugin(action, name):
+def register_plugin(action, name, data_description):
     def register_wrapper(func):
-        add_plugin(action, name, func)
+        add_plugin(action, name, func, data_description)
         return func
 
     return register_wrapper

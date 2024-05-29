@@ -62,7 +62,7 @@ def form_response(request):
         response.update({"name": request["name"]})
         data = []
         for param in request["name"]:
-            func = PLUGINS["get"][param]
+            func = PLUGINS["get"][param]["function"]
             data.append(func())
         response.update({"data": data})
 
@@ -75,7 +75,7 @@ def form_response(request):
         response.update({"name": request["name"]})
         data = []
         for item, value in zip(request["name"], request["data"]):
-            func = PLUGINS["set"][item]
+            func = PLUGINS["set"][item]["function"]
             response_value = func(value)
             data.append(response_value)
         response.update({"data": data})

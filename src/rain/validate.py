@@ -17,6 +17,9 @@ set_req_schema = {
             "items": {
                 "type": "string"
             }
+        },
+        "data_description": {
+            "type": "string"
         }
     }
 }
@@ -48,6 +51,9 @@ set_rep_schema = {
             "items": {
                 "type": "string"
             }
+        },
+        "data_description": {
+            "type": "string"
         }
     }
 }
@@ -88,6 +94,9 @@ get_rep_schema = {
             "items": {
                 "type": "string"
             }
+        },
+        "data_description": {
+            "type": "string"
         }
     }
 }
