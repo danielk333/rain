@@ -8,6 +8,7 @@ pprint(PLUGINS)
 @register_plugin(
     action="get",
     name="hello",
+    data_description="",
 )
 def say_hello(message):
     response = {

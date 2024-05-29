@@ -8,6 +8,7 @@ from rain import register_plugin, PLUGINS
 @register_plugin(
     action="get",
     name="hyperdrive",
+    data_description="",
 )
 def get_hyp():
     HOME = pathlib.Path(os.path.expanduser("~"))
