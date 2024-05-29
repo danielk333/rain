@@ -91,16 +91,13 @@ def get_datetime():
     return current_datetime
 
 
-# def load_config(config_file=None):
-def load_config(config_file, host_type):
+def load_server_config(config_file):
     ''' Loads the configurations of a server or client
 
     Parameters
     ----------
     config_file : Posix path
         The path to the config file
-    host_type : string
-        Whether a server or client config is being loaded
 
     Returns
     -------
@@ -110,34 +107,52 @@ def load_config(config_file, host_type):
 
     config = configparser.ConfigParser()
 
-    # config.read_dict(DEFAULT_SERVER_CFG)
-
     if config_file is not None:
         if not isinstance(config_file, Path):
             config_file = Path(config_file)
         config.read([config_file])
 
-    if host_type == "server":
-        for section, key in _CFG_PATHS_SERVER:
-            _path = Path(config.get(section, key)).resolve()
-            config.set(
-                section,
-                key,
-                str(_path),
-            )
-            if not _path.exists():
-                warnings.warn(f"configured path '{_path}' does not exist")
+    for section, key in _CFG_PATHS_SERVER:
+        _path = Path(config.get(section, key)).resolve()
+        config.set(
+            section,
+            key,
+            str(_path),
+        )
+        if not _path.exists():
+            warnings.warn(f"configured path '{_path}' does not exist")
 
-    elif host_type == "client":
-        for section, key in _CFG_PATHS_CLIENT:
-            _path = Path(config.get(section, key)).resolve()
-            config.set(
-                section,
-                key,
-                str(_path),
-            )
-            if not _path.exists():
-                warnings.warn(f"configured path '{_path}' does not exist")
+    return config
+
+
+def load_client_config(config_file):
+    ''' Loads the configurations of a server or client
+
+    Parameters
+    ----------
+    config_file : Posix path
+        The path to the config file
+
+    Returns
+    -------
+    config : ConfigParser
+        The set of configs
+    '''
+    config = configparser.ConfigParser()
+    if config_file is not None:
+        if not isinstance(config_file, Path):
+            config_file = Path(config_file)
+        config.read([config_file])
+
+    for section, key in _CFG_PATHS_CLIENT:
+        _path = Path(config.get(section, key)).resolve()
+        config.set(
+            section,
+            key,
+            str(_path),
+        )
+        if not _path.exists():
+            warnings.warn(f"configured path '{_path}' does not exist")
 
     return config
 
@@ -162,8 +177,7 @@ def get_client_config(folder, server, interaction):
     address : list of strings
         The server's hostname and port
     '''
-    conf_loc = folder / "hosts.cfg"
-    config = load_config(conf_loc, "client")
+    config = load_client_config(folder / "hosts.cfg")
 
     path_pub = Path(config.get("Security", "public-keys"))
     path_prv = Path(config.get("Security", "private-keys"))
@@ -200,8 +214,7 @@ def get_server_config(folder, interaction):
     address : list of strings
         The server's hostname and port
     '''
-    conf_loc = folder / "server.cfg"
-    config = load_config(conf_loc, "server")
+    config = load_server_config(folder / "server.cfg")
 
     path_pub = Path(config.get("Security", "public-keys"))
     path_prv = Path(config.get("Security", "private-keys"))

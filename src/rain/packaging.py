@@ -5,7 +5,7 @@ from jsonschema import validate
 
 from .fetch import get_datetime
 from .plugins import PLUGINS
-from .validate import set_req_schema
+from .validate import set_req_schema, get_req_schema
 
 
 def form_request(message_type, req_params):
@@ -58,6 +58,8 @@ def form_response(request):
                 "time": date_time[1]}
 
     if request["action"] == "get":
+        validate(instance=request, schema=get_req_schema)
+
         response.update({"action": "get"})
         response.update({"name": request["name"]})
         data = []
@@ -67,9 +69,7 @@ def form_response(request):
         response.update({"data": data})
 
     elif request["action"] == "set":
-        # request.update({"wrong": 0})
         validate(instance=request, schema=set_req_schema)
-        # pprint(SCHEMA, indent=4, sort_dicts=False)
 
         response.update({"action": "set"})
         response.update({"name": request["name"]})
@@ -137,7 +137,7 @@ def publish_response(sub_param):
     sub_param : string
         The name of the parameter whose value has just changed
     '''
-    func = PLUGINS["sub"][sub_param]
+    func = PLUGINS["sub"][sub_param]["function"]
     value = func()
     date_time = get_datetime()
     update = publish_update(sub_param, value, date_time)

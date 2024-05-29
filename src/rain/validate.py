@@ -61,7 +61,7 @@ set_rep_schema = {
 get_req_schema = {
     "type": "object",
     "description": "",
-    "required": ["action", "name", "data"],
+    "required": ["action", "name"],
     "properties": {
         "action": {
             "type": "string"
