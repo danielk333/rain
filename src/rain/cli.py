@@ -26,53 +26,45 @@ def client_cli():
         help="the path to your RAIN config folder"
     )
 
+    parser.add_argument(
+        "server",
+        help="the name of the server to connect to"
+    )
+
     subparsers = parser.add_subparsers(
-        title="RAIN Interactions",
-        description="List of interactions",
-        dest='interaction'
+        title="RAIN Actions",
+        dest="action"
     )
 
     parser_get = subparsers.add_parser(
-        'get',
-        help='get the values of parameters'
+        "get",
+        help="get the values of parameters"
     )
     parser_get.add_argument(
-        "server",
-        help="the instrument server to connect to"
-    )
-    parser_get.add_argument(
-        'param',
-        nargs='+',
-        help='the parameters to get'
+        "param",
+        nargs="+",
+        help="the parameters to get"
     )
 
     parser_set = subparsers.add_parser(
-        'set',
-        help='set the values of parameters'
+        "set",
+        help="set the values of parameters"
     )
     parser_set.add_argument(
-        "server",
-        help="the instrument server to connect to"
-    )
-    parser_set.add_argument(
-        '-p',
-        action='append',
+        "-p", "--param",
+        action="append",
         nargs=2,
-        help='the parameter to set and the value to set it to'
+        help="the parameter to set and the value to set it to"
     )
 
     parser_sub = subparsers.add_parser(
-        'sub',
-        help='subscribe to the values of parameters'
+        "sub",
+        help="subscribe to the values of parameters"
     )
     parser_sub.add_argument(
-        "server",
-        help="the instrument server to connect to"
-    )
-    parser_sub.add_argument(
-        'param',
-        nargs='+',
-        help='the parameters to subscribe to'
+        "param",
+        nargs="+",
+        help="the parameters to subscribe to"
     )
 
     args = parser.parse_args()
