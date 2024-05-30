@@ -106,8 +106,8 @@ def open_connection(socket, address):
         The hostname and port number of the server
     '''
     socket.bind(f"tcp://{address[0]}:{address[1]}")
-    print(f"I am a WIP publishing server open on {address[0]} " +
-          f"with port {address[1]} ready to talk to friends")
+    print(f"I am a WIP server open on {address[0]} with port {address[1]}" +
+          "readyto talk to friends")
 
 
 def setup_client(host_type, server, path_pub, path_prv):

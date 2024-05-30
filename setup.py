@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rain',
-    version='0.2',
+    version='0.3',
     license='GNU GPLv3',
     author='Calum Lonie',
     maintainer='Daniel Kastinen',
