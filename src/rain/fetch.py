@@ -27,7 +27,7 @@ def convert_server_args(args):
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
     else:
-        folder = args.cfgpath
+        folder = Path(args.cfgpath)
 
     return host_type, folder
 
@@ -60,7 +60,7 @@ def convert_client_args(args):
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
     else:
-        folder = args.cfgpath
+        folder = Path(args.cfgpath)
 
     return server, action, params, folder
 
