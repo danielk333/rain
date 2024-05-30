@@ -7,6 +7,31 @@ from .config import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
 from .plugins import PLUGINS, load_plugins
 
 
+def convert_server_args(args):
+    ''' Assigns the server CLI arguments to variables
+
+    Parameters
+    ----------
+    args : Namespace
+        The server CLI arguments
+
+    Returns
+    -------
+    host_type : string
+        The type of message for the server to send: pub or rep
+    folder : Posix path
+        The path to the folder containing the server's config file
+    '''
+    host_type = args.host
+
+    if args.cfgpath is None:
+        folder = DEFAULT_FOLDER
+    else:
+        folder = args.cfgpath
+
+    return host_type, folder
+
+
 def convert_client_args(args):
     ''' Assigns the client CLI arguments to variables
 
@@ -19,59 +44,25 @@ def convert_client_args(args):
     -------
     server : string
         The server name
-    interaction : string
-        The type of interaction with the server: get, set, sub
+    action : string
+        The type of action with the server: get, set, sub
     params : list of strings
         The parameters to interact with
     new_values : list of strings
-        The new values to assign to params (in a SET interaction)
+        The new values to assign to params (in a SET action)
     folder : Posix path
         The path to the folder containing the client's config file
     '''
     server = args.server
-    interaction = args.interaction
-
-    if interaction == "get" or interaction == "sub":
-        params = args.param
-        # new_values = None
-    elif interaction == "set":
-        params = args.p
-        # new_values = []
-        # for item in args.p:
-        #     params.append(item[0])
-        #     new_values.append(item[1])
+    action = args.action
+    params = args.param
 
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
     else:
         folder = args.cfgpath
 
-    return server, interaction, params, folder
-
-
-def convert_server_args(args):
-    ''' Assigns the server CLI arguments to variables
-
-    Parameters
-    ----------
-    args : Namespace
-        The server CLI arguments
-
-    Returns
-    -------
-    interaction : string
-        The type of interaction to allow with clients: pub, rep
-    folder : Posix path
-        The path to the folder containing the server's config file
-    '''
-    interaction = args.interaction
-
-    if args.cfgpath is None:
-        folder = DEFAULT_FOLDER
-    else:
-        folder = args.cfgpath
-
-    return interaction, folder
+    return server, action, params, folder
 
 
 def get_datetime():
@@ -157,7 +148,7 @@ def load_client_config(config_file):
     return config
 
 
-def get_client_config(folder, server, interaction):
+def get_client_config(folder, server, action):
     ''' Load the values inside the client's config file
 
     Parameters
@@ -166,7 +157,8 @@ def get_client_config(folder, server, interaction):
         The path to the folder containing the client's config file
     server : string
         The name of the server
-    interaction : "string"
+    action : "string"
+        The type of action with the server: get, set, sub
 
     Returns
     -------
@@ -182,9 +174,9 @@ def get_client_config(folder, server, interaction):
     path_pub = Path(config.get("Security", "public-keys"))
     path_prv = Path(config.get("Security", "private-keys"))
 
-    if interaction == "set" or interaction == "get":
+    if action == "set" or action == "get":
         act_type = "response"
-    elif interaction == "sub":
+    elif action == "sub":
         act_type = "publish"
     address = [
         config.get(f"{server}-{act_type}", "hostname"),
@@ -194,7 +186,7 @@ def get_client_config(folder, server, interaction):
     return path_pub, path_prv, address
 
 
-def get_server_config(folder, interaction):
+def get_server_config(folder, host_type):
     ''' Load the values inside the server's config file and loads the server's
         plugins
 
@@ -202,8 +194,8 @@ def get_server_config(folder, interaction):
     ----------
     folder : Posix path
         The path to the folder containing the client's config file
-    interaction : string
-        The type of interaction to allow with clients: pub, rep
+    host_type : string
+        The type of message for the server to send: pub or rep
 
     Returns
     -------
@@ -221,12 +213,12 @@ def get_server_config(folder, interaction):
     path_plug = Path(config.get("Plugins", "plugins"))
     load_plugins(path_plug)
 
-    if interaction == "rep":
+    if host_type == "rep":
         address = [
             config.get("Response", "hostname"),
             config.get("Response", "port"),
         ]
-    elif interaction == "pub":
+    elif host_type == "pub":
         address = [
             config.get("Publish", "hostname"),
             config.get("Publish", "port"),

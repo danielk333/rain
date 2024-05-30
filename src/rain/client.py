@@ -7,7 +7,7 @@ from .transport import send_request, receive_response, receive_subscribe
 from .validate import validate_response, validate_update
 
 
-def run_request(server, server_address, interaction, params, path_pub, path_prv):
+def run_request(server, server_address, action, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -15,8 +15,8 @@ def run_request(server, server_address, interaction, params, path_pub, path_prv)
     ----------
     server : string
         The name of the server
-    interaction : string
-        The type of interaction: get or set
+    action : string
+        The type of action: get or set
     params : list of strings
         The parameters to interact with
     path_pub: Posix path
@@ -24,10 +24,10 @@ def run_request(server, server_address, interaction, params, path_pub, path_prv)
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    message = form_request(interaction, params)
+    message = form_request(action, params)
 
     if message:
-        socket = setup_client("request", server, path_pub, path_prv)
+        socket = setup_client("req", server, path_pub, path_prv)
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
         validate_response(response)
@@ -52,7 +52,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         The path to the folder containing the client's private key
     '''
 
-    socket = setup_client("subscribe", server, path_pub, path_prv)
+    socket = setup_client("sub", server, path_pub, path_prv)
 
     for iter in range(len(params)):
         socket.setsockopt_string(zmq.SUBSCRIBE, params[iter])
@@ -75,10 +75,10 @@ def rain_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name, interaction, params, conf_folder = convert_client_args(args)
-    dir_pub, dir_prv, server_address = get_client_config(conf_folder, server_name, interaction)
+    server_name, action, params, conf_folder = convert_client_args(args)
+    dir_pub, dir_prv, server_address = get_client_config(conf_folder, server_name, action)
 
-    if interaction == "get" or interaction == "set":
-        run_request(server_name, server_address, interaction, params, dir_pub, dir_prv)
-    elif interaction == "sub":
+    if action == "get" or action == "set":
+        run_request(server_name, server_address, action, params, dir_pub, dir_prv)
+    elif action == "sub":
         run_subscribe(server_name, server_address, params, dir_pub, dir_prv)

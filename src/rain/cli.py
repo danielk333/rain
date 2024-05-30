@@ -88,9 +88,9 @@ def server_cli():
     )
 
     parser.add_argument(
-        "interaction",
+        "host",
         choices=["rep", "pub"],
-        help="the type of interaction with the server"
+        help="the type of message the server will send"
     )
 
     parser.add_argument(

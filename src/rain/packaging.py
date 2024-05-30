@@ -103,8 +103,9 @@ def publish_update(sub_param, value, current_datetime):
     '''
     update = {"date": current_datetime[0],
               "time": current_datetime[1],
-              "parameter": sub_param,
-              "value": value}
+              "action": "sub",
+              "name": sub_param,
+              "data": value}
 
     return update
 
@@ -124,7 +125,7 @@ def publish_format(update):
     publish : string
         The reformatted update to be published by the server
     '''
-    publish = f'{update["parameter"]}${json.dumps(update)}'
+    publish = f'{update["name"]}${json.dumps(update)}'
 
     return publish
 

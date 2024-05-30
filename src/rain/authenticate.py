@@ -35,20 +35,20 @@ def setup_socket(context, host_type):
     context : zmq.Context
         The ZMQ Context establishing the basis of the communication
     host_type : string
-        The type of connection to create: publish, request, response, subscribe
+        The type of connection to create: pub, req, rep, sub
 
     Returns
     -------
     socket : zmq.Socket
         The socket for this desired connection
     '''
-    if host_type == "publish":
+    if host_type == "pub":
         socket = context.socket(zmq.PUB)
-    elif host_type == "request":
+    elif host_type == "req":
         socket = context.socket(zmq.REQ)
-    elif host_type == "response":
+    elif host_type == "rep":
         socket = context.socket(zmq.REP)
-    elif host_type == "subscribe":
+    elif host_type == "sub":
         socket = context.socket(zmq.SUB)
 
     return socket
@@ -86,7 +86,6 @@ def auth_client(socket, server, path_pub, path_prv):
         The path to the folder containg the client's private key
     '''
     client_file_prv = list(path_prv.iterdir())[0]
-    # client_file_prv = path_prv.joinpath(f"{client}.key_secret")
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub

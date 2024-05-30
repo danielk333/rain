@@ -21,7 +21,7 @@ def run_response(address, path_pub, path_prv):
         The path to the folder containing the server's private key
     '''
 
-    auth, socket = setup_server("response", address, path_pub, path_prv)
+    auth, socket = setup_server("rep", address, path_pub, path_prv)
 
     server_open = True
     while server_open:
@@ -46,7 +46,7 @@ def run_publish(address, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    auth, socket = setup_server("publish", address, path_pub, path_prv)
+    auth, socket = setup_server("pub", address, path_pub, path_prv)
     possible_sub = sub_params()
     server_open = True
 
@@ -68,10 +68,10 @@ def rain_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    interaction, conf_folder = convert_server_args(args)
-    dir_pub, dir_prv, server_address = get_server_config(conf_folder, interaction)
+    host_type, conf_folder = convert_server_args(args)
+    dir_pub, dir_prv, server_address = get_server_config(conf_folder, host_type)
 
-    if interaction == "rep":
+    if host_type == "rep":
         run_response(server_address, dir_pub, dir_prv)
-    elif interaction == "pub":
+    elif host_type == "pub":
         run_publish(server_address, dir_pub, dir_prv)
