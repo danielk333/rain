@@ -7,7 +7,7 @@ setup(
     author='Calum Lonie',
     maintainer='Daniel Kastinen',
     install_requires=[
-        'zmq',
+        'pyzmq',
         'jsonschema',
     ],
     entry_points={
