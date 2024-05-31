@@ -21,7 +21,8 @@ def setup_auth(context, address, path_pub):
     '''
     auth = ThreadAuthenticator(context)
     auth.start()
-    auth.allow(address[0])
+    # TODO 49: Set .allow() from the config
+    # auth.allow(address[0])
     auth.configure_curve(domain="*", location=path_pub)
 
     return auth
