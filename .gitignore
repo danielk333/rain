@@ -4,6 +4,9 @@ infra_info/*
 public_keys/*
 private_keys/*
 
+# Editor files
+*.code-*
+
 # Test files
 test/*
 test.py
