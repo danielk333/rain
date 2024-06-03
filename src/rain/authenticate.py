@@ -2,15 +2,15 @@ import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
 
-def setup_auth(context, address, path_pub):
+def setup_auth(context, allowed, path_pub):
     ''' Set up the thread used as part of the authentication process
 
     Parameters
     ----------
     context : zmq.Context
         The ZMQ Context establishing the basis of the communication
-    address : list of strings
-        The hostname and port of the server
+    allowed : list of strings
+        The hostnames of the clients that are allowed to connect to this server
     path_pub : Posix path
         The path to the folder containing the authorised public keys
 
@@ -21,8 +21,8 @@ def setup_auth(context, address, path_pub):
     '''
     auth = ThreadAuthenticator(context)
     auth.start()
-    # TODO 49: Set .allow() from the config
-    # auth.allow(address[0])
+    for item in allowed:
+        auth.allow(item)
     auth.configure_curve(domain="*", location=path_pub)
 
     return auth
@@ -107,8 +107,8 @@ def open_connection(socket, address):
         The hostname and port number of the server
     '''
     socket.bind(f"tcp://{address[0]}:{address[1]}")
-    print(f"I am a WIP server open on {address[0]} with port {address[1]}" +
-          "readyto talk to friends")
+    print(f"I am a WIP server open on {address[0]} with port {address[1]} " +
+          "ready to talk to friends")
 
 
 def setup_client(host_type, server, path_pub, path_prv):
@@ -139,7 +139,7 @@ def setup_client(host_type, server, path_pub, path_prv):
     return socket
 
 
-def setup_server(host_type, address, path_pub, path_prv):
+def setup_server(host_type, address, allowed, path_pub, path_prv):
     ''' The top-level function that organises the initialisation of the server
         connection
 
@@ -149,6 +149,8 @@ def setup_server(host_type, address, path_pub, path_prv):
         The type of connection to create: publish, request, response, subscribe
     address : list of strings
         The hostname and port of the server
+    allowed : list of strings
+        The hostnames of the clients that are allowed to connect to this server
     path_pub : Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
@@ -164,7 +166,7 @@ def setup_server(host_type, address, path_pub, path_prv):
     context = zmq.Context()
     socket = setup_socket(context, host_type)
 
-    auth = setup_auth(context, address, path_pub)
+    auth = setup_auth(context, allowed, path_pub)
     auth_server(socket, path_prv)
     open_connection(socket, address)
 

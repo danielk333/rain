@@ -64,5 +64,6 @@ Smaller TODOs:
 - [x] TODO 48: Change the name of the private key file to include 'curve'
 - [x] TODO 49: Load the first private key file
 - [x] TODO 50: Remove instrument type input
+- [x] TODO 51: Set .allow() from the config
 
 Exception Handling:

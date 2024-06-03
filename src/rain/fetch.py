@@ -205,6 +205,8 @@ def get_server_config(folder, host_type):
         The path to the folder containing the client's private key
     address : list of strings
         The server's hostname and port
+    allowed : list of strings
+        The hostnames of the clients that are allowed to connect to this server
     '''
     config = load_server_config(folder / "server.cfg")
 
@@ -224,7 +226,11 @@ def get_server_config(folder, host_type):
             config.get("Publish", "port"),
         ]
 
-    return path_pub, path_prv, address
+    allowed = []
+    for option in config["Allowed"]:
+        allowed.append(config.get("Allowed", option))
+
+    return path_pub, path_prv, address, allowed
 
 
 def sub_params():

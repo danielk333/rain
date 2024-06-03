@@ -6,7 +6,7 @@ from .packaging import form_response, publish_response
 from .transport import receive_request, send_response
 
 
-def run_response(address, path_pub, path_prv):
+def run_response(address, allowed, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -14,6 +14,8 @@ def run_response(address, path_pub, path_prv):
     ----------
     address : list of strings
         The server's hostname and port
+    allowed : list of strings
+        The hostnames of the clients that are allowed to connect to this server
     path_pub: Posix path
         The path to the folder containing the public keys of the authorised
         hosts
@@ -21,7 +23,7 @@ def run_response(address, path_pub, path_prv):
         The path to the folder containing the server's private key
     '''
 
-    auth, socket = setup_server("rep", address, path_pub, path_prv)
+    auth, socket = setup_server("rep", address, allowed, path_pub, path_prv)
 
     server_open = True
     while server_open:
@@ -32,7 +34,7 @@ def run_response(address, path_pub, path_prv):
     auth.stop()
 
 
-def run_publish(address, path_pub, path_prv):
+def run_publish(address, allowed, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -40,13 +42,15 @@ def run_publish(address, path_pub, path_prv):
     ----------
     address : list of strings
         The server's hostname and port
+    allowed : list of strings
+        The hostnames of the clients that are allowed to connect to this server
     path_pub: Posix path
         The path to the folder containing the public keys of the authorised
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    auth, socket = setup_server("pub", address, path_pub, path_prv)
+    auth, socket = setup_server("pub", address, allowed, path_pub, path_prv)
     possible_sub = sub_params()
     server_open = True
 
@@ -69,9 +73,9 @@ def rain_server(args):
         The command line arguments entered by the user
     '''
     host_type, conf_folder = convert_server_args(args)
-    dir_pub, dir_prv, server_address = get_server_config(conf_folder, host_type)
+    dir_pub, dir_prv, server_address, allowed_add = get_server_config(conf_folder, host_type)
 
     if host_type == "rep":
-        run_response(server_address, dir_pub, dir_prv)
+        run_response(server_address, allowed_add, dir_pub, dir_prv)
     elif host_type == "pub":
-        run_publish(server_address, dir_pub, dir_prv)
+        run_publish(server_address, allowed_add, dir_pub, dir_prv)
