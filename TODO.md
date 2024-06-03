@@ -62,5 +62,7 @@ Smaller TODOs:
 - [x] TODO 46: Move the config handling into functions
 - [x] TODO 47: Load parameters from somewhere other than an info file
 - [x] TODO 48: Change the name of the private key file to include 'curve'
+- [ ] TODO 50: Load the first private key file
+- [ ] TODO 51: Remove instrument type input
 
 Exception Handling:

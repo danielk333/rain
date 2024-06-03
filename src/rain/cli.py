@@ -105,6 +105,7 @@ def server_cli():
     return
 
 
+# TODO 51: Remove instrument type input
 def new_user_cli():
     ''' The CLI for users who want to register an instrument to RAIN
 
