@@ -105,7 +105,6 @@ def server_cli():
     return
 
 
-# TODO 51: Remove instrument type input
 def new_user_cli():
     ''' The CLI for users who want to register an instrument to RAIN
 
@@ -122,13 +121,6 @@ def new_user_cli():
     parser.add_argument(
         "name",
         help="the name of the instrument"
-    )
-
-    parser.add_argument(
-        "mode",
-        nargs='+',
-        choices=["server", "client"],
-        help="whether the instrument can act as a server, a client or both"
     )
 
     parser.add_argument(
