@@ -65,8 +65,7 @@ def auth_server(socket, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    # TODO 50: Load the first private key file
-    server_file_prv = list(path_prv.iterdir())[0]
+    server_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
     socket.curve_secretkey = server_prv
     socket.curve_publickey = server_pub
@@ -87,8 +86,7 @@ def auth_client(socket, server, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containg the client's private key
     '''
-    # TODO 50: Load the first private key file
-    client_file_prv = list(path_prv.iterdir())[0]
+    client_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub
