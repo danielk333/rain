@@ -1,10 +1,9 @@
 import logging
-import os
-import pathlib
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-HOME = pathlib.Path(os.path.expanduser("~"))
+HOME = Path(Path.home())
 
 # Default paths
 DEFAULT_FOLDER = (HOME / ".config" / "rain").resolve()
