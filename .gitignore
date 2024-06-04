@@ -13,6 +13,7 @@ test.py
 
 # Virtual environments
 venv/*
+.python-version
 
 # Distribution files
 dist/*
