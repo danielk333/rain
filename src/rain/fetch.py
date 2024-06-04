@@ -242,6 +242,6 @@ def sub_params():
     list_params : list of strings
         A list of parameters that can be subscribed to
     '''
-    list_params = PLUGINS["sub"].keys()
+    list_params = list(PLUGINS["sub"].keys())
 
     return list_params

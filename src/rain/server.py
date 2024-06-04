@@ -53,10 +53,12 @@ def run_publish(address, allowed, path_pub, path_prv):
     auth, socket = setup_server("pub", address, allowed, path_pub, path_prv)
     possible_sub = sub_params()
     server_open = True
+    prev_values = []
+    for item in possible_sub:
+        prev_values.append("")
 
     while server_open:
-        # TODO 31: Send subscription updates when changes occur
-        time.sleep(2)
+        time.sleep(1)
         for param in possible_sub:
             response = publish_response(param)
             socket.send_string(response)

@@ -59,12 +59,23 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
 
     print("Waiting for updates from the server")
     socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
+
+    prev_values = []
+    for item in params:
+        prev_values.append([item, ""])
+
     client_connected = True
     while client_connected:
         formatted_update = receive_subscribe(socket)
         update = pub_split(formatted_update)
         validate_update(update)
-        print_response(update)
+
+        for item in range(len(prev_values)):
+            if prev_values[item][0] == update["name"]:
+                index = item
+        if update["data"] != prev_values[index][1]:
+            prev_values[index][1] = update["data"]
+            print_response(update)
 
 
 def rain_client(args):

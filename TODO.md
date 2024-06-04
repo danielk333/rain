@@ -44,7 +44,7 @@ Smaller TODOs:
 - [x] TODO 28: Move the paths into a separate function
 - [x] TODO 29: Split the function calls into separate files
 - [x] TODO 30: Merge the setup functions
-- [ ] TODO 31: Send subscription updates when changes occur
+- [x] TODO 31: Send subscription updates when changes occur
 - [x] TODO 32: Rename function parameters so they no longer match runtime variables
 - [x] TODO 33: Write proper headers for each file
 - [x] TODO 34: Combine the client, server, publish and subscribe run functions into one file
