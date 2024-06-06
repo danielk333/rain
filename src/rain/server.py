@@ -1,9 +1,15 @@
+import threading
 import time
+import queue
 
 from .authenticate import setup_server
 from .fetch import convert_server_args, get_server_config, sub_params
-from .packaging import form_response, publish_response
+from .fetch import get_datetime
+from .packaging import form_response  # , publish_response
+from .packaging import publish_update, publish_format
+from .plugins import PLUGINS
 from .transport import receive_request, send_response
+from .validate import validate_update
 
 
 def run_response(address, allowed, path_pub, path_prv):
@@ -34,7 +40,6 @@ def run_response(address, allowed, path_pub, path_prv):
     auth.stop()
 
 
-# TODO 52: Set up a thread in the publish server for each parameter
 # TODO 53: Set up clock frequencies for each timed parameter
 # TODO 54: Set up a trigger mechanism for triggered event/parameters
 def run_publish(address, allowed, path_pub, path_prv):
@@ -55,16 +60,29 @@ def run_publish(address, allowed, path_pub, path_prv):
     '''
     auth, socket = setup_server("pub", address, allowed, path_pub, path_prv)
     possible_sub = sub_params()
+    q = queue.Queue()
     server_open = True
-    prev_values = []
-    for item in possible_sub:
-        prev_values.append("")
+
+    def worker(name):
+        while server_open:
+            func = PLUGINS["sub"][name]["function"]
+            value = func()
+            q.put([name, value])
+            time.sleep(2)
+
+    for param in possible_sub:
+        t = threading.Thread(target=worker, args=[param])
+        t.start()
 
     while server_open:
-        time.sleep(1)
-        for param in possible_sub:
-            response = publish_response(param)
-            socket.send_string(response)
+        # print(q.qsize())
+        name, new_value = q.get()
+        # print(f"{name} - {new_value}")
+        date_time = get_datetime()
+        update = publish_update(name, new_value, date_time)
+        validate_update(update)
+        publish = publish_format(update)
+        socket.send_string(publish)
 
     auth.stop()
 

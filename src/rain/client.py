@@ -71,12 +71,14 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         update = pub_split(formatted_update)
         validate_update(update)
 
-        for item in range(len(prev_values)):
-            if prev_values[item][0] == update["name"]:
-                index = item
-        if update["data"] != prev_values[index][1]:
-            prev_values[index][1] = update["data"]
-            print_response(update)
+        # for item in range(len(prev_values)):
+        #     if prev_values[item][0] == update["name"]:
+        #         index = item
+        # if update["data"] != prev_values[index][1]:
+        #     prev_values[index][1] = update["data"]
+        #     print_response(update)
+
+        print_response(update)
 
 
 def rain_client(args):
