@@ -34,6 +34,9 @@ def run_response(address, allowed, path_pub, path_prv):
     auth.stop()
 
 
+# TODO 52: Set up a thread in the publish server for each parameter
+# TODO 53: Set up clock frequencies for each timed parameter
+# TODO 54: Set up a trigger mechanism for triggered event/parameters
 def run_publish(address, allowed, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server

@@ -65,5 +65,9 @@ Smaller TODOs:
 - [x] TODO 49: Load the first private key file
 - [x] TODO 50: Remove instrument type input
 - [x] TODO 51: Set .allow() from the config
+- [ ] TODO 52: Set up a thread in the publish server for each parameter
+- [ ] TODO 53: Set up clock frequencies for each timed parameter
+- [ ] TODO 54: Set up a trigger mechanism for triggered event/parameters
+- [ ] TODO 55: Filter for all messages or only for changes
 
 Exception Handling:

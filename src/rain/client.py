@@ -34,6 +34,7 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
         print_response(response)
 
 
+# TODO 55: Filter for all messages or only for changes
 def run_subscribe(server, server_address, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
