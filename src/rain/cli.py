@@ -62,9 +62,14 @@ def client_cli():
         help="subscribe to the values of parameters"
     )
     parser_sub.add_argument(
-        "param",
-        nargs="+",
-        help="the parameters to subscribe to"
+        "-c", "--changes",
+        action="append",
+        help="subscribe to a change in a parameter"
+    )
+    parser_sub.add_argument(
+        "-f", "--freq",
+        action="append",
+        help="subscribe to all values of a parameter"
     )
 
     args = parser.parse_args()

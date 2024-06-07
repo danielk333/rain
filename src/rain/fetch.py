@@ -55,7 +55,15 @@ def convert_client_args(args):
     '''
     server = args.server
     action = args.action
-    params = args.param
+
+    if action == "sub":
+        params = [[], []]
+        for item in args.changes:
+            params[0].append(item)
+        for item in args.freq:
+            params[1].append(item)
+    elif action == "get" or action == "set":
+        params = args.param
 
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER

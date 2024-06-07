@@ -55,15 +55,19 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
 
     socket = setup_client("sub", server, path_pub, path_prv)
 
-    for iter in range(len(params)):
-        socket.setsockopt_string(zmq.SUBSCRIBE, params[iter])
+    change_params = params[0]
+    freq_params = params[1]
+    prev_values = []
+    for item in change_params:
+        prev_values.append([item, ""])
+
+    for item in change_params:
+        socket.setsockopt_string(zmq.SUBSCRIBE, item)
+    for item in freq_params:
+        socket.setsockopt_string(zmq.SUBSCRIBE, item)
 
     print("Waiting for updates from the server")
     socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
-
-    prev_values = []
-    for item in params:
-        prev_values.append([item, ""])
 
     client_connected = True
     while client_connected:
@@ -71,14 +75,15 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         update = pub_split(formatted_update)
         validate_update(update)
 
-        # for item in range(len(prev_values)):
-        #     if prev_values[item][0] == update["name"]:
-        #         index = item
-        # if update["data"] != prev_values[index][1]:
-        #     prev_values[index][1] = update["data"]
-        #     print_response(update)
-
-        print_response(update)
+        if update["name"] in freq_params:
+            print_response(update)
+        elif update["name"] in change_params:
+            for item in range(len(prev_values)):
+                if prev_values[item][0] == update["name"]:
+                    index = item
+            if update["data"] != prev_values[index][1]:
+                prev_values[index][1] = update["data"]
+                print_response(update)
 
 
 def rain_client(args):
