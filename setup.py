@@ -14,7 +14,8 @@ setup(
         'console_scripts': [
             'rain-client = rain.cli:client_cli',
             'rain-server = rain.cli:server_cli',
-            'rain-register = rain.cli:new_user_cli'
+            'rain-register = rain.cli:new_user_cli',
+            'rain-trigger = rain.cli:trigger_cli'
         ]
     }
 )

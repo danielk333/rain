@@ -57,11 +57,16 @@ def convert_client_args(args):
     action = args.action
 
     if action == "sub":
-        params = [[], []]
-        for item in args.changes:
-            params[0].append(item)
-        for item in args.freq:
-            params[1].append(item)
+        params = [[], [], []]
+        if args.changes is not None:
+            for item in args.changes:
+                params[0].append(item)
+        if args.freq is not None:
+            for item in args.freq:
+                params[1].append(item)
+        if args.trigger is not None:
+            for item in args.trigger:
+                params[2].append(item)
     elif action == "get" or action == "set":
         params = args.param
 

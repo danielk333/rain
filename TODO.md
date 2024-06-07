@@ -67,7 +67,7 @@ Smaller TODOs:
 - [x] TODO 51: Set .allow() from the config
 - [x] TODO 52: Set up a thread in the publish server for each parameter
 - [x] TODO 53: Set up clock frequencies for each timed parameter
-- [ ] TODO 54: Set up a trigger mechanism for triggered event/parameters
+- [x] TODO 54: Set up a trigger mechanism for triggered event/parameters
 - [x] TODO 55: Filter for all messages or only for changes
 
 Exception Handling:

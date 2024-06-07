@@ -4,6 +4,7 @@ import pathlib
 from .client import rain_client
 from .register import rain_register
 from .server import rain_server
+from .trigger import rain_trigger
 
 # TODO 44: Improve the layout of the --help command
 
@@ -71,6 +72,11 @@ def client_cli():
         action="append",
         help="subscribe to all values of a parameter"
     )
+    parser_sub.add_argument(
+        "-t", "--trigger",
+        action="append",
+        help="subscribe to a triggered parameter"
+    )
 
     args = parser.parse_args()
 
@@ -106,6 +112,36 @@ def server_cli():
     args = parser.parse_args()
 
     rain_server(args)
+
+    return
+
+
+def trigger_cli():
+    ''' The CLI for a user wanting to send a trigger to a PUB server
+
+    Returns
+    -------
+    args: Namespace
+        The command line arguments entered by the user
+    '''
+    parser = argparse.ArgumentParser(
+        prog="RAIN",
+        description="RAIN Trigger Interface"
+    )
+
+    parser.add_argument(
+        "name",
+        help="the name of the trigger to send"
+    )
+
+    parser.add_argument(
+        "value",
+        help="the value assigned to this trigger"
+    )
+
+    args = parser.parse_args()
+
+    rain_trigger(args)
 
     return
 

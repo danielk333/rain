@@ -1,6 +1,8 @@
+import queue
 import threading
 import time
-import queue
+
+import zmq
 
 from .authenticate import setup_server
 from .fetch import convert_server_args, get_server_config, sub_params
@@ -40,7 +42,6 @@ def run_response(address, allowed, path_pub, path_prv):
     auth.stop()
 
 
-# TODO 54: Set up a trigger mechanism for triggered event/parameters
 def run_publish(address, allowed, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
@@ -62,11 +63,22 @@ def run_publish(address, allowed, path_pub, path_prv):
     q = queue.Queue()
     server_open = True
 
+    def trigger_wait():
+        while server_open:
+            context = zmq.Context()
+            socket = context.socket(zmq.REP)
+            socket.bind("tcp://127.0.0.1:1793")
+            trigger = socket.recv_json(0)
+            q.put([trigger["name"], trigger["data"]])
+
     def worker(name, func, interval):
         while server_open:
             value = func()
             q.put([name, value])
             time.sleep(interval)
+
+    trig = threading.Thread(target=trigger_wait)
+    trig.start()
 
     for param in possible_sub:
         func = PLUGINS["sub"][param]["function"]

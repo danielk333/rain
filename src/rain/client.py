@@ -57,13 +57,15 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
 
     change_params = params[0]
     freq_params = params[1]
+    trig_params = params[2]
     prev_values = []
-    for item in change_params:
-        prev_values.append([item, ""])
 
     for item in change_params:
+        prev_values.append([item, ""])
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
     for item in freq_params:
+        socket.setsockopt_string(zmq.SUBSCRIBE, item)
+    for item in trig_params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
 
     print("Waiting for updates from the server")
@@ -84,6 +86,8 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
             if update["data"] != prev_values[index][1]:
                 prev_values[index][1] = update["data"]
                 print_response(update)
+        elif update["name"] in trig_params:
+            print_response(update)
 
 
 def rain_client(args):
