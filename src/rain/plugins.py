@@ -2,6 +2,8 @@ import importlib
 import pathlib
 import sys
 
+# TODO 56: Register triggered events
+
 PLUGINS = {
     "set": {},
     "get": {},

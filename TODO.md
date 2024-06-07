@@ -69,5 +69,7 @@ Smaller TODOs:
 - [x] TODO 53: Set up clock frequencies for each timed parameter
 - [x] TODO 54: Set up a trigger mechanism for triggered event/parameters
 - [x] TODO 55: Filter for all messages or only for changes
+- [ ] TODO 56: Register triggered events
+- [ ] TODO 57: Nicely shut down a subscribed client
 
 Exception Handling:
