@@ -40,7 +40,6 @@ def run_response(address, allowed, path_pub, path_prv):
     auth.stop()
 
 
-# TODO 53: Set up clock frequencies for each timed parameter
 # TODO 54: Set up a trigger mechanism for triggered event/parameters
 def run_publish(address, allowed, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
@@ -63,21 +62,20 @@ def run_publish(address, allowed, path_pub, path_prv):
     q = queue.Queue()
     server_open = True
 
-    def worker(name):
+    def worker(name, func, interval):
         while server_open:
-            func = PLUGINS["sub"][name]["function"]
             value = func()
             q.put([name, value])
-            time.sleep(2)
+            time.sleep(interval)
 
     for param in possible_sub:
-        t = threading.Thread(target=worker, args=[param])
+        func = PLUGINS["sub"][param]["function"]
+        get_func, interval = func()
+        t = threading.Thread(target=worker, args=[param, get_func, interval])
         t.start()
 
     while server_open:
-        # print(q.qsize())
         name, new_value = q.get()
-        # print(f"{name} - {new_value}")
         date_time = get_datetime()
         update = publish_update(name, new_value, date_time)
         validate_update(update)
