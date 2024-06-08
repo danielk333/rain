@@ -2,12 +2,11 @@ import importlib
 import pathlib
 import sys
 
-# TODO 56: Register triggered events
-
 PLUGINS = {
-    "set": {},
     "get": {},
-    "sub": {}
+    "set": {},
+    "sub": {},
+    "sub-trigger": {}
 }
 
 
@@ -15,7 +14,8 @@ def add_plugin(action, name, func, data_description):
     global PLUGINS
     if name not in PLUGINS[action]:
         PLUGINS[action][name] = {}
-    PLUGINS[action][name]["function"] = func
+    if func is not None:
+        PLUGINS[action][name]["function"] = func
     PLUGINS[action][name]["data_description"] = data_description
 
 
@@ -25,6 +25,10 @@ def register_plugin(action, name, data_description):
         return func
 
     return register_wrapper
+
+
+def register_trigger(action, name, data_description):
+    add_plugin(action, name, None, data_description)
 
 
 def load_plugins(plugins_folder):

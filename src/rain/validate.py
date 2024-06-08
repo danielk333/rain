@@ -122,4 +122,5 @@ get_rep_schema = {
     }
 }
 
+# TODO 58: Validate published messages
 pub_schema = {}
