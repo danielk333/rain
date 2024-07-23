@@ -27,8 +27,8 @@ def register_plugin(action, name, data_description):
     return register_wrapper
 
 
-def register_trigger(action, name, data_description):
-    add_plugin(action, name, None, data_description)
+def register_trigger(name, data_description):
+    add_plugin("sub-trigger", name, None, data_description)
 
 
 def load_plugins(plugins_folder):

@@ -64,10 +64,10 @@ def run_publish(address, allowed, path_pub, path_prv):
     server_open = True
 
     def trigger_wait():
+        context = zmq.Context()
+        socket = context.socket(zmq.REP)
+        socket.bind("tcp://127.0.0.1:1793")
         while server_open:
-            context = zmq.Context()
-            socket = context.socket(zmq.REP)
-            socket.bind("tcp://127.0.0.1:1793")
             trigger = socket.recv_json(0)
             q.put([trigger["name"], trigger["data"]])
 
