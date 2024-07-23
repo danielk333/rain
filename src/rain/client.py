@@ -31,7 +31,9 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
         validate_response(response)
-        print_response(response)
+        # print_response(response)
+
+        return response
 
 
 # TODO 57: Nicely shut down a subscribed client
@@ -78,16 +80,19 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         validate_update(update)
 
         if update["name"] in freq_params:
-            print_response(update)
+            yield update
+            # print_response(update)
         elif update["name"] in change_params:
             for item in range(len(prev_values)):
                 if prev_values[item][0] == update["name"]:
                     index = item
             if update["data"] != prev_values[index][1]:
                 prev_values[index][1] = update["data"]
-                print_response(update)
+                yield update
+                # print_response(update)
         elif update["name"] in trig_params:
-            print_response(update)
+            yield update
+            # print_response(update)
 
 
 def rain_client(args):
@@ -102,6 +107,9 @@ def rain_client(args):
     dir_pub, dir_prv, server_address = get_client_config(conf_folder, server_name, action)
 
     if action == "get" or action == "set":
-        run_request(server_name, server_address, action, params, dir_pub, dir_prv)
+        response = run_request(server_name, server_address, action, params, dir_pub, dir_prv)
     elif action == "sub":
-        run_subscribe(server_name, server_address, params, dir_pub, dir_prv)
+        message = run_subscribe(server_name, server_address, params, dir_pub, dir_prv)
+        response = next(message)
+
+    return response

@@ -2,6 +2,7 @@ import argparse
 import pathlib
 
 from .client import rain_client
+from .packaging import print_response
 from .register import rain_register
 from .server import rain_server
 from .trigger import rain_trigger
@@ -80,7 +81,9 @@ def client_cli():
 
     args = parser.parse_args()
 
-    rain_client(args)
+    message = rain_client(args)
+
+    print_response(message)
 
     return
 
