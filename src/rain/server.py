@@ -70,6 +70,11 @@ def run_publish(address, allowed, path_pub, path_prv):
         while server_open:
             trigger = socket.recv_json(0)
             q.put([trigger["name"], trigger["data"]])
+            response = {
+                "name": trigger["name"],
+                "data": "Trigger received"
+            }
+            socket.send_json(response, 0)
 
     def worker(name, func, interval):
         while server_open:
