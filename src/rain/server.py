@@ -11,7 +11,7 @@ from .packaging import form_response
 from .packaging import publish_update, publish_format
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
-from .validate import validate_update, validate_request, validate_response
+from .validate import validate_request, validate_response, validate_update
 
 
 def run_response(address, allowed, path_pub, path_prv):
@@ -42,6 +42,7 @@ def run_response(address, allowed, path_pub, path_prv):
         validate_response(response)
         send_response(socket, response)
         print(response)
+
     auth.stop()
 
 

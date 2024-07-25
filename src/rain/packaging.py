@@ -124,25 +124,6 @@ def publish_format(update):
     return publish
 
 
-def publish_response(sub_param):
-    ''' A higher level function that handles the formatting of an update for
-        the server to publish
-
-    Parameters
-    ----------
-    sub_param : string
-        The name of the parameter whose value has just changed
-    '''
-    func = PLUGINS["sub"][sub_param]["function"]
-    value = func()
-    date_time = get_datetime()
-    update = publish_update(sub_param, value, date_time)
-    validate_update(update)
-    publish = publish_format(update)
-
-    return publish
-
-
 def pub_split(publish):
     ''' Removes the prefix to the update published by the server, in order to
         recover only the JSON data
