@@ -125,6 +125,10 @@ def gen_server_cfg(name, path_conf, path_pub, path_prv, path_plug):
         'hostname': '127.0.0.1',
         'port': '2468'
     }
+    config['Trigger'] = {
+        'hostname': '127.0.0.1',
+        'port': '1793'
+    }
     config['Allowed'] = {}
 
     filename = path_conf / "server.cfg"

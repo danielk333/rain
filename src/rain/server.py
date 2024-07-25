@@ -46,7 +46,7 @@ def run_response(address, allowed, path_pub, path_prv):
     auth.stop()
 
 
-def run_publish(address, allowed, path_pub, path_prv):
+def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -62,7 +62,7 @@ def run_publish(address, allowed, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    auth, socket = setup_server("pub", address, allowed, path_pub, path_prv)
+    auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv)
     possible_sub = sub_params()
     q = queue.Queue()
     server_open = True
@@ -70,7 +70,7 @@ def run_publish(address, allowed, path_pub, path_prv):
     def trigger_wait():
         context = zmq.Context()
         socket = context.socket(zmq.REP)
-        socket.bind("tcp://127.0.0.1:1793")
+        socket.bind(f"tcp://{trig_addr[0]}:{trig_addr[1]}")
         while server_open:
             trigger = socket.recv_json(0)
             q.put([trigger["name"], trigger["data"]])
@@ -115,9 +115,9 @@ def rain_server(args):
         The command line arguments entered by the user
     '''
     host_type, conf_folder = convert_server_args(args)
-    dir_pub, dir_prv, server_address, allowed_add = get_server_config(conf_folder, host_type)
+    dir_pub, dir_prv, server_address, trigger_address, allowed_add = get_server_config(conf_folder, host_type)
 
     if host_type == "rep":
         run_response(server_address, allowed_add, dir_pub, dir_prv)
     elif host_type == "pub":
-        run_publish(server_address, allowed_add, dir_pub, dir_prv)
+        run_publish(server_address, trigger_address, allowed_add, dir_pub, dir_prv)

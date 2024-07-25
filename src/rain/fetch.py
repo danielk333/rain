@@ -231,19 +231,24 @@ def get_server_config(folder, host_type):
     if host_type == "rep":
         address = [
             config.get("Response", "hostname"),
-            config.get("Response", "port"),
+            config.get("Response", "port")
         ]
+        trig_addr = None
     elif host_type == "pub":
         address = [
             config.get("Publish", "hostname"),
-            config.get("Publish", "port"),
+            config.get("Publish", "port")
+        ]
+        trig_addr = [
+            config.get("Trigger", "hostname"),
+            config.get("Trigger", "port")
         ]
 
     allowed = []
     for option in config["Allowed"]:
         allowed.append(config.get("Allowed", option))
 
-    return path_pub, path_prv, address, allowed
+    return path_pub, path_prv, address, trig_addr, allowed
 
 
 def sub_params():
