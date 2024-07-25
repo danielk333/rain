@@ -7,11 +7,11 @@ import zmq
 from .authenticate import setup_server
 from .fetch import convert_server_args, get_server_config, sub_params
 from .fetch import get_datetime
-from .packaging import form_response  # , publish_response
+from .packaging import form_response
 from .packaging import publish_update, publish_format
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
-from .validate import validate_update
+from .validate import validate_update, validate_request, validate_response
 
 
 def run_response(address, allowed, path_pub, path_prv):
@@ -36,9 +36,12 @@ def run_response(address, allowed, path_pub, path_prv):
     server_open = True
     while server_open:
         message = receive_request(socket)
+        print(message)
+        validate_request(message)
         response = form_response(message)
-        print(response)
+        validate_response(response)
         send_response(socket, response)
+        print(response)
     auth.stop()
 
 

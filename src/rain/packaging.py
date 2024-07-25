@@ -57,8 +57,6 @@ def form_response(request):
                 "time": date_time[1]}
 
     if request["action"] == "get":
-        validate_request(request)
-
         response.update({"action": "get"})
         response.update({"name": request["name"]})
         data = []
@@ -68,8 +66,6 @@ def form_response(request):
         response.update({"data": data})
 
     elif request["action"] == "set":
-        validate_request(request)
-
         response.update({"action": "set"})
         response.update({"name": request["name"]})
         data = []
@@ -78,8 +74,6 @@ def form_response(request):
             response_value = func(value)
             data.append(response_value)
         response.update({"data": data})
-
-    validate_response(response)
 
     return response
 
