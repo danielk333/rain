@@ -122,5 +122,30 @@ get_rep_schema = {
     }
 }
 
-# TODO 58: Validate published messages
-pub_schema = {}
+pub_schema = {
+    "type": "object",
+    "description": "",
+    "required": ["action", "name", "data"],
+    "properties": {
+        "date": {
+            "type": "string",
+            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
+        },
+        "time": {
+            "type": "string",
+            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
+        },
+        "action": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "data": {
+            "type": "string"
+        },
+        "data_description": {
+            "type": "string"
+        }
+    }
+}
