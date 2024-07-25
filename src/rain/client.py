@@ -2,7 +2,7 @@ import zmq
 
 from .authenticate import setup_client
 from .fetch import convert_client_args, get_client_config
-from .packaging import form_request, print_response, pub_split
+from .packaging import form_request, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 from .validate import validate_response, validate_update
 
@@ -31,9 +31,7 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
         send_request(socket, server_address, message)
         response = receive_response(socket, server_address)
         validate_response(response)
-        # print_response(response)
-
-        return response
+        yield response
 
 
 # TODO 57: Nicely shut down a subscribed client
@@ -81,7 +79,6 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
 
         if update["name"] in freq_params:
             yield update
-            # print_response(update)
         elif update["name"] in change_params:
             for item in range(len(prev_values)):
                 if prev_values[item][0] == update["name"]:
@@ -89,10 +86,8 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
             if update["data"] != prev_values[index][1]:
                 prev_values[index][1] = update["data"]
                 yield update
-                # print_response(update)
         elif update["name"] in trig_params:
             yield update
-            # print_response(update)
 
 
 def rain_client(args):
@@ -109,7 +104,6 @@ def rain_client(args):
     if action == "get" or action == "set":
         response = run_request(server_name, server_address, action, params, dir_pub, dir_prv)
     elif action == "sub":
-        message = run_subscribe(server_name, server_address, params, dir_pub, dir_prv)
-        response = next(message)
+        response = run_subscribe(server_name, server_address, params, dir_pub, dir_prv)
 
     return response

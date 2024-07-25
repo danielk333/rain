@@ -81,9 +81,10 @@ def client_cli():
 
     args = parser.parse_args()
 
-    message = rain_client(args)
+    messages = rain_client(args)
 
-    print_response(message)
+    for message in messages:
+        print_response(message)
 
     return
 
