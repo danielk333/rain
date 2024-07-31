@@ -30,7 +30,6 @@ def receive_request(socket):
         The request sent by the client to the server
     '''
     request = socket.recv_json(0)
-    print(f"Message received:\n{request}")
 
     return request
 

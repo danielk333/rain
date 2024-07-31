@@ -36,7 +36,7 @@ def run_response(address, allowed, path_pub, path_prv):
     server_open = True
     while server_open:
         message = receive_request(socket)
-        print(message)
+        print(f"Message received:\n{message}")
         validate_request(message)
         response = form_response(message)
         validate_response(response)
