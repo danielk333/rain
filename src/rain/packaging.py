@@ -3,7 +3,6 @@ from pprint import pprint
 
 from .fetch import get_datetime
 from .plugins import PLUGINS
-from .validate import validate_request, validate_response, validate_update
 
 
 def form_request(message_type, req_params):
@@ -32,8 +31,6 @@ def form_request(message_type, req_params):
             values.append(value)
         request.update({"name": names})
         request.update({"data": values})
-    validate_request(request)
-    pprint(request, indent=4, sort_dicts=False)
 
     return request
 

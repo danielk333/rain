@@ -1,4 +1,5 @@
 import configparser
+import logging
 from pathlib import Path
 import time
 import warnings
@@ -182,6 +183,10 @@ def get_client_config(folder, server, action):
     address : list of strings
         The server's hostname and port
     '''
+    # TODO 60: Make logging level configurable
+    # Make file name and location configurable?
+    logging.basicConfig(filename="rain.log", level=logging.INFO)
+
     config = load_client_config(folder / "hosts.cfg")
 
     path_pub = Path(config.get("Security", "public-keys"))

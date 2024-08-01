@@ -1,10 +1,13 @@
+import logging
+from pprint import pprint
+
 import zmq
 
 from .authenticate import setup_client
 from .fetch import convert_client_args, get_client_config
 from .packaging import form_request, pub_split
 from .transport import send_request, receive_response, receive_subscribe
-from .validate import validate_response, validate_update
+from .validate import validate_response, validate_request, validate_update
 
 
 def run_request(server, server_address, action, params, path_pub, path_prv):
@@ -24,13 +27,21 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    message = form_request(action, params)
+    logger = logging.getLogger(__name__)
 
-    if message:
+    request = form_request(action, params)
+    validate_request(request)
+    logger.info(request)
+    logger.debug("Request formed and validated")
+    pprint(request, indent=4, sort_dicts=False)
+
+    if request:
         socket = setup_client("req", server, path_pub, path_prv)
-        send_request(socket, server_address, message)
+        send_request(socket, server_address, request)
         response = receive_response(socket, server_address)
         validate_response(response)
+        logger.info(response)
+        logger.debug("Response received and validated")
         yield response
 
 
@@ -52,6 +63,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
+    logger = logging.getLogger(__name__)
 
     socket = setup_client("sub", server, path_pub, path_prv)
 
@@ -70,14 +82,17 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
 
     print("Waiting for updates from the server")
     socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
+    logger.info("Connection opened to the publish server")
 
     client_connected = True
     while client_connected:
         formatted_update = receive_subscribe(socket)
         update = pub_split(formatted_update)
         validate_update(update)
+        logger.debug("Update received and validated")
 
         if update["name"] in freq_params:
+            logger.info(update)
             yield update
         elif update["name"] in change_params:
             for item in range(len(prev_values)):
@@ -85,8 +100,12 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
                     index = item
             if update["data"] != prev_values[index][1]:
                 prev_values[index][1] = update["data"]
+                logger.info(update)
                 yield update
+            else:
+                logger.debug(update)
         elif update["name"] in trig_params:
+            logger.info(update)
             yield update
 
 
