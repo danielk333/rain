@@ -19,6 +19,9 @@ venv/*
 dist/*
 src/rain.egg-info
 
+# Logs
+*.log
+
 # Automatically generated files
 __pycache__
 

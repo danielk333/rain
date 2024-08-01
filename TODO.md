@@ -73,5 +73,6 @@ Smaller TODOs:
 - [ ] TODO 57: Nicely shut down a subscribed client
 - [x] TODO 58: Validate published messages
 - [x] TODO 59: Make the trigger port configurable
+- [ ] TODO 60: Make logging level configurable
 
 Exception Handling:
