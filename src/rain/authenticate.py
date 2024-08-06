@@ -1,3 +1,5 @@
+import logging
+
 import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
@@ -86,14 +88,18 @@ def auth_client(socket, server, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containg the client's private key
     '''
+    logger = logging.getLogger(__name__)
+
     client_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub
+    logger.debug("Client keypair loaded")
 
     server_file_pub = path_pub.joinpath(f"{server}.key")
     server_pub, _ = zmq.auth.load_certificate(server_file_pub)
     socket.curve_serverkey = server_pub
+    logger.debug("Server public key loaded")
 
 
 def open_connection(socket, address):

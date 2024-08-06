@@ -57,6 +57,10 @@ def convert_client_args(args):
     server = args.server
     action = args.action
 
+    # TODO 60: Make logging level configurable
+    # Make file name and location configurable?
+    logging.basicConfig(filename="rain-client.log", level=logging.DEBUG)
+
     if action == "sub":
         params = [[], [], []]
         if args.changes is not None:
@@ -75,6 +79,9 @@ def convert_client_args(args):
         folder = DEFAULT_FOLDER
     else:
         folder = Path(args.cfgpath)
+
+    logger = logging.getLogger(__name__)
+    logger.debug("Client input arguments read")
 
     return server, action, params, folder
 
@@ -183,9 +190,7 @@ def get_client_config(folder, server, action):
     address : list of strings
         The server's hostname and port
     '''
-    # TODO 60: Make logging level configurable
-    # Make file name and location configurable?
-    logging.basicConfig(filename="rain.log", level=logging.INFO)
+    logger = logging.getLogger(__name__)
 
     config = load_client_config(folder / "hosts.cfg")
 
@@ -200,6 +205,8 @@ def get_client_config(folder, server, action):
         config.get(f"{server}-{act_type}", "hostname"),
         config.get(f"{server}-{act_type}", "port")
     ]
+
+    logger.debug("Client configs read")
 
     return path_pub, path_prv, address
 

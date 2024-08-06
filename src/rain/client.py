@@ -30,18 +30,21 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     logger = logging.getLogger(__name__)
 
     request = form_request(action, params)
+    logger.debug("Request formed")
     validate_request(request)
-    logger.info(request)
-    logger.debug("Request formed and validated")
+    logger.info(f"Request: {request}")
+    logger.debug("Request validated")
     pprint(request, indent=4, sort_dicts=False)
 
     if request:
         socket = setup_client("req", server, path_pub, path_prv)
         send_request(socket, server_address, request)
+        logger.debug("Request sent to the server")
         response = receive_response(socket, server_address)
+        logger.debug("Response received from the server")
         validate_response(response)
-        logger.info(response)
-        logger.debug("Response received and validated")
+        logger.info(f"Response: {response}")
+        logger.debug("Response validated")
         yield response
 
 
@@ -88,11 +91,12 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
     while client_connected:
         formatted_update = receive_subscribe(socket)
         update = pub_split(formatted_update)
+        logger.debug(f"Update received from the server: {update}")
         validate_update(update)
-        logger.debug("Update received and validated")
+        logger.debug("Update validated")
 
         if update["name"] in freq_params:
-            logger.info(update)
+            logger.info(f"Saved update: {update}")
             yield update
         elif update["name"] in change_params:
             for item in range(len(prev_values)):
@@ -100,12 +104,12 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
                     index = item
             if update["data"] != prev_values[index][1]:
                 prev_values[index][1] = update["data"]
-                logger.info(update)
+                logger.info(f"Saved update: {update}")
                 yield update
             else:
-                logger.debug(update)
+                logger.debug("Update not saved")
         elif update["name"] in trig_params:
-            logger.info(update)
+            logger.info(f"Saved update: {update}")
             yield update
 
 
