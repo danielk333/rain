@@ -1,3 +1,4 @@
+import logging
 import queue
 import threading
 import time
@@ -30,18 +31,25 @@ def run_response(address, allowed, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
+    logger = logging.getLogger(__name__)
 
     auth, socket = setup_server("rep", address, allowed, path_pub, path_prv)
 
     server_open = True
     while server_open:
-        message = receive_request(socket)
-        print(f"Message received:\n{message}")
-        validate_request(message)
-        response = form_response(message)
+        request = receive_request(socket)
+        logger.debug("Request received")
+        validate_request(request)
+        logger.debug("Request validated")
+        logger.info(f"Request: {request}")
+
+        response = form_response(request)
+        logger.debug("Response formed")
         validate_response(response)
+        logger.debug("Response validated")
+        logger.info(f"Response: {response}")
         send_response(socket, response)
-        print(response)
+        logger.debug("Response sent to the client")
 
     auth.stop()
 
@@ -62,6 +70,8 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
+    logger = logging.getLogger(__name__)
+
     auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv)
     possible_sub = sub_params()
     q = queue.Queue()
@@ -71,14 +81,18 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         context = zmq.Context()
         socket = context.socket(zmq.REP)
         socket.bind(f"tcp://{trig_addr[0]}:{trig_addr[1]}")
+        logger.debug("Trigger server opened")
         while server_open:
             trigger = socket.recv_json(0)
+            logger.info(f"Trigger received: {trigger}")
             q.put([trigger["name"], trigger["data"]])
             response = {
                 "name": trigger["name"],
                 "data": "Trigger received"
             }
+            logger.debug(f"Trigger response formed: {response}")
             socket.send_json(response, 0)
+            logger.debug("Trigger response sent to the trigger server")
 
     def worker(name, func, interval):
         while server_open:
@@ -94,14 +108,19 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         get_func, interval = func()
         t = threading.Thread(target=worker, args=[param, get_func, interval])
         t.start()
+    logger.debug("Threads started for each subscribable parameter")
 
     while server_open:
         name, new_value = q.get()
         date_time = get_datetime()
         update = publish_update(name, new_value, date_time)
+        logger.debug("Update formed")
         validate_update(update)
+        logger.debug("Update validated")
+        logger.debug(f"Update: {update}")
         publish = publish_format(update)
         socket.send_string(publish)
+        logger.debug("Update published")
 
     auth.stop()
 

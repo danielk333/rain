@@ -23,12 +23,21 @@ def convert_server_args(args):
     folder : Posix path
         The path to the folder containing the server's config file
     '''
+    # TODO 60: Make logging level configurable
+    # Make file name and location configurable?
+    logging.basicConfig(filename="rain-server.log", level=logging.DEBUG)
+    logger = logging.getLogger(__name__)
+    logger.info("Start of server operations")
+
     host_type = args.host
+    logger.info(f"Server type: {host_type}")
 
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
+        logger.info(f"Path to config folder: {None}")
     else:
         folder = Path(args.cfgpath)
+        logger.info(f"Path to config folder: {folder}")
 
     return host_type, folder
 
@@ -54,34 +63,48 @@ def convert_client_args(args):
     folder : Posix path
         The path to the folder containing the client's config file
     '''
-    server = args.server
-    action = args.action
-
     # TODO 60: Make logging level configurable
     # Make file name and location configurable?
     logging.basicConfig(filename="rain-client.log", level=logging.DEBUG)
+    logger = logging.getLogger(__name__)
+    logger.info("Start of client operations")
+
+    server = args.server
+    action = args.action
+
+    logger.info(f"Server: {server}")
+    logger.info(f"Action: {action}")
 
     if action == "sub":
         params = [[], [], []]
         if args.changes is not None:
             for item in args.changes:
                 params[0].append(item)
+            logger.info(f"Parameter changes: {params[0]}")
+        else:
+            logger.info(f"Parameter changes: {None}")
         if args.freq is not None:
             for item in args.freq:
                 params[1].append(item)
+            logger.info(f"Frequency parameters: {params[1]}")
+        else:
+            logger.info(f"Frequency parameters: {params[1]}")
         if args.trigger is not None:
             for item in args.trigger:
                 params[2].append(item)
+            logger.info(f"Triggers: {params[2]}")
+        else:
+            logger.info(f"Triggers: {None}")
     elif action == "get" or action == "set":
         params = args.param
+        logger.info(f"Parameters: {params}")
 
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
+        logger.info(f"Path to config folder: {None}")
     else:
         folder = Path(args.cfgpath)
-
-    logger = logging.getLogger(__name__)
-    logger.debug("Client input arguments read")
+        logger.info(f"Path to config folder: {folder}")
 
     return server, action, params, folder
 
@@ -104,7 +127,7 @@ def get_datetime():
 
 
 def load_server_config(config_file):
-    ''' Loads the configurations of a server or client
+    ''' Loads the configurations of a server
 
     Parameters
     ----------
@@ -126,11 +149,7 @@ def load_server_config(config_file):
 
     for section, key in _CFG_PATHS_SERVER:
         _path = Path(config.get(section, key)).resolve()
-        config.set(
-            section,
-            key,
-            str(_path),
-        )
+        config.set(section, key, str(_path))
         if not _path.exists():
             warnings.warn(f"configured path '{_path}' does not exist")
 
@@ -138,7 +157,7 @@ def load_server_config(config_file):
 
 
 def load_client_config(config_file):
-    ''' Loads the configurations of a server or client
+    ''' Loads the configurations of a client
 
     Parameters
     ----------
@@ -158,11 +177,7 @@ def load_client_config(config_file):
 
     for section, key in _CFG_PATHS_CLIENT:
         _path = Path(config.get(section, key)).resolve()
-        config.set(
-            section,
-            key,
-            str(_path),
-        )
+        config.set(section, key, str(_path))
         if not _path.exists():
             warnings.warn(f"configured path '{_path}' does not exist")
 
@@ -233,6 +248,8 @@ def get_server_config(folder, host_type):
     allowed : list of strings
         The hostnames of the clients that are allowed to connect to this server
     '''
+    logger = logging.getLogger(__name__)
+
     config = load_server_config(folder / "server.cfg")
 
     path_pub = Path(config.get("Security", "public-keys"))
@@ -241,13 +258,13 @@ def get_server_config(folder, host_type):
     load_plugins(path_plug)
 
     if host_type == "rep":
-        address = [
+        pub_addr = [
             config.get("Response", "hostname"),
             config.get("Response", "port")
         ]
         trig_addr = None
     elif host_type == "pub":
-        address = [
+        pub_addr = [
             config.get("Publish", "hostname"),
             config.get("Publish", "port")
         ]
@@ -260,7 +277,9 @@ def get_server_config(folder, host_type):
     for option in config["Allowed"]:
         allowed.append(config.get("Allowed", option))
 
-    return path_pub, path_prv, address, trig_addr, allowed
+    logger.debug("Server configs read")
+
+    return path_pub, path_prv, pub_addr, trig_addr, allowed
 
 
 def sub_params():

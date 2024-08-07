@@ -32,8 +32,8 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     request = form_request(action, params)
     logger.debug("Request formed")
     validate_request(request)
-    logger.info(f"Request: {request}")
     logger.debug("Request validated")
+    logger.info(f"Request: {request}")
     pprint(request, indent=4, sort_dicts=False)
 
     if request:
@@ -43,8 +43,8 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
         response = receive_response(socket, server_address)
         logger.debug("Response received from the server")
         validate_response(response)
+        logger.debug("Request validated")
         logger.info(f"Response: {response}")
-        logger.debug("Response validated")
         yield response
 
 
