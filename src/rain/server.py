@@ -125,7 +125,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     auth.stop()
 
 
-def rain_server(args):
+def run_server(args):
     ''' The top-level function handling the function of the RAIN server
 
     Parameters

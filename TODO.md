@@ -6,11 +6,11 @@ Big TODOs:
 - [x] T3: Split client and server actions into separate files
 - [ ] ~~T4: Convert clients and servers into classes~~
 - [x] T5: Split the code into the established layers
-- [ ] T6: Separate the server and the client from the network
+- [x] T6: Separate the server and the client from the network
 - [x] T7: Make a package out of the software
 - [ ] ~~T8: Implement a Redis database~~
 - [x] T9: Write a CLI to replace the user input
-- [ ] T10: Implement JSON Schema validation
+- [x] T10: Implement JSON Schema validation
 - [ ] T11: Upload to PyPI
 
 Smaller TODOs:

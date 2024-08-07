@@ -113,7 +113,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
             yield update
 
 
-def rain_client(args):
+def run_client(args):
     ''' The top-level function handling the function of the RAIN client
 
     Parameters

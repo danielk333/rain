@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rain',
-    version='0.3',
+    version='0.4',
     license='GNU GPLv3',
     author='Calum Lonie',
     maintainer='Daniel Kastinen',
@@ -12,9 +12,9 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'rain-client = rain.cli:client_cli',
-            'rain-server = rain.cli:server_cli',
-            'rain-register = rain.cli:new_user_cli',
+            'rain-client = rain.main:rain_client',
+            'rain-register = rain.cli:register_cli',
+            'rain-server = rain.main:rain_server',
             'rain-trigger = rain.cli:trigger_cli'
         ]
     }
