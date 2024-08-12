@@ -98,6 +98,11 @@ def server_cli():
         help="the path to your RAIN config folder"
     )
 
+    parser.add_argument(
+        "-l", "--logfile", default=None,
+        help="the path to logf"
+    )
+
     args = parser.parse_args()
 
     return args

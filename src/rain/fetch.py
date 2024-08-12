@@ -2,10 +2,27 @@ import configparser
 import logging
 from pathlib import Path
 import time
+import sys
 import warnings
 
 from .config import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
 from .plugins import PLUGINS, load_plugins
+
+logger = logging.getLogger(__name__)
+
+
+def setup_logging(logfile):
+    handler = logging.StreamHandler(sys.stdout)
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    lib_logger = logging.getLogger("rain")
+    lib_logger.addHandler(handler)
+    lib_logger.setLevel(logging.INFO)
+    if logfile is not None:
+        handler = logging.FileHandler(str(logfile))
+        handler.setFormatter(formatter)
+        lib_logger.addHandler(handler)
 
 
 def convert_server_args(args):
@@ -25,21 +42,24 @@ def convert_server_args(args):
     '''
     # TODO 60: Make logging level configurable
     # Make file name and location configurable?
-    logging.basicConfig(filename="rain-server.log", level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
-    logger.info("Start of server operations")
+    logger.debug("Start of server operations")
 
     host_type = args.host
-    logger.info(f"Server type: {host_type}")
+    logger.debug(f"Server type: {host_type}")
 
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
-        logger.info(f"Path to config folder: {None}")
+        logger.debug(f"Path to config folder: {None}")
     else:
         folder = Path(args.cfgpath)
-        logger.info(f"Path to config folder: {folder}")
+        logger.debug(f"Path to config folder: {folder}")
 
-    return host_type, folder
+    if args.logfile is not None:
+        logfile = Path(args.logfile).resolve()
+    else:
+        logfile = None
+
+    return host_type, folder, logfile
 
 
 def convert_client_args(args):
@@ -65,8 +85,6 @@ def convert_client_args(args):
     '''
     # TODO 60: Make logging level configurable
     # Make file name and location configurable?
-    logging.basicConfig(filename="rain-client.log", level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
     logger.info("Start of client operations")
 
     server = args.server
@@ -205,7 +223,6 @@ def get_client_config(folder, server, action):
     address : list of strings
         The server's hostname and port
     '''
-    logger = logging.getLogger(__name__)
 
     config = load_client_config(folder / "hosts.cfg")
 
@@ -248,7 +265,6 @@ def get_server_config(folder, host_type):
     allowed : list of strings
         The hostnames of the clients that are allowed to connect to this server
     '''
-    logger = logging.getLogger(__name__)
 
     config = load_server_config(folder / "server.cfg")
 
@@ -276,7 +292,7 @@ def get_server_config(folder, host_type):
     allowed = []
     for option in config["Allowed"]:
         allowed.append(config.get("Allowed", option))
-
+    
     logger.debug("Server configs read")
 
     return path_pub, path_prv, pub_addr, trig_addr, allowed

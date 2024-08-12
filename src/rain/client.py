@@ -9,6 +9,8 @@ from .packaging import form_request, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 from .validate import validate_response, validate_request, validate_update
 
+logger = logging.getLogger(__name__)
+
 
 def run_request(server, server_address, action, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
@@ -27,7 +29,7 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    logger = logging.getLogger(__name__)
+    
 
     request = form_request(action, params)
     logger.debug("Request formed")
@@ -66,7 +68,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    logger = logging.getLogger(__name__)
+    
 
     socket = setup_client("sub", server, path_pub, path_prv)
 

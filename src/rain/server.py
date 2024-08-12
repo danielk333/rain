@@ -7,12 +7,14 @@ import zmq
 
 from .authenticate import setup_server
 from .fetch import convert_server_args, get_server_config, sub_params
-from .fetch import get_datetime
+from .fetch import get_datetime, setup_logging
 from .packaging import form_response
 from .packaging import publish_update, publish_format
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
 from .validate import validate_request, validate_response, validate_update
+
+logger = logging.getLogger(__name__)
 
 
 def run_response(address, allowed, path_pub, path_prv):
@@ -31,7 +33,7 @@ def run_response(address, allowed, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    logger = logging.getLogger(__name__)
+    
 
     auth, socket = setup_server("rep", address, allowed, path_pub, path_prv)
 
@@ -70,7 +72,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    logger = logging.getLogger(__name__)
+    
 
     auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv)
     possible_sub = sub_params()
@@ -133,8 +135,10 @@ def run_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    host_type, conf_folder = convert_server_args(args)
+    host_type, conf_folder, logfile = convert_server_args(args)
     dir_pub, dir_prv, server_address, trigger_address, allowed_add = get_server_config(conf_folder, host_type)
+    # TODO: setup stuff
+    setup_logging(logfile=logfile)
 
     if host_type == "rep":
         run_response(server_address, allowed_add, dir_pub, dir_prv)

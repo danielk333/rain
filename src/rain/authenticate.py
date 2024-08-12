@@ -3,6 +3,8 @@ import logging
 import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
+logger = logging.getLogger(__name__)
+
 
 def setup_auth(context, allowed, path_pub):
     ''' Set up the thread used as part of the authentication process
@@ -67,7 +69,7 @@ def auth_server(socket, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    logger = logging.getLogger(__name__)
+    
 
     server_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
@@ -91,7 +93,7 @@ def auth_client(socket, server, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containg the client's private key
     '''
-    logger = logging.getLogger(__name__)
+    
 
     client_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
@@ -115,10 +117,10 @@ def open_connection(socket, address):
     address : list of strings
         The hostname and port number of the server
     '''
-    logger = logging.getLogger(__name__)
+    
 
     socket.bind(f"tcp://{address[0]}:{address[1]}")
-    print(f"I am a WIP server open on {address[0]} with port {address[1]} " +
+    logger.info(f"I am a WIP server open on {address[0]} with port {address[1]} " +
           "ready to talk to friends")
     logger.debug("Server connection opened")
 
