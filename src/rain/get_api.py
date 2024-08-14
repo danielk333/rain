@@ -7,7 +7,7 @@ from .plugins import PLUGINS, register_plugin
     name="api",
     data_description="api description description",
 )
-def generate_api():
+def generate_api(message):
     api = {
         action: [
             {"name": key, "data_description": plug["data_description"]}

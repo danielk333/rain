@@ -33,8 +33,6 @@ def run_response(address, allowed, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    
-
     auth, socket = setup_server("rep", address, allowed, path_pub, path_prv)
 
     server_open = True
@@ -72,8 +70,6 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the server's private key
     '''
-    
-
     auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv)
     possible_sub = sub_params()
     q = queue.Queue()
@@ -96,9 +92,9 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
             socket.send_json(response, 0)
             logger.debug("Trigger response sent to the trigger server")
 
-    def worker(name, func, interval):
+    def worker(name, func, interval, filler):
         while server_open:
-            value = func()
+            value = func(filler)
             q.put([name, value])
             time.sleep(interval)
 
@@ -108,7 +104,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     for param in possible_sub:
         func = PLUGINS["sub"][param]["function"]
         get_func, interval = func()
-        t = threading.Thread(target=worker, args=[param, get_func, interval])
+        t = threading.Thread(target=worker, args=[param, get_func, interval, {}])
         t.start()
     logger.debug("Threads started for each subscribable parameter")
 
