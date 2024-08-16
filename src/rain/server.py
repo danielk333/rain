@@ -92,9 +92,11 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
             socket.send_json(response, 0)
             logger.debug("Trigger response sent to the trigger server")
 
-    def worker(name, func, interval, filler):
+    def worker(name):
+        func = PLUGINS["sub"][name]["function"]
+        interval = PLUGINS["sub"][name]["interval"]
         while server_open:
-            value = func(filler)
+            value = func()
             q.put([name, value])
             time.sleep(interval)
 
@@ -102,9 +104,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     trig.start()
 
     for param in possible_sub:
-        func = PLUGINS["sub"][param]["function"]
-        get_func, interval = func()
-        t = threading.Thread(target=worker, args=[param, get_func, interval, {}])
+        t = threading.Thread(target=worker, args=[param])
         t.start()
     logger.debug("Threads started for each subscribable parameter")
 

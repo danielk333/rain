@@ -5,6 +5,7 @@ from .plugins import PLUGINS, register_plugin
 @register_plugin(
     action="get",
     name="api",
+    interval=0,
     data_description="api description description",
 )
 def generate_api(message):
