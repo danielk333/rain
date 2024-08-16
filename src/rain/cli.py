@@ -99,8 +99,16 @@ def server_cli():
     )
 
     parser.add_argument(
-        "-l", "--logfile", default=None,
-        help="the path to logf"
+        "-l", "--logfile",
+        default=None,
+        help="the path to the logfile, including its name"
+    )
+
+    parser.add_argument(
+        "-p", "--logprint",
+        choices=["true", "false"],
+        default=None,
+        help="whether to print logs to the console"
     )
 
     args = parser.parse_args()
@@ -124,6 +132,19 @@ def client_cli():
     parser.add_argument(
         "-c", "--cfgpath",
         help="the path to your RAIN config folder"
+    )
+
+    parser.add_argument(
+        "-l", "--logfile",
+        default=None,
+        help="the path to the logfile, including its name"
+    )
+
+    parser.add_argument(
+        "-p", "--logprint",
+        choices=["true", "false"],
+        default=None,
+        help="whether to print logs to the console"
     )
 
     parser.add_argument(

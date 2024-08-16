@@ -131,10 +131,9 @@ def run_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    host_type, conf_folder, logfile = convert_server_args(args)
-    dir_pub, dir_prv, server_address, trigger_address, allowed_add = get_server_config(conf_folder, host_type)
-    # TODO: setup stuff
-    setup_logging(logfile=logfile)
+    host_type, conf_folder, arg_file, arg_print = convert_server_args(args)
+    dir_pub, dir_prv, server_address, trigger_address, allowed_add, logfile, logprint, loglevel = get_server_config(conf_folder, host_type, arg_file, arg_print)
+    setup_logging(logfile, logprint, loglevel)
 
     if host_type == "rep":
         run_response(server_address, allowed_add, dir_pub, dir_prv)

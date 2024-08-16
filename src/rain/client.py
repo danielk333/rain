@@ -4,7 +4,7 @@ from pprint import pprint
 import zmq
 
 from .authenticate import setup_client
-from .fetch import convert_client_args, get_client_config
+from .fetch import convert_client_args, get_client_config, setup_logging
 from .packaging import form_request, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 from .validate import validate_response, validate_request, validate_update
@@ -29,8 +29,6 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    
-
     request = form_request(action, params)
     logger.debug("Request formed")
     validate_request(request)
@@ -68,8 +66,6 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    
-
     socket = setup_client("sub", server, path_pub, path_prv)
 
     change_params = params[0]
@@ -123,8 +119,9 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name, action, params, conf_folder = convert_client_args(args)
-    dir_pub, dir_prv, server_address = get_client_config(conf_folder, server_name, action)
+    server_name, action, params, conf_folder, arg_file, arg_print = convert_client_args(args)
+    dir_pub, dir_prv, server_address, logfile, logprint, loglevel = get_client_config(conf_folder, server_name, action, arg_file, arg_print)
+    setup_logging(logfile, logprint, loglevel)
 
     if action == "get" or action == "set":
         response = run_request(server_name, server_address, action, params, dir_pub, dir_prv)

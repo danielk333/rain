@@ -117,6 +117,11 @@ def gen_server_cfg(name, path_conf, path_pub, path_prv, path_plug):
     config['Plugins'] = {
         'plugins': path_plug
     }
+    config['Logging'] = {
+        'filepath': 'rain-server.log',
+        'print': 'True',
+        'level': 'INFO'
+    }
     config['Response'] = {
         'hostname': '127.0.0.1',
         'port': '1234',
@@ -156,6 +161,11 @@ def gen_client_cfg(name, path_conf, path_pub, path_prv):
     config['Security'] = {
         'public-keys': path_pub,
         'private-keys': path_prv
+    }
+    config['Logging'] = {
+        'filepath': 'rain-client.log',
+        'print': 'True',
+        'level': 'INFO'
     }
 
     filename = path_conf / "hosts.cfg"
