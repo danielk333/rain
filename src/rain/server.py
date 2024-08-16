@@ -96,7 +96,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         func = PLUGINS["sub"][name]["function"]
         interval = PLUGINS["sub"][name]["interval"]
         while server_open:
-            value = func()
+            value = func(name)
             q.put([name, value])
             time.sleep(interval)
 
