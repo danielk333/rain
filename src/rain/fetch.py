@@ -306,6 +306,7 @@ def get_server_config(folder, host_type, arg_log, arg_print):
     path_pub = Path(config.get("Security", "public-keys"))
     path_prv = Path(config.get("Security", "private-keys"))
     path_plug = Path(config.get("Plugins", "plugins"))
+
     load_plugins(path_plug)
 
     if host_type == "rep":

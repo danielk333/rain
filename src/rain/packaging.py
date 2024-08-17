@@ -58,17 +58,27 @@ def form_response(request):
         response.update({"name": request["name"]})
         data = []
         for param in request["name"]:
-            func = PLUGINS["get"][param]["function"]
-            data.append(func(request))
+            try:
+                func = PLUGINS["get"][param]["function"]
+            except KeyError:
+                data = [f"Parameter {param} invalid"]
+                break
+            else:
+                data.append(func(request))
         response.update({"data": data})
 
     elif request["action"] == "set":
         response.update({"action": "set"})
         response.update({"name": request["name"]})
         data = []
-        for item in request["name"]:
-            func = PLUGINS["set"][item]["function"]
-            data.append(func(request))
+        for param in request["name"]:
+            try:
+                func = PLUGINS["set"][param]["function"]
+            except KeyError:
+                data = [f"Parameter {param} invalid"]
+                break
+            else:
+                data.append(func(request))
         response.update({"data": data})
 
     return response
