@@ -1,4 +1,5 @@
 import json
+import sys
 from pprint import pprint
 
 from .fetch import get_datetime
@@ -158,5 +159,5 @@ def print_response(response):
     response : JSON
         The message sent by the server to the client
     '''
-    print("Server Response:")
     pprint(response, indent=4, sort_dicts=False)
+    sys.stdout.flush()
