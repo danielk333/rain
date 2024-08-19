@@ -33,18 +33,17 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     logger.debug("Request formed")
     validate_request(request)
     logger.debug("Request validated")
-    logger.info(f"Request: {request}")
-    pprint(request, indent=4, sort_dicts=False)
+    logger.debug(f"Request: {request}")
 
     if request:
         socket = setup_client("req", server, path_pub, path_prv)
         send_request(socket, server_address, request)
         logger.debug("Request sent to the server")
         response = receive_response(socket, server_address)
-        logger.debug("Response received from the server")
+        logger.info("Response received from the server")
         validate_response(response)
         logger.debug("Request validated")
-        logger.info(f"Response: {response}")
+        logger.debug(f"Response: {response}")
         yield response
 
 
@@ -81,7 +80,6 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
     for item in trig_params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
 
-    print("Waiting for updates from the server")
     socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
     logger.info("Connection opened to the publish server")
 
@@ -94,7 +92,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         logger.debug("Update validated")
 
         if update["name"] in freq_params:
-            logger.info(f"Saved update: {update}")
+            logger.debug(f"Saved update: {update}")
             yield update
         elif update["name"] in change_params:
             for item in range(len(prev_values)):
@@ -102,12 +100,12 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
                     index = item
             if update["data"] != prev_values[index][1]:
                 prev_values[index][1] = update["data"]
-                logger.info(f"Saved update: {update}")
+                logger.debug(f"Saved update: {update}")
                 yield update
             else:
                 logger.debug("Update not saved")
         elif update["name"] in trig_params:
-            logger.info(f"Saved update: {update}")
+            logger.debug(f"Saved update: {update}")
             yield update
 
 
@@ -119,8 +117,8 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name, action, params, conf_folder, arg_file, arg_print = convert_client_args(args)
-    dir_pub, dir_prv, server_address, logfile, logprint, loglevel = get_client_config(conf_folder, server_name, action, arg_file, arg_print)
+    server_name, action, params, conf_folder, arg_file = convert_client_args(args)
+    dir_pub, dir_prv, server_address, logfile, logprint, loglevel = get_client_config(conf_folder, server_name, action, arg_file, args.logprint, args.loglevel)
     setup_logging(logfile, logprint, loglevel)
 
     if action == "get" or action == "set":

@@ -10,7 +10,7 @@ PLUGINS = {
 }
 
 
-def add_plugin(action, name, func, interval, data_description):
+def add_plugin(action, name, func, data_description, interval=None):
     global PLUGINS
     if name not in PLUGINS[action]:
         PLUGINS[action][name] = {}
@@ -18,19 +18,20 @@ def add_plugin(action, name, func, interval, data_description):
         PLUGINS[action][name]["function"] = func
     PLUGINS[action][name]["data_description"] = data_description
     if action == "sub":
+        assert interval is not None, "Timed subscription plugins need an interval"
         PLUGINS[action][name]["interval"] = interval
 
 
-def register_plugin(action, name, interval, data_description):
+def register_plugin(action, name, data_description, interval=None):
     def register_wrapper(func):
-        add_plugin(action, name, func, interval, data_description)
+        add_plugin(action, name, func, data_description, interval=interval)
         return func
 
     return register_wrapper
 
 
 def register_trigger(name, data_description):
-    add_plugin("sub-trigger", name, None, None, data_description)
+    add_plugin("sub-trigger", name, None, data_description)
 
 
 def load_plugins(plugins_folder):

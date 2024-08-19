@@ -1,4 +1,10 @@
-def send_request(socket, address, request):
+import logging
+import zmq
+
+logger = logging.getLogger(__name__)
+
+
+def send_request(socket: zmq.Socket, address, request):
     ''' Sends a request from a client to a server
 
     Parameters
@@ -64,7 +70,11 @@ def receive_response(socket, address):
     response : JSON
         The responsesent by the server to the client
     '''
-    response = socket.recv_json(0)
+    try:
+        response = socket.recv_json(0)
+    except zmq.error.Again as e:
+        logger.error("Server not reachable, response timed out")
+        exit()
     socket.disconnect(f"tcp://{address[0]}:{address[1]}")
 
     return response

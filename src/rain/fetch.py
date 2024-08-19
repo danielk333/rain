@@ -18,17 +18,17 @@ def setup_logging(logfile, logprint, loglevel):
     if logprint:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
+        handler.setLevel(loglevel)
         lib_logger.addHandler(handler)
 
     if logfile is not None:
         handler = logging.FileHandler(str(logfile))
         handler.setFormatter(formatter)
+        handler.setLevel(loglevel)
         lib_logger.addHandler(handler)
 
-    if loglevel == "INFO":
-        lib_logger.setLevel(logging.INFO)
-    elif loglevel == "DEBUG":
-        lib_logger.setLevel(logging.DEBUG)
+    lib_logger.setLevel(loglevel)
+    lib_logger.debug("logging setup complete")
 
 
 def convert_server_args(args):
@@ -53,11 +53,6 @@ def convert_server_args(args):
     else:
         logfile = None
 
-    if args.logprint is not None:
-        logprint = args.logprint
-    else:
-        logprint = None
-
     host_type = args.host
     logger.debug(f"Server type: {host_type}")
 
@@ -68,7 +63,7 @@ def convert_server_args(args):
         folder = Path(args.cfgpath)
         logger.debug(f"Path to config folder: {folder}")
 
-    return host_type, folder, logfile, logprint
+    return host_type, folder, logfile, args.logprint
 
 
 def convert_client_args(args):
@@ -98,11 +93,6 @@ def convert_client_args(args):
         logfile = Path(args.logfile).resolve()
     else:
         logfile = None
-
-    if args.logprint is not None:
-        logprint = args.logprint
-    else:
-        logprint = None
 
     server = args.server
     action = args.action
@@ -141,7 +131,7 @@ def convert_client_args(args):
         folder = Path(args.cfgpath)
         logger.info(f"Path to config folder: {folder}")
 
-    return server, action, params, folder, logfile, logprint
+    return server, action, params, folder, logfile
 
 
 def get_datetime():
@@ -219,7 +209,7 @@ def load_client_config(config_file):
     return config
 
 
-def get_client_config(folder, server, action, arg_log, arg_print):
+def get_client_config(folder, server, action, arg_log, arg_print, arg_level):
     ''' Load the values inside the client's config file
 
     Parameters
@@ -255,23 +245,17 @@ def get_client_config(folder, server, action, arg_log, arg_print):
         config.get(f"{server}-{act_type}", "port")
     ]
 
-    cfg_log = config.get("Logging", "filepath")
-    cfg_print = config.get("Logging", "print")
-    level = config.get("Logging", "level")
+    logfile = config.get("Logging", "filepath", fallback=None)
+    cfg_print = config.getboolean("Logging", "print", fallback=False)
+    level = config.get("Logging", "level", fallback="INFO")
+    if arg_level is not None:
+        level = arg_level
 
     logfile = None
-    logprint = None
+    logprint = cfg_print or arg_print
 
-    if cfg_log != "":
-        logfile = cfg_log
     if arg_log is not None:
         logfile = arg_log
-    if cfg_print == "True":
-        logprint = True
-    elif cfg_print == "False":
-        logprint = False
-    if arg_print is not None:
-        logprint = arg_print
 
     logger.debug("Client configs read")
 
@@ -325,27 +309,20 @@ def get_server_config(folder, host_type, arg_log, arg_print):
             config.get("Trigger", "port")
         ]
 
-    allowed = []
-    for option in config["Allowed"]:
-        allowed.append(config.get("Allowed", option))
+    if "Allowed" in config:
+        allowed = [config.get("Allowed", option) for option in config["Allowed"]]
+    else:
+        allowed = []
 
-    cfg_log = config.get("Logging", "filepath")
-    cfg_print = config.get("Logging", "print")
-    level = config.get("Logging", "level")
+    logfile = config.get("Logging", "filepath", fallback=None)
+    cfg_print = config.getboolean("Logging", "print", fallback=False)
+    level = config.get("Logging", "level", fallback="INFO")
 
     logfile = None
-    logprint = False
+    logprint = cfg_print or arg_print
 
-    if cfg_log != "":
-        logfile = cfg_log
     if arg_log is not None:
         logfile = arg_log
-    if cfg_print == "True":
-        logprint = True
-    elif cfg_print == "False":
-        logprint = False
-    if arg_print is not None:
-        logprint = arg_print
 
     logger.debug("Server configs read")
 

@@ -147,6 +147,10 @@ def setup_client(host_type, server, path_pub, path_prv):
         The connection socket
     '''
     context = zmq.Context()
+    #TODO: make timeouts configurable
+    context.setsockopt(zmq.SocketOption.SNDTIMEO, 5000)
+    context.setsockopt(zmq.SocketOption.RCVTIMEO, 5000)
+    context.setsockopt(zmq.LINGER, 0)
     socket = setup_socket(context, host_type)
 
     auth_client(socket, server, path_pub, path_prv)

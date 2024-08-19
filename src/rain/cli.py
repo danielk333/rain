@@ -3,6 +3,9 @@ import pathlib
 
 from .register import rain_register
 from .trigger import rain_trigger
+from .client import run_client
+from .packaging import print_response
+from .server import run_server
 
 # TODO 44: Improve the layout of the --help command
 
@@ -41,8 +44,6 @@ def register_cli():
 
     rain_register(args)
 
-    return
-
 
 def trigger_cli():
     ''' The CLI for a user wanting to send a trigger to a PUB server
@@ -70,8 +71,6 @@ def trigger_cli():
     args = parser.parse_args()
 
     rain_trigger(args)
-
-    return
 
 
 def server_cli():
@@ -105,15 +104,20 @@ def server_cli():
     )
 
     parser.add_argument(
+        "-v", "--loglevel",
+        default="INFO",
+        help="logging level"
+    )
+
+    parser.add_argument(
         "-p", "--logprint",
-        choices=["true", "false"],
-        default=None,
+        action="store_true",
         help="whether to print logs to the console"
     )
 
     args = parser.parse_args()
 
-    return args
+    run_server(args)
 
 
 def client_cli():
@@ -130,6 +134,12 @@ def client_cli():
     )
 
     parser.add_argument(
+        "-s", "--suppress",
+        action="store_true",
+        help="whether to suppress return message printing to stdout"
+    )
+
+    parser.add_argument(
         "-c", "--cfgpath",
         help="the path to your RAIN config folder"
     )
@@ -141,9 +151,14 @@ def client_cli():
     )
 
     parser.add_argument(
-        "-p", "--logprint",
-        choices=["true", "false"],
+        "-v", "--loglevel",
         default=None,
+        help="logging level"
+    )
+
+    parser.add_argument(
+        "-p", "--logprint",
+        action="store_true",
         help="whether to print logs to the console"
     )
 
@@ -200,4 +215,8 @@ def client_cli():
 
     args = parser.parse_args()
 
-    return args
+    messages = run_client(args)
+
+    for message in messages:
+        if not args.suppress:
+            print_response(message)
