@@ -12,9 +12,9 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'rain-client = rain.main:rain_client',
+            'rain-client = rain.cli:client_cli',
             'rain-register = rain.cli:register_cli',
-            'rain-server = rain.main:rain_server',
+            'rain-server = rain.cli:server_cli',
             'rain-trigger = rain.cli:trigger_cli'
         ]
     }
