@@ -104,15 +104,16 @@ def server_cli():
     )
 
     parser.add_argument(
-        "-v", "--loglevel",
-        default="INFO",
-        help="logging level"
+        "-o", "--logprint",
+        action="store_true",
+        help="whether to print logs to the console"
     )
 
     parser.add_argument(
-        "-p", "--logprint",
-        action="store_true",
-        help="whether to print logs to the console"
+        "-v", "--loglevel",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="logging level"
     )
 
     args = parser.parse_args()
@@ -151,15 +152,16 @@ def client_cli():
     )
 
     parser.add_argument(
-        "-v", "--loglevel",
-        default=None,
-        help="logging level"
+        "-o", "--logprint",
+        action="store_true",
+        help="whether to print logs to the console"
     )
 
     parser.add_argument(
-        "-p", "--logprint",
-        action="store_true",
-        help="whether to print logs to the console"
+        "-v", "--loglevel",
+        default=None,
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="the logging level"
     )
 
     parser.add_argument(
