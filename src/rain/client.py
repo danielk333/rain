@@ -4,7 +4,7 @@ import jsonschema
 import zmq
 
 from .authenticate import setup_client
-from .fetch import convert_client_args, get_client_config, setup_logging
+from .fetch import handle_client_args
 from .packaging import form_request, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 from .validate import validate_response, validate_request, validate_update
@@ -132,13 +132,11 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server_name, action, params, conf_folder, arg_file = convert_client_args(args)
-    dir_pub, dir_prv, server_address, logfile, logprint, loglevel = get_client_config(conf_folder, server_name, action, arg_file, args.logprint, args.loglevel)
-    setup_logging(logfile, logprint, loglevel)
+    dir_pub, dir_prv, address_server, params = handle_client_args(args)
 
-    if action == "get" or action == "set":
-        response = run_request(server_name, server_address, action, params, dir_pub, dir_prv)
-    elif action == "sub":
-        response = run_subscribe(server_name, server_address, params, dir_pub, dir_prv)
+    if args.action == "get" or args.action == "set":
+        response = run_request(args.server, address_server, args.action, params, dir_pub, dir_prv)
+    elif args.action == "sub":
+        response = run_subscribe(args.server, address_server, params, dir_pub, dir_prv)
 
     return response

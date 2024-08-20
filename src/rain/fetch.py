@@ -11,18 +11,71 @@ from .plugins import PLUGINS, load_plugins
 logger = logging.getLogger(__name__)
 
 
-def setup_logging(logfile, logprint, loglevel):
+def find_config(arg_path):
+    if arg_path is None:
+        folder = DEFAULT_FOLDER
+        logger.debug(f"Path to config folder: {None}")
+    else:
+        folder = Path(arg_path)
+        logger.debug(f"Path to config folder: {folder}")
+
+    return folder
+
+
+def load_config(folder, container):
+    if container == "server":
+        config_file = folder / "server.cfg"
+        defaults = _CFG_PATHS_SERVER
+    elif container == "client":
+        config_file = folder / "hosts.cfg"
+        defaults = _CFG_PATHS_CLIENT
+
+    config = configparser.ConfigParser()
+
+    if config_file is not None:
+        if not isinstance(config_file, Path):
+            config_file = Path(config_file)
+        config.read([config_file])
+
+    for section, key in defaults:
+        _path = Path(config.get(section, key)).resolve()
+        config.set(section, key, str(_path))
+        if not _path.exists():
+            warnings.warn(f"configured path '{_path}' does not exist")
+
+    return config
+
+
+def setup_logging(args, config):
     lib_logger = logging.getLogger("rain")
+
+    cfg_file = config.get("Logging", "filepath", fallback=None)
+    cfg_print = config.getboolean("Logging", "print", fallback=False)
+    cfg_level = config.get("Logging", "level", fallback="INFO")
+
+    if args.logfile is not None:
+        logfile = args.logfile.resolve()
+    else:
+        logfile = cfg_file
+
+    logprint = cfg_print or args.logprint
+
+    if args.loglevel is not None:
+        loglevel = args.loglevel
+    else:
+        loglevel = cfg_level
+
+    # TODO: Make format configurable
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s')
 
-    if logprint:
-        handler = logging.StreamHandler(sys.stdout)
+    if logfile is not None:
+        handler = logging.FileHandler(str(logfile))
         handler.setFormatter(formatter)
         handler.setLevel(loglevel)
         lib_logger.addHandler(handler)
 
-    if logfile is not None:
-        handler = logging.FileHandler(str(logfile))
+    if logprint:
+        handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
         handler.setLevel(loglevel)
         lib_logger.addHandler(handler)
@@ -31,76 +84,61 @@ def setup_logging(logfile, logprint, loglevel):
     lib_logger.debug("logging setup complete")
 
 
-def convert_server_args(args):
-    ''' Assigns the server CLI arguments to variables
-
-    Parameters
-    ----------
-    args : Namespace
-        The server CLI arguments
-
-    Returns
-    -------
-    host_type : string
-        The type of message for the server to send: pub or rep
-    folder : Posix path
-        The path to the folder containing the server's config file
-    '''
-    logger.debug("Start of server operations")
-
-    if args.logfile is not None:
-        logfile = Path(args.logfile).resolve()
+def find_paths(config, container):
+    path_pub = Path(config.get("Security", "public-keys"))
+    path_prv = Path(config.get("Security", "private-keys"))
+    if container == "server":
+        path_plug = Path(config.get("Plugins", "plugins"))
     else:
-        logfile = None
+        path_plug = None
 
-    host_type = args.host
-    logger.debug(f"Server type: {host_type}")
+    return path_pub, path_prv, path_plug
 
-    if args.cfgpath is None:
-        folder = DEFAULT_FOLDER
-        logger.debug(f"Path to config folder: {None}")
+
+def find_details_server(args, config):
+    if args.host == "rep":
+        addr_pub = [
+            config.get("Response", "hostname"),
+            config.get("Response", "port")
+        ]
+        addr_trig = None
+    elif args.host == "pub":
+        addr_pub = [
+            config.get("Publish", "hostname"),
+            config.get("Publish", "port")
+        ]
+        addr_trig = [
+            config.get("Trigger", "hostname"),
+            config.get("Trigger", "port")
+        ]
+
+    if "Allowed" in config:
+        allowed = [config.get("Allowed", option) for option in config["Allowed"]]
     else:
-        folder = Path(args.cfgpath)
-        logger.debug(f"Path to config folder: {folder}")
+        allowed = []
 
-    return host_type, folder, logfile, args.logprint
+    return addr_pub, addr_trig, allowed
 
 
-def convert_client_args(args):
-    ''' Assigns the client CLI arguments to variables
+def find_details_client(args, config):
+    if args.action == "set" or args.action == "get":
+        inter_type = "response"
+    elif args.action == "sub":
+        inter_type = "publish"
+    address = [
+        config.get(f"{args.server}-{inter_type}", "hostname"),
+        config.get(f"{args.server}-{inter_type}", "port")
+    ]
 
-    Parameters
-    ----------
-    args : Namespace
-        The client CLI arguments
+    return address
 
-    Returns
-    -------
-    server : string
-        The server name
-    action : string
-        The type of action with the server: get, set, sub
-    params : list of strings
-        The parameters to interact with
-    new_values : list of strings
-        The new values to assign to params (in a SET action)
-    folder : Posix path
-        The path to the folder containing the client's config file
-    '''
-    logger.info("Start of client operations")
 
-    if args.logfile is not None:
-        logfile = Path(args.logfile).resolve()
-    else:
-        logfile = None
+def find_params(args):
+    if args.action == "get" or args.action == "set":
+        params = args.param
+        logger.info(f"Parameters: {params}")
 
-    server = args.server
-    action = args.action
-
-    logger.info(f"Server: {server}")
-    logger.info(f"Action: {action}")
-
-    if action == "sub":
+    elif args.action == "sub":
         params = [[], [], []]
         if args.changes is not None:
             for item in args.changes:
@@ -120,18 +158,30 @@ def convert_client_args(args):
             logger.info(f"Triggers: {params[2]}")
         else:
             logger.info(f"Triggers: {None}")
-    elif action == "get" or action == "set":
-        params = args.param
-        logger.info(f"Parameters: {params}")
 
-    if args.cfgpath is None:
-        folder = DEFAULT_FOLDER
-        logger.info(f"Path to config folder: {None}")
-    else:
-        folder = Path(args.cfgpath)
-        logger.info(f"Path to config folder: {folder}")
+    return params
 
-    return server, action, params, folder, logfile
+
+def handle_server_args(args):
+    conf_folder = find_config(args.cfgpath)
+    config = load_config(conf_folder, "server")
+    setup_logging(args, config)
+    path_pub, path_prv, path_plug = find_paths(config, "server")
+    load_plugins(path_plug)
+    addr_pub, addr_trig, allowed = find_details_server(args, config)
+
+    return path_pub, path_prv, addr_pub, addr_trig, allowed
+
+
+def handle_client_args(args):
+    conf_folder = find_config(args.cfgpath)
+    config = load_config(conf_folder, "client")
+    setup_logging(args, config)
+    path_pub, path_prv, _ = find_paths(config, "client")
+    address = find_details_client(args, config)
+    params = find_params(args)
+
+    return path_pub, path_prv, address, params
 
 
 def get_datetime():
@@ -149,184 +199,6 @@ def get_datetime():
     current_datetime.append(f"{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02} Local Time")
 
     return current_datetime
-
-
-def load_server_config(config_file):
-    ''' Loads the configurations of a server
-
-    Parameters
-    ----------
-    config_file : Posix path
-        The path to the config file
-
-    Returns
-    -------
-    config : ConfigParser
-        The set of configs
-    '''
-
-    config = configparser.ConfigParser()
-
-    if config_file is not None:
-        if not isinstance(config_file, Path):
-            config_file = Path(config_file)
-        config.read([config_file])
-
-    for section, key in _CFG_PATHS_SERVER:
-        _path = Path(config.get(section, key)).resolve()
-        config.set(section, key, str(_path))
-        if not _path.exists():
-            warnings.warn(f"configured path '{_path}' does not exist")
-
-    return config
-
-
-def load_client_config(config_file):
-    ''' Loads the configurations of a client
-
-    Parameters
-    ----------
-    config_file : Posix path
-        The path to the config file
-
-    Returns
-    -------
-    config : ConfigParser
-        The set of configs
-    '''
-    config = configparser.ConfigParser()
-    if config_file is not None:
-        if not isinstance(config_file, Path):
-            config_file = Path(config_file)
-        config.read([config_file])
-
-    for section, key in _CFG_PATHS_CLIENT:
-        _path = Path(config.get(section, key)).resolve()
-        config.set(section, key, str(_path))
-        if not _path.exists():
-            warnings.warn(f"configured path '{_path}' does not exist")
-
-    return config
-
-
-def get_client_config(folder, server, action, arg_log, arg_print, arg_level):
-    ''' Load the values inside the client's config file
-
-    Parameters
-    ----------
-    folder : Posix path
-        The path to the folder containing the client's config file
-    server : string
-        The name of the server
-    action : "string"
-        The type of action with the server: get, set, sub
-
-    Returns
-    -------
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known hosts
-    path_prv : Posix path
-        The path to the folder containing the client's private key
-    address : list of strings
-        The server's hostname and port
-    '''
-
-    config = load_client_config(folder / "hosts.cfg")
-
-    path_pub = Path(config.get("Security", "public-keys"))
-    path_prv = Path(config.get("Security", "private-keys"))
-
-    if action == "set" or action == "get":
-        act_type = "response"
-    elif action == "sub":
-        act_type = "publish"
-    address = [
-        config.get(f"{server}-{act_type}", "hostname"),
-        config.get(f"{server}-{act_type}", "port")
-    ]
-
-    logfile = config.get("Logging", "filepath", fallback=None)
-    cfg_print = config.getboolean("Logging", "print", fallback=False)
-    level = config.get("Logging", "level", fallback="INFO")
-    if arg_level is not None:
-        level = arg_level
-
-    logfile = None
-    logprint = cfg_print or arg_print
-
-    if arg_log is not None:
-        logfile = arg_log
-
-    logger.debug("Client configs read")
-
-    return path_pub, path_prv, address, logfile, logprint, level
-
-
-def get_server_config(folder, host_type, arg_log, arg_print):
-    ''' Load the values inside the server's config file and loads the server's
-        plugins
-
-    Parameters
-    ----------
-    folder : Posix path
-        The path to the folder containing the client's config file
-    host_type : string
-        The type of message for the server to send: pub or rep
-
-    Returns
-    -------
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known hosts
-    path_prv : Posix path
-        The path to the folder containing the client's private key
-    address : list of strings
-        The server's hostname and port
-    allowed : list of strings
-        The hostnames of the clients that are allowed to connect to this server
-    '''
-
-    config = load_server_config(folder / "server.cfg")
-
-    path_pub = Path(config.get("Security", "public-keys"))
-    path_prv = Path(config.get("Security", "private-keys"))
-    path_plug = Path(config.get("Plugins", "plugins"))
-
-    load_plugins(path_plug)
-
-    if host_type == "rep":
-        pub_addr = [
-            config.get("Response", "hostname"),
-            config.get("Response", "port")
-        ]
-        trig_addr = None
-    elif host_type == "pub":
-        pub_addr = [
-            config.get("Publish", "hostname"),
-            config.get("Publish", "port")
-        ]
-        trig_addr = [
-            config.get("Trigger", "hostname"),
-            config.get("Trigger", "port")
-        ]
-
-    if "Allowed" in config:
-        allowed = [config.get("Allowed", option) for option in config["Allowed"]]
-    else:
-        allowed = []
-
-    logfile = config.get("Logging", "filepath", fallback=None)
-    cfg_print = config.getboolean("Logging", "print", fallback=False)
-    level = config.get("Logging", "level", fallback="INFO")
-
-    logfile = None
-    logprint = cfg_print or arg_print
-
-    if arg_log is not None:
-        logfile = arg_log
-
-    logger.debug("Server configs read")
-
-    return path_pub, path_prv, pub_addr, trig_addr, allowed, logfile, logprint, level
 
 
 def sub_params():

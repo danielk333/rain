@@ -7,10 +7,8 @@ import jsonschema
 import zmq
 
 from .authenticate import setup_server
-from .fetch import convert_server_args, get_server_config, sub_params
-from .fetch import get_datetime, setup_logging
-from .packaging import form_response, form_failed
-from .packaging import publish_update, publish_format
+from .fetch import get_datetime, handle_server_args, sub_params
+from .packaging import form_response, form_failed, publish_format, publish_update
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
 from .validate import validate_request, validate_response, validate_update
@@ -148,11 +146,9 @@ def run_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    host_type, conf_folder, arg_file, arg_print = convert_server_args(args)
-    dir_pub, dir_prv, server_address, trigger_address, allowed_add, logfile, logprint, loglevel = get_server_config(conf_folder, host_type, arg_file, arg_print)
-    setup_logging(logfile, logprint, loglevel)
+    dir_pub, dir_prv, addr_server, addr_trig, allowed = handle_server_args(args)
 
-    if host_type == "rep":
-        run_response(server_address, allowed_add, dir_pub, dir_prv)
-    elif host_type == "pub":
-        run_publish(server_address, trigger_address, allowed_add, dir_pub, dir_prv)
+    if args.host == "rep":
+        run_response(addr_server, allowed, dir_pub, dir_prv)
+    elif args.host == "pub":
+        run_publish(addr_server, addr_trig, allowed, dir_pub, dir_prv)
