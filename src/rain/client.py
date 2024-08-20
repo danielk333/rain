@@ -104,7 +104,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
             logger.debug("Update validated")
         except jsonschema.exceptions.ValidationError:
             update = {"name": ""}
-            logger.warning("Update validation failed")
+            logger.error("Update validation failed")
 
         if update["name"] in freq_params:
             logger.debug(f"Saved update: {update}")

@@ -59,7 +59,7 @@ def run_response(address, allowed, path_pub, path_prv):
             response = form_failed("response")
         else:
             logger.debug("Response validated")
-            logger.info(f"Response: {response}")
+            logger.debug(f"Response: {response}")
         finally:
             send_response(socket, response)
             logger.debug("Response sent to the client")
@@ -95,7 +95,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         logger.debug("Trigger server opened")
         while server_open:
             trigger = socket.recv_json(0)
-            logger.info(f"Trigger received: {trigger}")
+            logger.debug(f"Trigger received: {trigger}")
             q.put([trigger["name"], trigger["data"]])
             response = {
                 "name": trigger["name"],
@@ -119,7 +119,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     for param in possible_sub:
         t = threading.Thread(target=worker, args=[param])
         t.start()
-    logger.debug("Threads started for each subscribable parameter")
+        logger.debug(f"Thread started for parameter {param}")
 
     while server_open:
         name, new_value = q.get()
