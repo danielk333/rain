@@ -85,6 +85,20 @@ def form_response(request):
     return response
 
 
+def form_failed(form):
+    date_time = get_datetime()
+    response = {"date": date_time[0],
+                "time": date_time[1],
+                "action": "fail",
+                }
+    if form == "request":
+        response.update({"data": "Request verification failed"})
+    elif form == "response":
+        response.update({"data": "Response verification failed"})
+
+    return response
+
+
 def publish_update(sub_param, value, current_datetime):
     ''' Creates a JSON blob containing the updated value of a parameter
 

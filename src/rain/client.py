@@ -1,6 +1,6 @@
 import logging
-from pprint import pprint
 
+import jsonschema
 import zmq
 
 from .authenticate import setup_client
@@ -31,9 +31,15 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     '''
     request = form_request(action, params)
     logger.debug("Request formed")
-    validate_request(request)
-    logger.debug("Request validated")
-    logger.debug(f"Request: {request}")
+    try:
+        validate_request(request)
+    except jsonschema.exceptions.ValidationError:
+        request = None
+        logger.error("Request validation failed")
+        exit()
+    else:
+        logger.debug("Request validated")
+        logger.debug(f"Request: {request}")
 
     if request:
         socket = setup_client("req", server, path_pub, path_prv)
@@ -41,10 +47,15 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
         logger.debug("Request sent to the server")
         response = receive_response(socket, server_address)
         logger.info("Response received from the server")
-        validate_response(response)
-        logger.debug("Request validated")
-        logger.debug(f"Response: {response}")
-        yield response
+        try:
+            validate_response(response)
+        except jsonschema.exceptions.ValidationError:
+            logger.error("Response validation failed")
+            exit()
+        else:
+            logger.debug("Response validated")
+            logger.debug(f"Response: {response}")
+            yield response
 
 
 # TODO 57: Nicely shut down a subscribed client
@@ -88,8 +99,15 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         formatted_update = receive_subscribe(socket)
         update = pub_split(formatted_update)
         logger.debug(f"Update received from the server: {update}")
-        validate_update(update)
-        logger.debug("Update validated")
+        try:
+            test = {"action": "test",
+                    "name": "decoy",
+                    "data": 0}
+            validate_update(test)
+            logger.debug("Update validated")
+        except jsonschema.exceptions.ValidationError:
+            update = {"name": ""}
+            logger.warning("Update validation failed")
 
         if update["name"] in freq_params:
             logger.debug(f"Saved update: {update}")

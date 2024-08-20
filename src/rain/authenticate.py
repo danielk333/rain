@@ -74,7 +74,7 @@ def auth_server(socket, path_prv):
     except IndexError:
         logger.error("No private key file in the right format in the "
                      "keypairs folder")
-        raise IndexError
+        exit()
 
     # TODO: Check exceptions for loading certificates
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
@@ -98,7 +98,14 @@ def auth_client(socket, server, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containg the client's private key
     '''
-    client_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
+    try:
+        client_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
+    except IndexError:
+        logger.error("No private key file in the right format in the "
+                     "keypairs folder")
+        exit()
+
+    # TODO: Check exceptions for loading certificates
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub
@@ -121,8 +128,8 @@ def open_connection(socket, address):
         The hostname and port number of the server
     '''
     socket.bind(f"tcp://{address[0]}:{address[1]}")
-    logger.info(f"I am a WIP server open on {address[0]} with port {address[1]} " +
-                "ready to talk to friends")
+    logger.info(f"I am a WIP server open on {address[0]} with port " +
+                f"{address[1]} ready to talk to friends")
     logger.debug("Server connection opened")
 
 
@@ -139,7 +146,7 @@ def setup_client(host_type, server, path_pub, path_prv):
     path_pub : Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
-        The path to the folder containing the client's private key'
+        The path to the folder containing the client's private key
 
     Returns
     -------
@@ -147,7 +154,7 @@ def setup_client(host_type, server, path_pub, path_prv):
         The connection socket
     '''
     context = zmq.Context()
-    #TODO: make timeouts configurable
+    # TODO: make timeouts configurable
     context.setsockopt(zmq.SocketOption.SNDTIMEO, 5000)
     context.setsockopt(zmq.SocketOption.RCVTIMEO, 5000)
     context.setsockopt(zmq.LINGER, 0)

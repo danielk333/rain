@@ -3,12 +3,13 @@ import queue
 import threading
 import time
 
+import jsonschema
 import zmq
 
 from .authenticate import setup_server
 from .fetch import convert_server_args, get_server_config, sub_params
 from .fetch import get_datetime, setup_logging
-from .packaging import form_response
+from .packaging import form_response, form_failed
 from .packaging import publish_update, publish_format
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
@@ -39,17 +40,29 @@ def run_response(address, allowed, path_pub, path_prv):
     while server_open:
         request = receive_request(socket)
         logger.debug("Request received")
-        validate_request(request)
-        logger.debug("Request validated")
-        logger.info(f"Request: {request}")
+        try:
+            validate_request(request)
+        except jsonschema.exceptions.ValidationError:
+            logger.error("Request validation failed")
+            response = form_failed("request")
+        else:
+            logger.debug("Request validated")
+            logger.info(f"Request: {request}")
+            response = form_response(request)
+        finally:
+            logger.debug("Response formed")
 
-        response = form_response(request)
-        logger.debug("Response formed")
-        validate_response(response)
-        logger.debug("Response validated")
-        logger.info(f"Response: {response}")
-        send_response(socket, response)
-        logger.debug("Response sent to the client")
+        try:
+            validate_response(response)
+        except jsonschema.exceptions.ValidationError:
+            logger.error("Response validation failed")
+            response = form_failed("response")
+        else:
+            logger.debug("Response validated")
+            logger.info(f"Response: {response}")
+        finally:
+            send_response(socket, response)
+            logger.debug("Response sent to the client")
 
     auth.stop()
 
@@ -113,12 +126,16 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         date_time = get_datetime()
         update = publish_update(name, new_value, date_time)
         logger.debug("Update formed")
-        validate_update(update)
-        logger.debug("Update validated")
-        logger.debug(f"Update: {update}")
-        publish = publish_format(update)
-        socket.send_string(publish)
-        logger.debug("Update published")
+        try:
+            validate_update(update)
+        except jsonschema.exceptions.ValidationError:
+            logger.error("Update validation failed")
+        else:
+            logger.debug("Update validated")
+            logger.debug(f"Update: {update}")
+            publish = publish_format(update)
+            socket.send_string(publish)
+            logger.debug("Update published")
 
     auth.stop()
 
