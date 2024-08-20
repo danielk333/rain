@@ -178,9 +178,9 @@ def setup_server(host_type, address, allowed, path_pub, path_prv):
     allowed : list of strings
         The hostnames of the clients that are allowed to connect to this server
     path_pub : Posix path
-        The path to the folder containing the public keys of the known hosts
+        The path to the folder containing the public keys of the known clients
     path_prv : Posix path
-        The path to the folder containing the server's private key'
+        The path to the folder containing the server's private key
 
     Returns
     -------

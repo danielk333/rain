@@ -11,18 +11,45 @@ from .plugins import PLUGINS, load_plugins
 logger = logging.getLogger(__name__)
 
 
-def find_config(arg_path):
-    if arg_path is None:
+def find_config(args):
+    ''' Uses the input arguments to extract the folder containing the
+        configuration file
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+
+    Returns
+    -------
+    folder : Posix path
+        The path to the folder containing the configuration file
+    '''
+    if args.cfgpath is None:
         folder = DEFAULT_FOLDER
         logger.debug(f"Path to config folder: {None}")
     else:
-        folder = Path(arg_path)
+        folder = Path(args.cfgpath)
         logger.debug(f"Path to config folder: {folder}")
 
     return folder
 
 
 def load_config(folder, container):
+    ''' Establishes the path to the configuration file and reads its contents
+
+    Parameters
+    ----------
+    folder : Posix path
+        The path to the folder containing the configuration file
+    container : string
+        Whether the user is running a server or a client
+
+    Returns
+    -------
+    config : ConfigParser
+        The set of configs found in the configuration file
+    '''
     if container == "server":
         config_file = folder / "server.cfg"
         defaults = _CFG_PATHS_SERVER
@@ -47,6 +74,15 @@ def load_config(folder, container):
 
 
 def setup_logging(args, config):
+    ''' Uses the input arguments and configs to set up logging
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+    config : ConfigParser
+        The set of configs found in the client's configuration file
+    '''
     lib_logger = logging.getLogger("rain")
 
     cfg_file = config.get("Logging", "filepath", fallback=None)
@@ -85,6 +121,25 @@ def setup_logging(args, config):
 
 
 def find_paths(config, container):
+    ''' Uses the configs from the configuration file to extract the paths to
+        the public keys, keypair and (for a server) plugins
+
+    Parameters
+    ----------
+    config : ConfigParser
+        The set of configs found in the client's configuration file
+    container : string
+        Whether the user is running a server or a client
+
+    Returns
+    -------
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known clients
+    path_prv : Posix path
+        The path to the folder containing the server's private key
+    path_plug : Posix path
+        The path to the folder containing the server's plugins
+    '''
     path_pub = Path(config.get("Security", "public-keys"))
     path_prv = Path(config.get("Security", "private-keys"))
     if container == "server":
@@ -96,6 +151,25 @@ def find_paths(config, container):
 
 
 def find_details_server(args, config):
+    ''' Uses the input arguments and server configs to extract the connection
+        details of the server
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+    config : ConfigParser
+        The set of configs found in the client's configuration file
+
+    Returns
+    -------
+    addr_pub : list of strings
+        The hostname and port of the server
+    addr_trig : list of strings
+        The hostname and port of the server's trigger network
+    allowed : list of strings
+        The hostnames of the clients that are authorised to connect
+    '''
     if args.host == "rep":
         addr_pub = [
             config.get("Response", "hostname"),
@@ -121,6 +195,21 @@ def find_details_server(args, config):
 
 
 def find_details_client(args, config):
+    ''' Uses the input arguments and client configs to extract the connection
+        details of the server
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+    config : ConfigParser
+        The set of configs found in the client's configuration file
+
+    Returns
+    -------
+    address : list of strings
+        The hostname and port of the server
+    '''
     if args.action == "set" or args.action == "get":
         inter_type = "response"
     elif args.action == "sub":
@@ -134,6 +223,19 @@ def find_details_client(args, config):
 
 
 def find_params(args):
+    ''' Uses the input arguments to determine the list of parameters requested
+        by the client
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+
+    Returns
+    -------
+    params : list of strings
+        The parameters requested by the client
+    '''
     if args.action == "get" or args.action == "set":
         params = args.param
         logger.info(f"Parameters: {params}")
@@ -163,6 +265,27 @@ def find_params(args):
 
 
 def handle_server_args(args):
+    ''' Uses the input arguments to read the server's configuration file and
+        set up the necessary paths, connection details and logging
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+
+    Returns
+    -------
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known clients
+    path_prv : Posix path
+        The path to the folder containing the server's private key
+    addr_pub : list of strings
+        The hostname and port of the server
+    addr_trig : list of strings
+        The hostname and port of the server's trigger network
+    allowed : list of strings
+        The hostnames of the clients that are authorised to connect
+    '''
     conf_folder = find_config(args.cfgpath)
     config = load_config(conf_folder, "server")
     setup_logging(args, config)
@@ -174,6 +297,25 @@ def handle_server_args(args):
 
 
 def handle_client_args(args):
+    ''' Uses the input arguments to read the client's configuration file and
+        set up the necessary paths, connection details and logging
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+
+    Returns
+    -------
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the client's private key
+    address : list of strings
+        The hostname and port of the server
+    params : list of strings
+        The parameters requested by the client
+    '''
     conf_folder = find_config(args.cfgpath)
     config = load_config(conf_folder, "client")
     setup_logging(args, config)
