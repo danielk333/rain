@@ -100,10 +100,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         update = pub_split(formatted_update)
         logger.debug(f"Update received from the server: {update}")
         try:
-            test = {"action": "test",
-                    "name": "decoy",
-                    "data": 0}
-            validate_update(test)
+            validate_update(update)
             logger.debug("Update validated")
         except jsonschema.exceptions.ValidationError:
             update = {"name": ""}
