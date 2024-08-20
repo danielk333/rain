@@ -12,7 +12,7 @@ from .validate import validate_response, validate_request, validate_update
 logger = logging.getLogger(__name__)
 
 
-def run_request(server, server_address, action, params, path_pub, path_prv):
+def run_request(server, server_address, timeouts, action, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -20,6 +20,10 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
     ----------
     server : string
         The name of the server
+    server_address : list of strings
+        The server's hostname and port
+    timeouts : list of strings
+        The connection timeouts when interacting with a server
     action : string
         The type of action: get or set
     params : list of strings
@@ -42,7 +46,7 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
         logger.debug(f"Request: {request}")
 
     if request:
-        socket = setup_client("req", server, path_pub, path_prv)
+        socket = setup_client("req", server, timeouts, path_pub, path_prv)
         send_request(socket, server_address, request)
         logger.debug("Request sent to the server")
         response = receive_response(socket, server_address)
@@ -59,7 +63,7 @@ def run_request(server, server_address, action, params, path_pub, path_prv):
 
 
 # TODO 57: Nicely shut down a subscribed client
-def run_subscribe(server, server_address, params, path_pub, path_prv):
+def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
@@ -69,6 +73,8 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
         The name of the server
     server_address : list of strings
         The server's hostname and port
+    timeouts : list of strings
+        The connection timeouts when interacting with a server
     params : list of strings
         The parameters to interact with
     path_pub: Posix path
@@ -76,7 +82,7 @@ def run_subscribe(server, server_address, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    socket = setup_client("sub", server, path_pub, path_prv)
+    socket = setup_client("sub", server, timeouts, path_pub, path_prv)
 
     change_params = params[0]
     freq_params = params[1]
@@ -132,11 +138,11 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    dir_pub, dir_prv, address_server, params = handle_client_args(args)
+    dir_pub, dir_prv, address_server, timeouts, params = handle_client_args(args)
 
     if args.action == "get" or args.action == "set":
-        response = run_request(args.server, address_server, args.action, params, dir_pub, dir_prv)
+        response = run_request(args.server, address_server, timeouts, args.action, params, dir_pub, dir_prv)
     elif args.action == "sub":
-        response = run_subscribe(args.server, address_server, params, dir_pub, dir_prv)
+        response = run_subscribe(args.server, address_server, timeouts, params, dir_pub, dir_prv)
 
     return response

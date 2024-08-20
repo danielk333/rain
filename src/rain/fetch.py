@@ -209,6 +209,8 @@ def find_details_client(args, config):
     -------
     address : list of strings
         The hostname and port of the server
+    timeouts : list of strings
+        The connection timeouts when interacting with a server
     '''
     if args.action == "set" or args.action == "get":
         inter_type = "response"
@@ -219,7 +221,11 @@ def find_details_client(args, config):
         config.get(f"{args.server}-{inter_type}", "port")
     ]
 
-    return address
+    timeouts = []
+    timeouts.append(config.getint("Timeouts", "send", fallback=10000))
+    timeouts.append(config.getint("Timeouts", "receive", fallback=10000))
+
+    return address, timeouts
 
 
 def find_params(args):
@@ -286,7 +292,7 @@ def handle_server_args(args):
     allowed : list of strings
         The hostnames of the clients that are authorised to connect
     '''
-    conf_folder = find_config(args.cfgpath)
+    conf_folder = find_config(args)
     config = load_config(conf_folder, "server")
     setup_logging(args, config)
     path_pub, path_prv, path_plug = find_paths(config, "server")
@@ -313,17 +319,19 @@ def handle_client_args(args):
         The path to the folder containing the client's private key
     address : list of strings
         The hostname and port of the server
+    timeouts : list of strings
+        The connection timeouts when interacting with a server
     params : list of strings
         The parameters requested by the client
     '''
-    conf_folder = find_config(args.cfgpath)
+    conf_folder = find_config(args)
     config = load_config(conf_folder, "client")
     setup_logging(args, config)
     path_pub, path_prv, _ = find_paths(config, "client")
-    address = find_details_client(args, config)
+    address, timeouts = find_details_client(args, config)
     params = find_params(args)
 
-    return path_pub, path_prv, address, params
+    return path_pub, path_prv, address, timeouts, params
 
 
 def get_datetime():

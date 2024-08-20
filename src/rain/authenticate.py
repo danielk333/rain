@@ -133,7 +133,7 @@ def open_connection(socket, address):
     logger.debug("Server connection opened")
 
 
-def setup_client(host_type, server, path_pub, path_prv):
+def setup_client(host_type, server, timeouts, path_pub, path_prv):
     ''' The top-level function that organises the initialisation of the client
         connection
 
@@ -143,6 +143,8 @@ def setup_client(host_type, server, path_pub, path_prv):
         The type of connection to create: publish, request, response, subscribe
     server : string
         The name of the server
+    timeouts : list of strings
+        The connection timeouts when interacting with a server
     path_pub : Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
@@ -154,9 +156,8 @@ def setup_client(host_type, server, path_pub, path_prv):
         The connection socket
     '''
     context = zmq.Context()
-    # TODO: make timeouts configurable
-    context.setsockopt(zmq.SocketOption.SNDTIMEO, 5000)
-    context.setsockopt(zmq.SocketOption.RCVTIMEO, 5000)
+    context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
+    context.setsockopt(zmq.SocketOption.RCVTIMEO, timeouts[1])
     context.setsockopt(zmq.LINGER, 0)
     socket = setup_socket(context, host_type)
 
