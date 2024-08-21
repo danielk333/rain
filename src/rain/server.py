@@ -1,8 +1,8 @@
+import json
 import logging
 import queue
 import threading
 import time
-import json
 
 import jsonschema
 import zmq
@@ -58,7 +58,7 @@ def run_response(address, allowed, path_pub, path_prv):
             response = form_failed("response", address)
         else:
             logger.debug("Response validated")
-            logger.debug(f"Response: {response}")
+            logger.debug(f"Response: {json.dumps(response)}")
         finally:
             send_response(socket, response)
             logger.debug("Response sent to the client")
@@ -94,13 +94,13 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         logger.debug("Trigger server opened")
         while server_open:
             trigger = socket.recv_json(0)
-            logger.debug(f"Trigger received: {trigger}")
+            logger.debug(f"Trigger received: {json.dumps(trigger)}")
             q.put([trigger["name"], trigger["data"]])
             response = {
                 "name": trigger["name"],
                 "data": "Trigger received"
             }
-            logger.debug(f"Trigger response formed: {response}")
+            logger.debug(f"Trigger response formed: {json.dumps(response)}")
             socket.send_json(response, 0)
             logger.debug("Trigger response sent to the trigger server")
 
@@ -131,7 +131,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
             logger.error("Update validation failed")
         else:
             logger.debug("Update validated")
-            logger.debug(f"Update: {update}")
+            logger.debug(f"Update: {json.dumps(update)}")
             publish = publish_format(update)
             socket.send_string(publish)
             logger.debug("Update published")

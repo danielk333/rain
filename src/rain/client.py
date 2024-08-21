@@ -1,3 +1,4 @@
+import json
 import logging
 
 import jsonschema
@@ -43,7 +44,7 @@ def run_request(server, server_address, timeouts, action, params, path_pub, path
         exit()
     else:
         logger.debug("Request validated")
-        logger.debug(f"Request: {request}")
+        logger.debug(f"Request: {json.dumps(request)}")
 
     if request:
         socket = setup_client("req", server, timeouts, path_pub, path_prv)
@@ -58,7 +59,7 @@ def run_request(server, server_address, timeouts, action, params, path_pub, path
             exit()
         else:
             logger.debug("Response validated")
-            logger.debug(f"Response: {response}")
+            logger.debug(f"Response: {json.dumps(response)}")
             yield response
 
 
@@ -104,7 +105,7 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
     while client_connected:
         formatted_update = receive_subscribe(socket)
         update = pub_split(formatted_update)
-        logger.debug(f"Update received from the server: {update}")
+        logger.debug(f"Update received from the server: {json.dumps(update)}")
         try:
             validate_update(update)
             logger.debug("Update validated")
@@ -113,7 +114,7 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
             logger.error("Update validation failed")
 
         if update["name"] in freq_params:
-            logger.debug(f"Saved update: {update}")
+            logger.debug(f"Saved update: {json.dumps(update)}")
             yield update
         elif update["name"] in change_params:
             for item in range(len(prev_values)):
@@ -121,12 +122,12 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
                     index = item
             if update["data"] != prev_values[index][1]:
                 prev_values[index][1] = update["data"]
-                logger.debug(f"Saved update: {update}")
+                logger.debug(f"Saved update: {json.dumps(update)}")
                 yield update
             else:
                 logger.debug("Update not saved")
         elif update["name"] in trig_params:
-            logger.debug(f"Saved update: {update}")
+            logger.debug(f"Saved update: {json.dumps(update)}")
             yield update
 
 
