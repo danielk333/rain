@@ -4,6 +4,7 @@ from pathlib import Path
 import zmq
 
 from .config import DEFAULT_FOLDER, PLUGIN_FOLDER
+from .config import DEFAULT_SERVER_CFG, DEFAULT_LOGGING, DEFAULT_TIMEOUTS
 from .config import AUTHORISED_KEYS_FOLDER, KNOWN_HOSTS_FOLDER
 
 
@@ -90,7 +91,7 @@ def gen_keys(name, cfg_path, key_path):
     return
 
 
-def gen_server_cfg(name, path_conf, path_pub, path_prv, path_plug):
+def gen_server_cfg(path_conf, path_pub, path_prv, path_plug):
     ''' Generates a configuration file for the server, containing the server's
         TCP/IP details (for both REP and PUB) socket types, as well as the
         locations of the folders holding the authorised public keys, private
@@ -98,8 +99,6 @@ def gen_server_cfg(name, path_conf, path_pub, path_prv, path_plug):
 
     Parameters
     ----------
-    name : string
-        The name of the server
     path_conf : Posix path
         The path to the folder containing the server's config file
     path_pub : Posix path
@@ -110,6 +109,7 @@ def gen_server_cfg(name, path_conf, path_pub, path_prv, path_plug):
         The path to the folder containing the plugins
     '''
     config = configparser.ConfigParser()
+
     config['Security'] = {
         'public-keys': path_pub,
         'private-keys': path_prv
@@ -117,39 +117,29 @@ def gen_server_cfg(name, path_conf, path_pub, path_prv, path_plug):
     config['Plugins'] = {
         'plugins': path_plug
     }
-    config['Logging'] = {
-        'filepath': 'rain-server.log',
-        'print': 'True',
-        'level': 'INFO'
-    }
-    config['Response'] = {
-        'hostname': '127.0.0.1',
-        'port': '1234',
-    }
-    config['Publish'] = {
-        'hostname': '127.0.0.1',
-        'port': '2468'
-    }
-    config['Trigger'] = {
-        'hostname': '127.0.0.1',
-        'port': '1793'
-    }
-    config['Allowed'] = {}
+
+    for section in DEFAULT_LOGGING:
+        config.add_section(section)
+        for key in DEFAULT_LOGGING[section]:
+            config[section][key] = DEFAULT_LOGGING[section][key]
+
+    for section in DEFAULT_SERVER_CFG:
+        config.add_section(section)
+        for key in DEFAULT_SERVER_CFG[section]:
+            config[section][key] = DEFAULT_SERVER_CFG[section][key]
 
     filename = path_conf / "server.cfg"
     with open(filename, 'w') as configfile:
         config.write(configfile)
 
 
-def gen_client_cfg(name, path_conf, path_pub, path_prv):
+def gen_client_cfg(path_conf, path_pub, path_prv):
     ''' Generates a configuration file for the client, containing the
         locations of the folders holding the public keys of the known hosts,
         private keys and plugins
 
     Parameters
     ----------
-    name : string
-        The name of the client
     path_conf : Posix path
         The path to the folder containing the client's config file
     path_pub : Posix path
@@ -158,15 +148,21 @@ def gen_client_cfg(name, path_conf, path_pub, path_prv):
         The path to the folder containing the client's private key
     '''
     config = configparser.ConfigParser()
+
     config['Security'] = {
         'public-keys': path_pub,
         'private-keys': path_prv
     }
-    config['Logging'] = {
-        'filepath': 'rain-client.log',
-        'print': 'True',
-        'level': 'INFO'
-    }
+
+    for section in DEFAULT_LOGGING:
+        config.add_section(section)
+        for key in DEFAULT_LOGGING[section]:
+            config[section][key] = DEFAULT_LOGGING[section][key]
+
+    for section in DEFAULT_TIMEOUTS:
+        config.add_section(section)
+        for key in DEFAULT_TIMEOUTS[section]:
+            config[section][key] = DEFAULT_TIMEOUTS[section][key]
 
     filename = path_conf / "hosts.cfg"
     with open(filename, 'w') as configfile:

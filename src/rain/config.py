@@ -11,13 +11,6 @@ KEYPAIRS_FOLDER = DEFAULT_FOLDER / "keypairs"
 
 
 DEFAULT_SERVER_CFG = {
-    "Security": {
-        "public-keys": AUTHORISED_KEYS_FOLDER,
-        "private-keys": KEYPAIRS_FOLDER
-    },
-    "Plugins": {
-        "plugins": PLUGIN_FOLDER
-    },
     "Response": {
         "hostname": "127.0.0.1",
         "port": "1234"
@@ -25,16 +18,26 @@ DEFAULT_SERVER_CFG = {
     "Publish": {
         "hostname": "127.0.0.1",
         "port": "2468"
+    },
+    "Trigger": {
+        "hostname": "127.0.0.1",
+        "port": "1793"
+    },
+    "Allowed": {}
+}
+
+DEFAULT_LOGGING = {
+    "Logging": {
+        "filepath": "None",
+        "print": "True",
+        "level": "INFO"
     }
 }
 
-DEFAULT_CLIENT_CFG = {
-    "Security": {
-        "public-keys": KNOWN_HOSTS_FOLDER,
-        "private-keys": KEYPAIRS_FOLDER
-    },
-    "Plugins": {
-        "plugins": PLUGIN_FOLDER
+DEFAULT_TIMEOUTS = {
+    "Timeouts": {
+        "send": "10000",
+        "receive": "10000"
     }
 }
 
