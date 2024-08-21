@@ -43,9 +43,6 @@ req_schema = {
             "items": {
                 "type": "string"
             }
-        },
-        "data_description": {
-            "type": "string"
         }
     }
 }
@@ -80,9 +77,6 @@ rep_schema = {
             "items": {
                 "type": "string"
             }
-        },
-        "data_description": {
-            "type": "string"
         }
     }
 }
@@ -110,9 +104,6 @@ pub_schema = {
             "type": "string"
         },
         "data": {
-            "type": "string"
-        },
-        "data_description": {
             "type": "string"
         }
     }
