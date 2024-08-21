@@ -42,7 +42,7 @@ def run_response(address, allowed, path_pub, path_prv):
             validate_request(request)
         except jsonschema.exceptions.ValidationError:
             logger.error("Request validation failed")
-            response = form_failed("request")
+            response = form_failed("request", address)
         else:
             logger.debug("Request validated")
             logger.info(f"Request: {request}")
@@ -54,7 +54,7 @@ def run_response(address, allowed, path_pub, path_prv):
             validate_response(response)
         except jsonschema.exceptions.ValidationError:
             logger.error("Response validation failed")
-            response = form_failed("response")
+            response = form_failed("response", address)
         else:
             logger.debug("Response validated")
             logger.debug(f"Response: {response}")

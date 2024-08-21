@@ -6,11 +6,13 @@ from .fetch import get_datetime
 from .plugins import PLUGINS
 
 
-def form_request(message_type, req_params):
+def form_request(address, message_type, req_params):
     ''' Creates the request message for the client to send to a server
 
     Parameters
     ----------
+    address : string
+        The client's hostname
     message_type : string
         Whether the request is in the form of a GET or a SET command
     req_params : list of strings
@@ -22,8 +24,9 @@ def form_request(message_type, req_params):
         The formatted request to be sent by the client to the server
     '''
     date_time = get_datetime()
-    request = {"date": date_time[0],
-               "time": date_time[1]}
+    request = {"sender": address}
+    request.update({"date": date_time[0],
+                    "time": date_time[1]})
     request.update({"action": message_type})
     if message_type == "get":
         request.update({"name": req_params})
@@ -56,7 +59,7 @@ def form_response(request, address):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"server": address[0]}
+    response = {"sender": address[0]}
     response.update({"date": date_time[0],
                      "time": date_time[1]})
 
@@ -91,9 +94,29 @@ def form_response(request, address):
     return response
 
 
-def form_failed(form):
+def form_failed(form, address):
+    ''' Creates a failure response message, either because the server received
+        a request that failed validation or because its response failed
+        validation. This message needs to be sent as a REQ/REP socket requires
+        both a request and a response to be transmitted, otherwise blocking
+        will occur
+
+    Parameters
+    ----------
+    form : string
+        Whether the message that failed verification was a request or a
+        response
+    address : list of strings
+        The hostname and port number of the server
+
+    Returns
+    -------
+    response : JSON
+        The formatted response to be sent by the server to the client
+    '''
     date_time = get_datetime()
-    response = {"date": date_time[0],
+    response = {"sender": address[0],
+                "date": date_time[0],
                 "time": date_time[1],
                 "action": "fail",
                 "name": "fail"
@@ -125,7 +148,7 @@ def publish_update(param, value, address, current_datetime):
     update : JSON
         The update to be published by the server
     '''
-    update = {"server": address[0],
+    update = {"sender": address[0],
               "date": current_datetime[0],
               "time": current_datetime[1],
               "action": "sub",

@@ -12,7 +12,7 @@ from .validate import validate_response, validate_request, validate_update
 logger = logging.getLogger(__name__)
 
 
-def run_request(server, server_address, timeouts, action, params, path_pub, path_prv):
+def run_request(server, server_address, client_address, timeouts, action, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -22,6 +22,8 @@ def run_request(server, server_address, timeouts, action, params, path_pub, path
         The name of the server
     server_address : list of strings
         The server's hostname and port
+    client_address : string
+        The client's hostname
     timeouts : list of strings
         The connection timeouts when interacting with a server
     action : string
@@ -33,7 +35,7 @@ def run_request(server, server_address, timeouts, action, params, path_pub, path
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    request = form_request(action, params)
+    request = form_request(client_address, action, params)
     logger.debug("Request formed")
     try:
         validate_request(request)
@@ -63,7 +65,7 @@ def run_request(server, server_address, timeouts, action, params, path_pub, path
 
 
 # TODO 57: Nicely shut down a subscribed client
-def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
+def run_subscribe(server, server_address, client_address, timeouts, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
@@ -73,6 +75,8 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
         The name of the server
     server_address : list of strings
         The server's hostname and port
+    client_address : string
+        The client's hostname
     timeouts : list of strings
         The connection timeouts when interacting with a server
     params : list of strings
@@ -138,11 +142,11 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    dir_pub, dir_prv, address_server, timeouts, params = handle_client_args(args)
+    dir_pub, dir_prv, address_server, address_client, timeouts, params = handle_client_args(args)
 
     if args.action == "get" or args.action == "set":
-        response = run_request(args.server, address_server, timeouts, args.action, params, dir_pub, dir_prv)
+        response = run_request(args.server, address_server, address_client, timeouts, args.action, params, dir_pub, dir_prv)
     elif args.action == "sub":
-        response = run_subscribe(args.server, address_server, timeouts, params, dir_pub, dir_prv)
+        response = run_subscribe(args.server, address_server, address_client, timeouts, params, dir_pub, dir_prv)
 
     return response
