@@ -13,7 +13,7 @@ from .validate import validate_response, validate_request, validate_update
 logger = logging.getLogger(__name__)
 
 
-def run_request(server, server_address, timeouts, action, params, path_pub, path_prv):
+def run_request(server, server_address, timeouts, action, params, data, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -29,12 +29,14 @@ def run_request(server, server_address, timeouts, action, params, path_pub, path
         The type of action: get or set
     params : list of strings
         The parameters to interact with
+    data : list of strings
+        The data to transmit along with the parameters
     path_pub: Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    request = form_request(action, params)
+    request = form_request(action, params, data)
     logger.debug("Request formed")
     try:
         validate_request(request)
@@ -142,7 +144,7 @@ def run_client(args):
     dir_pub, dir_prv, address_server, timeouts, params = handle_client_args(args)
 
     if args.action == "get" or args.action == "set":
-        response = run_request(args.server, address_server, timeouts, args.action, params, dir_pub, dir_prv)
+        response = run_request(args.server, address_server, timeouts, args.action, params, args.data, dir_pub, dir_prv)
     elif args.action == "sub":
         response = run_subscribe(args.server, address_server, timeouts, params, dir_pub, dir_prv)
 

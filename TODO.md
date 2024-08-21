@@ -75,6 +75,6 @@ Smaller TODOs:
 - [x] TODO 59: Make the trigger port configurable
 - [x] TODO 60: Make logging level configurable
 - [ ] TODO 61: Handle requesting the same parameter multiple times
-- [ ] TODO 62: Add a data field to requests
+- [x] TODO 62: Add a data field to requests
 - [ ] TODO 63: Have separate log levels for stream and file handlers
 - [ ] TODO 64: Add exception handling for plugin calling errors

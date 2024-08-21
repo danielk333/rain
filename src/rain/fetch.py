@@ -318,7 +318,7 @@ def handle_client_args(args):
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
-    addr_server : list of strings
+    address : list of strings
         The hostname and port of the server
     timeouts : list of strings
         The connection timeouts when interacting with a server
@@ -329,10 +329,10 @@ def handle_client_args(args):
     config = load_config(conf_folder, "client")
     setup_logging(args, config)
     path_pub, path_prv, _ = find_paths(config, "client")
-    addr_server, timeouts = find_details_client(args, config)
+    address, timeouts = find_details_client(args, config)
     params = find_params(args)
 
-    return path_pub, path_prv, addr_server, timeouts, params
+    return path_pub, path_prv, address, timeouts, params
 
 
 def get_datetime():

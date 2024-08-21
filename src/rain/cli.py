@@ -181,7 +181,13 @@ def client_cli():
     parser_get.add_argument(
         "param",
         nargs="+",
-        help="the parameters to get"
+        help="the parameter(s) to get"
+    )
+    parser_get.add_argument(
+        "-d", "--data",
+        nargs="*",
+        default=None,
+        help="data to request alongside a parameter"
     )
 
     parser_set = subparsers.add_parser(
@@ -189,10 +195,14 @@ def client_cli():
         help="set the values of parameters"
     )
     parser_set.add_argument(
-        "-p", "--param",
-        action="append",
-        nargs=2,
-        help="the parameter to set and the value to set it to"
+        "param",
+        nargs="+",
+        help="the parameter(s) to set"
+    )
+    parser_set.add_argument(
+        "-d", "--data",
+        nargs="*",
+        help="data to request alongside a parameter"
     )
 
     parser_sub = subparsers.add_parser(

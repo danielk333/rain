@@ -1,19 +1,24 @@
 import json
+import logging
 import sys
 
 from .fetch import get_datetime
 from .plugins import PLUGINS
 
+logger = logging.getLogger(__name__)
 
-def form_request(message_type, req_params):
+
+def form_request(message_type, params, data):
     ''' Creates the request message for the client to send to a server
 
     Parameters
     ----------
     message_type : string
         Whether the request is in the form of a GET or a SET command
-    req_params : list of strings
+    params : list of strings
         The parameters that are the subject of the request
+    data : list of strings
+        The data to transmit along with the parameters
 
     Returns
     -------
@@ -27,16 +32,25 @@ def form_request(message_type, req_params):
         "time": date_time[1],
     })
     request.update({"action": message_type})
-    if message_type == "get":
-        request.update({"name": req_params})
-    if message_type == "set":
-        names = []
-        values = []
-        for name, value in req_params:
-            names.append(name)
-            values.append(value)
-        request.update({"name": names})
-        request.update({"data": values})
+    request.update({"name": params})
+    if request["action"] == "get":
+        if data is None:
+            request.update({"data": ["None"]})
+        else:
+            if len(params) == len(data):
+                request.update({"data": data})
+            else:
+                logger.error("Number of data values does not match the number of parameters")
+                exit()
+    elif request["action"] == "set":
+        if data is None:
+            logger.error("Number of data values does not match the number of parameters")
+            exit()
+        if len(params) == len(data):
+            request.update({"data": data})
+        else:
+            logger.error("Number of data values does not match the number of parameters")
+            exit()
 
     return request
 
