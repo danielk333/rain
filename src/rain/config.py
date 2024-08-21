@@ -3,7 +3,7 @@ from pathlib import Path
 HOME = Path(Path.home())
 
 # Default paths
-DEFAULT_FOLDER = (HOME / ".config" / "rain").resolve()
+DEFAULT_FOLDER = HOME / ".config" / "rain"
 PLUGIN_FOLDER = DEFAULT_FOLDER / "plugins"
 AUTHORISED_KEYS_FOLDER = DEFAULT_FOLDER / "authorised_keys"
 KNOWN_HOSTS_FOLDER = DEFAULT_FOLDER / "known_hosts"
@@ -27,11 +27,13 @@ DEFAULT_SERVER_CFG = {
 }
 
 DEFAULT_LOGGING = {
-    "Logging": {
+    "Logging-file": {
         "filepath": "None",
-        "print": "True",
         "level": "INFO"
-    }
+    },
+    "Logging-print": {
+        "print": "True",
+        "level": "INFO"}
 }
 
 DEFAULT_TIMEOUTS = {

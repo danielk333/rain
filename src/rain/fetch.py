@@ -85,9 +85,10 @@ def setup_logging(args, config):
     '''
     lib_logger = logging.getLogger("rain")
 
-    cfg_file = config.get("Logging", "filepath", fallback=None)
-    cfg_print = config.getboolean("Logging", "print", fallback=False)
-    cfg_level = config.get("Logging", "level", fallback="INFO")
+    cfg_file = config.get("Logging-file", "filepath", fallback=None)
+    cfg_print = config.getboolean("Logging-print", "print", fallback=False)
+    level_file = config.get("Logging-file", "level", fallback="INFO")
+    level_print = config.get("Logging-print", "level", fallback="INFO")
 
     if args.logfile is not None:
         logfile = args.logfile.resolve()
@@ -99,25 +100,25 @@ def setup_logging(args, config):
     if args.loglevel is not None:
         loglevel = args.loglevel
     else:
-        loglevel = cfg_level
+        loglevel = "INFO"
 
-    # TODO: Make format configurable
+    # TODO 65: Make logging format configurable
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s')
 
     if logfile is not None:
         handler = logging.FileHandler(str(logfile))
         handler.setFormatter(formatter)
-        handler.setLevel(loglevel)
+        handler.setLevel(level_file)
         lib_logger.addHandler(handler)
 
     if logprint:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
-        handler.setLevel(loglevel)
+        handler.setLevel(level_print)
         lib_logger.addHandler(handler)
 
     lib_logger.setLevel(loglevel)
-    lib_logger.debug("logging setup complete")
+    lib_logger.debug("Logging setup complete")
 
 
 def find_paths(config, container):

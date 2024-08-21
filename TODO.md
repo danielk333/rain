@@ -76,5 +76,6 @@ Smaller TODOs:
 - [x] TODO 60: Make logging level configurable
 - [x] TODO 61: Handle requesting the same parameter multiple times
 - [x] TODO 62: Add a data field to requests
-- [ ] TODO 63: Have separate log levels for stream and file handlers
+- [x] TODO 63: Have separate log levels for stream and file handlers
 - [ ] TODO 64: Add exception handling for plugin calling errors
+- [ ] TODO 65: Make logging format configurable
