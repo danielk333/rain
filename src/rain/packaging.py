@@ -1,6 +1,7 @@
 import json
 import logging
 import sys
+import copy
 
 from .fetch import get_datetime
 from .plugins import PLUGINS
@@ -35,7 +36,7 @@ def form_request(message_type, params, data):
     request.update({"name": params})
     if request["action"] == "get":
         if data is None:
-            request.update({"data": ["None"]})
+            request.update({"data": []})
         else:
             if len(params) == len(data):
                 request.update({"data": data})
@@ -80,14 +81,17 @@ def form_response(request, address):
         response.update({"action": "get"})
         response.update({"name": request["name"]})
         data = []
-        for param in request["name"]:
+        for ind, param in enumerate(request["name"]):
             try:
                 func = PLUGINS["get"][param]["function"]
             except KeyError:
-                data = [f"Parameter {param} invalid"]
-                break
+                data.append(f"Parameter '{param}' invalid")
             else:
-                data.append(func(request))
+                request_copy = copy.deepcopy(request)
+                request_copy["name"] = param
+                if len(request["data"]) == len(request["name"]):
+                    request_copy["data"] = request["data"][ind]
+                data.append(func(request_copy))
         response.update({"data": data})
 
     elif request["action"] == "set":
@@ -98,10 +102,13 @@ def form_response(request, address):
             try:
                 func = PLUGINS["set"][param]["function"]
             except KeyError:
-                data = [f"Parameter {param} invalid"]
-                break
+                data.append(f"Parameter '{param}' invalid")
             else:
-                data.append(func(request))
+                request_copy = copy.deepcopy(request)
+                request_copy["name"] = param
+                if len(request["data"]) == len(request["name"]):
+                    request_copy["data"] = request["data"][ind]
+                data.append(func(request_copy))
         response.update({"data": data})
 
     return response
