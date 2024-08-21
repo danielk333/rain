@@ -38,15 +38,14 @@ def receive_request(socket):
     request : JSON
         The request sent by the client to the server
     '''
-    # request = socket.recv_json(0)
     frame = socket.recv(0, copy=False)
     src_fd = frame.get(zmq.MessageOption.SRCFD)
     src_sock = pys.socket(fileno=src_fd)
-    source = src_sock.getpeername()[0]
+    address = src_sock.getpeername()[0]
     src_sock.detach()
-    request = json.loads(frame.bytes.decode("utf-8"))
 
-    request["sender"] = source
+    request = json.loads(frame.bytes.decode("utf-8"))
+    request["sender"] = address
 
     return request
 

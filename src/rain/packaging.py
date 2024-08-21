@@ -10,8 +10,6 @@ def form_request(message_type, req_params):
 
     Parameters
     ----------
-    address : string
-        The client's hostname
     message_type : string
         Whether the request is in the form of a GET or a SET command
     req_params : list of strings
@@ -23,10 +21,11 @@ def form_request(message_type, req_params):
         The formatted request to be sent by the client to the server
     '''
     date_time = get_datetime()
-    request = {
+    request = {"sender": ""}
+    request.update({
         "date": date_time[0],
         "time": date_time[1],
-    }
+    })
     request.update({"action": message_type})
     if message_type == "get":
         request.update({"name": req_params})
@@ -119,8 +118,7 @@ def form_failed(form, address):
                 "date": date_time[0],
                 "time": date_time[1],
                 "action": "fail",
-                "name": "fail"
-                }
+                "name": "fail"}
     if form == "request":
         response.update({"data": "Request verification failed"})
     elif form == "response":
