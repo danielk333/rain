@@ -21,6 +21,9 @@ req_get_schema = {
     "description": "",
     "required": ["action", "name"],
     "properties": {
+        "sender": {
+            "type": "string"
+        },
         "date": {
             "type": "string",
             "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
@@ -46,6 +49,9 @@ req_set_schema = {
     "description": "",
     "required": ["action", "name", "data"],
     "properties": {
+        "sender": {
+            "type": "string"
+        },
         "date": {
             "type": "string",
             "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
@@ -80,6 +86,9 @@ rep_schema = {
     "description": "",
     "required": ["action", "name", "data"],
     "properties": {
+        "sender": {
+            "type": "string"
+        },
         "date": {
             "type": "string",
             "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
@@ -114,6 +123,9 @@ pub_schema = {
     "description": "",
     "required": ["action", "name", "data"],
     "properties": {
+        "sender": {
+            "type": "string"
+        },
         "date": {
             "type": "string",
             "description": "https://www.iso.org/iso-8601-date-and-time-format.html"

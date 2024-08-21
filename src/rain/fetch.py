@@ -224,7 +224,7 @@ def find_details_client(args, config):
         config.get(f"{args.server}-{inter_type}", "port")
     ]
 
-    addr_client = [config.get("client", "hostname")]
+    addr_client = config.get("client", "hostname")
 
     timeouts = []
     timeouts.append(config.getint("Timeouts", "send", fallback=10000))
