@@ -139,11 +139,11 @@ def form_failed(form, address):
                 "date": date_time[0],
                 "time": date_time[1],
                 "action": "fail",
-                "name": "fail"}
+                "name": ["fail"]}
     if form == "request":
-        response.update({"data": "Request verification failed"})
+        response.update({"data": ["Request verification failed"]})
     elif form == "response":
-        response.update({"data": "Response verification failed"})
+        response.update({"data": ["Response verification failed"]})
 
     return response
 
