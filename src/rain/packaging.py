@@ -39,7 +39,7 @@ def form_request(message_type, req_params):
     return request
 
 
-def form_response(request):
+def form_response(request, address):
     ''' Creates the response message following from the reception of a request
         from a client. This response message will later be sent to the client
 
@@ -47,6 +47,8 @@ def form_response(request):
     ----------
     request : JSON
         The request made by the client
+    address : list of strings
+        The hostname and port number of the server
 
     Returns
     -------
@@ -54,8 +56,9 @@ def form_response(request):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"date": date_time[0],
-                "time": date_time[1]}
+    response = {"server": address[0]}
+    response.update({"date": date_time[0],
+                     "time": date_time[1]})
 
     if request["action"] == "get":
         response.update({"action": "get"})
@@ -103,15 +106,17 @@ def form_failed(form):
     return response
 
 
-def publish_update(sub_param, value, current_datetime):
+def publish_update(param, value, address, current_datetime):
     ''' Creates a JSON blob containing the updated value of a parameter
 
     Parameters
     ----------
-    sub_param : string
+    param : string
         The parameter whose value has been updated
     value : string
         The new values this parameter has
+    address : list of strings
+        The hostname and port number of the server
     current_datetime : list of strings
         The server's current local date and time
 
@@ -120,10 +125,11 @@ def publish_update(sub_param, value, current_datetime):
     update : JSON
         The update to be published by the server
     '''
-    update = {"date": current_datetime[0],
+    update = {"server": address[0],
+              "date": current_datetime[0],
               "time": current_datetime[1],
               "action": "sub",
-              "name": sub_param,
+              "name": param,
               "data": value}
 
     return update

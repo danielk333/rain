@@ -46,7 +46,7 @@ def run_response(address, allowed, path_pub, path_prv):
         else:
             logger.debug("Request validated")
             logger.info(f"Request: {request}")
-            response = form_response(request)
+            response = form_response(request, address)
         finally:
             logger.debug("Response formed")
 
@@ -122,7 +122,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
     while server_open:
         name, new_value = q.get()
         date_time = get_datetime()
-        update = publish_update(name, new_value, date_time)
+        update = publish_update(name, new_value, serv_addr, date_time)
         logger.debug("Update formed")
         try:
             validate_update(update)
