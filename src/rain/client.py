@@ -105,7 +105,13 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
 
     client_connected = True
     while client_connected:
-        formatted_update = receive_subscribe(socket)
+        try:
+            formatted_update = receive_subscribe(socket)
+        except KeyboardInterrupt:
+            client_connected = False
+            logger.info("Closing subscribe client")
+            continue
+
         update = pub_split(formatted_update)
         logger.debug(f"Update received from the server: {json.dumps(update)}")
         try:

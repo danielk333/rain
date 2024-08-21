@@ -37,8 +37,14 @@ def run_response(address, allowed, path_pub, path_prv):
 
     server_open = True
     while server_open:
-        request = receive_request(socket)
-        logger.debug("Request received")
+        try:
+            request = receive_request(socket)
+            logger.debug("Request received")
+        except KeyboardInterrupt:
+            server_open = False
+            logger.info("Closing server")
+            continue
+
         try:
             validate_request(request)
         except jsonschema.exceptions.ValidationError:

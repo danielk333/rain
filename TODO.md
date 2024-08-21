@@ -54,7 +54,7 @@ Smaller TODOs:
 - [x] TODO 38: Write a CLI for the new user code
 - [ ] TODO 39: Add logging messages
 - [x] TODO 40: Remove groups
-- [ ] TODO 41: Implement a way for a server to nicely shut itself down
+- [x] TODO 41: Implement a way for a server to nicely shut itself down
 - [x] TODO 42: Rework the request_components function
 - [x] TODO 43: Rework the pub_split function
 - [ ] TODO 44: Improve the layout of the --help command
@@ -70,11 +70,11 @@ Smaller TODOs:
 - [x] TODO 54: Set up a trigger mechanism for triggered event/parameters
 - [x] TODO 55: Filter for all messages or only for changes
 - [x] TODO 56: Register triggered events
-- [ ] TODO 57: Nicely shut down a subscribed client
+- [x] TODO 57: Nicely shut down a subscribed client
 - [x] TODO 58: Validate published messages
 - [x] TODO 59: Make the trigger port configurable
 - [x] TODO 60: Make logging level configurable
-- [ ] TODO 61: Handle requesting the same parameter multiple times
+- [x] TODO 61: Handle requesting the same parameter multiple times
 - [x] TODO 62: Add a data field to requests
 - [ ] TODO 63: Have separate log levels for stream and file handlers
 - [ ] TODO 64: Add exception handling for plugin calling errors
