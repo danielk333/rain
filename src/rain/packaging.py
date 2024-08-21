@@ -21,7 +21,10 @@ def form_request(message_type, req_params):
     request : JSON
         The formatted request to be sent by the client to the server
     '''
-    request = {"action": message_type}
+    date_time = get_datetime()
+    request = {"date": date_time[0],
+               "time": date_time[1]}
+    request.update({"action": message_type})
     if message_type == "get":
         request.update({"name": req_params})
     if message_type == "set":
@@ -90,6 +93,7 @@ def form_failed(form):
     response = {"date": date_time[0],
                 "time": date_time[1],
                 "action": "fail",
+                "name": "fail"
                 }
     if form == "request":
         response.update({"data": "Request verification failed"})
