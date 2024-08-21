@@ -100,7 +100,6 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
                 trigger = socket.recv_json(0)
             except zmq.error.Again:
                 continue
-            trigger = socket.recv_json(0)
             logger.debug(f"Trigger received: {json.dumps(trigger)}")
             q.put([trigger["name"], trigger["data"]])
             response = {

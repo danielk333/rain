@@ -98,7 +98,7 @@ def form_response(request, address):
         response.update({"action": "set"})
         response.update({"name": request["name"]})
         data = []
-        for param in request["name"]:
+        for ind, param in enumerate(request["name"]):
             try:
                 func = PLUGINS["set"][param]["function"]
             except KeyError:
