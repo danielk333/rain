@@ -2,6 +2,7 @@ import logging
 import queue
 import threading
 import time
+import json
 
 import jsonschema
 import zmq
@@ -45,7 +46,7 @@ def run_response(address, allowed, path_pub, path_prv):
             response = form_failed("request", address)
         else:
             logger.debug("Request validated")
-            logger.info(f"Request: {request}")
+            logger.info(f"Request: {json.dumps(request)}")
             response = form_response(request, address)
         finally:
             logger.debug("Response formed")

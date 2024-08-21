@@ -209,8 +209,6 @@ def find_details_client(args, config):
     -------
     addr_server : list of strings
         The hostname and port of the server
-    adr_client : string
-        The hostname of the client
     timeouts : list of strings
         The connection timeouts when interacting with a server
     '''
@@ -224,13 +222,11 @@ def find_details_client(args, config):
         config.get(f"{args.server}-{inter_type}", "port")
     ]
 
-    addr_client = config.get("client", "hostname")
-
     timeouts = []
     timeouts.append(config.getint("Timeouts", "send", fallback=10000))
     timeouts.append(config.getint("Timeouts", "receive", fallback=10000))
 
-    return addr_server, addr_client, timeouts
+    return addr_server, timeouts
 
 
 def find_params(args):
@@ -324,8 +320,6 @@ def handle_client_args(args):
         The path to the folder containing the client's private key
     addr_server : list of strings
         The hostname and port of the server
-    addr_client : string
-        The hostname of the client
     timeouts : list of strings
         The connection timeouts when interacting with a server
     params : list of strings
@@ -335,10 +329,10 @@ def handle_client_args(args):
     config = load_config(conf_folder, "client")
     setup_logging(args, config)
     path_pub, path_prv, _ = find_paths(config, "client")
-    addr_server, addr_client, timeouts = find_details_client(args, config)
+    addr_server, timeouts = find_details_client(args, config)
     params = find_params(args)
 
-    return path_pub, path_prv, addr_server, addr_client, timeouts, params
+    return path_pub, path_prv, addr_server, timeouts, params
 
 
 def get_datetime():

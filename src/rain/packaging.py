@@ -1,12 +1,11 @@
 import json
 import sys
-from pprint import pprint
 
 from .fetch import get_datetime
 from .plugins import PLUGINS
 
 
-def form_request(address, message_type, req_params):
+def form_request(message_type, req_params):
     ''' Creates the request message for the client to send to a server
 
     Parameters
@@ -24,9 +23,10 @@ def form_request(address, message_type, req_params):
         The formatted request to be sent by the client to the server
     '''
     date_time = get_datetime()
-    request = {"sender": address}
-    request.update({"date": date_time[0],
-                    "time": date_time[1]})
+    request = {
+        "date": date_time[0],
+        "time": date_time[1],
+    }
     request.update({"action": message_type})
     if message_type == "get":
         request.update({"name": req_params})
@@ -206,5 +206,5 @@ def print_response(response):
     response : JSON
         The message sent by the server to the client
     '''
-    pprint(response, indent=4, sort_dicts=False)
+    print(json.dumps(response, indent=4, sort_keys=False))
     sys.stdout.flush()
