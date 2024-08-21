@@ -135,7 +135,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
             name, new_value = q.get()
         except KeyboardInterrupt:
             server_open = False
-            logger.debug("Stopping publish server")
+            logger.info("Stopping publish server")
             break
         date_time = get_datetime()
         update = publish_update(name, new_value, serv_addr, date_time)
