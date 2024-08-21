@@ -89,10 +89,17 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
 
     def trigger_wait():
         context = zmq.Context()
+        context.setsockopt(zmq.SocketOption.SNDTIMEO, 1000)
+        context.setsockopt(zmq.SocketOption.RCVTIMEO, 1000)
+        context.setsockopt(zmq.LINGER, 0)
         socket = context.socket(zmq.REP)
         socket.bind(f"tcp://{trig_addr[0]}:{trig_addr[1]}")
         logger.debug("Trigger server opened")
         while server_open:
+            try:
+                trigger = socket.recv_json(0)
+            except zmq.error.Again:
+                continue
             trigger = socket.recv_json(0)
             logger.debug(f"Trigger received: {json.dumps(trigger)}")
             q.put([trigger["name"], trigger["data"]])
@@ -109,19 +116,27 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         interval = PLUGINS["sub"][name]["interval"]
         while server_open:
             value = func(name)
+            logger.debug(f"Sending value of '{name}'")
             q.put([name, value])
             time.sleep(interval)
 
     trig = threading.Thread(target=trigger_wait)
     trig.start()
 
+    sub_threads = []
     for param in possible_sub:
         t = threading.Thread(target=worker, args=[param])
         t.start()
+        sub_threads.append(t)
         logger.debug(f"Thread started for parameter {param}")
 
     while server_open:
-        name, new_value = q.get()
+        try:
+            name, new_value = q.get()
+        except KeyboardInterrupt:
+            server_open = False
+            logger.debug("Stopping publish server")
+            break
         date_time = get_datetime()
         update = publish_update(name, new_value, serv_addr, date_time)
         logger.debug("Update formed")
@@ -136,6 +151,9 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
             socket.send_string(publish)
             logger.debug("Update published")
 
+    trig.join()
+    for t in sub_threads:
+        t.join()
     auth.stop()
 
 
