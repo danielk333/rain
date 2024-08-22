@@ -36,7 +36,7 @@ def form_request(message_type, params, data):
     request.update({"name": params})
     if request["action"] == "get":
         if data is None:
-            request.update({"data": []})
+            request.update({"data": ["None"]*len(params)})
         else:
             if len(params) == len(data):
                 request.update({"data": data})
@@ -89,9 +89,13 @@ def form_response(request, address):
             else:
                 request_copy = copy.deepcopy(request)
                 request_copy["name"] = param
-                if len(request["data"]) == len(request["name"]):
-                    request_copy["data"] = request["data"][ind]
-                data.append(func(request_copy))
+                request_copy["data"] = request["data"][ind]
+                try:
+                    return_data = func(request_copy)
+                except BaseException as e:
+                    return_data = f"Plugin failed with: {e}"
+                    logger.exception("Plugin failed")
+                data.append(return_data)
         response.update({"data": data})
 
     elif request["action"] == "set":
@@ -106,9 +110,13 @@ def form_response(request, address):
             else:
                 request_copy = copy.deepcopy(request)
                 request_copy["name"] = param
-                if len(request["data"]) == len(request["name"]):
-                    request_copy["data"] = request["data"][ind]
-                data.append(func(request_copy))
+                request_copy["data"] = request["data"][ind]
+                try:
+                    return_data = func(request_copy)
+                except BaseException as e:
+                    return_data = f"Plugin failed with: {e}"
+                    logger.exception("Plugin failed")
+                data.append(return_data)
         response.update({"data": data})
 
     return response
