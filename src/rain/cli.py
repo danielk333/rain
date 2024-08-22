@@ -68,6 +68,11 @@ def trigger_cli():
         help="the value assigned to this trigger"
     )
 
+    parser.add_argument(
+        "-c", "--cfgpath",
+        help="the path to your RAIN config folder"
+    )
+
     args = parser.parse_args()
 
     rain_trigger(args)
