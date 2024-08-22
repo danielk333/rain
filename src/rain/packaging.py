@@ -76,48 +76,26 @@ def form_response(request, address):
     response = {"sender": address[0]}
     response.update({"date": date_time[0],
                      "time": date_time[1]})
+    response.update({"action": request["action"]})
+    response.update({"name": request["name"]})
 
-    if request["action"] == "get":
-        response.update({"action": "get"})
-        response.update({"name": request["name"]})
-        data = []
-        for ind, param in enumerate(request["name"]):
+    data = []
+    for ind, param in enumerate(request["name"]):
+        try:
+            func = PLUGINS[request["action"]][param]["function"]
+        except KeyError:
+            data.append(f"Parameter '{param}' invalid")
+        else:
+            request_copy = copy.deepcopy(request)
+            request_copy["name"] = param
+            request_copy["data"] = request["data"][ind]
             try:
-                func = PLUGINS["get"][param]["function"]
-            except KeyError:
-                data.append(f"Parameter '{param}' invalid")
-            else:
-                request_copy = copy.deepcopy(request)
-                request_copy["name"] = param
-                request_copy["data"] = request["data"][ind]
-                try:
-                    return_data = func(request_copy)
-                except BaseException as e:
-                    return_data = f"Plugin failed with: {e}"
-                    logger.exception("Plugin failed")
-                data.append(return_data)
-        response.update({"data": data})
-
-    elif request["action"] == "set":
-        response.update({"action": "set"})
-        response.update({"name": request["name"]})
-        data = []
-        for ind, param in enumerate(request["name"]):
-            try:
-                func = PLUGINS["set"][param]["function"]
-            except KeyError:
-                data.append(f"Parameter '{param}' invalid")
-            else:
-                request_copy = copy.deepcopy(request)
-                request_copy["name"] = param
-                request_copy["data"] = request["data"][ind]
-                try:
-                    return_data = func(request_copy)
-                except BaseException as e:
-                    return_data = f"Plugin failed with: {e}"
-                    logger.exception("Plugin failed")
-                data.append(return_data)
-        response.update({"data": data})
+                return_data = func(request_copy)
+            except BaseException as e:
+                return_data = f"Plugin failed with: {e}"
+                logger.exception("Plugin failed")
+            data.append(return_data)
+    response.update({"data": data})
 
     return response
 
