@@ -27,13 +27,13 @@ DEFAULT_SERVER_CFG = {
 }
 
 DEFAULT_LOGGING = {
-    "Logging-file": {
+    "Logging": {
+        "level": "INFO",
         "filepath": "None",
-        "level": "INFO"
-    },
-    "Logging-print": {
+        "file_level": "INFO",
         "print": "True",
-        "level": "INFO"}
+        "print_level": "INFO",
+    }
 }
 
 DEFAULT_TIMEOUTS = {
