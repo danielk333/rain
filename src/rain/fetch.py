@@ -85,22 +85,33 @@ def setup_logging(args, config):
     '''
     lib_logger = logging.getLogger("rain")
 
-    cfg_file = config.get("Logging-file", "filepath", fallback=None)
-    cfg_print = config.getboolean("Logging-print", "print", fallback=False)
-    level_file = config.get("Logging-file", "level", fallback="INFO")
-    level_print = config.get("Logging-print", "level", fallback="INFO")
+    cfg_level = config.get("Logging", "level", fallback="INFO")
+    cfg_file = config.get("Logging", "filepath", fallback=None)
+    cfg_filelevel = config.get("Logging", "file_level", fallback="INFO")
+    cfg_print = config.getboolean("Logging", "print", fallback=False)
+    cfg_printlevel = config.get("Logging", "print_level", fallback="INFO")
+
+    if args.loglevel is not None:
+        loglevel = args.loglevel
+    else:
+        loglevel = cfg_level
 
     if args.logfile is not None:
         logfile = args.logfile.resolve()
     else:
         logfile = cfg_file
 
+    if args.filelevel is not None:
+        filelevel = args.filelevel
+    else:
+        filelevel = cfg_filelevel
+
     logprint = cfg_print or args.logprint
 
-    if args.loglevel is not None:
-        loglevel = args.loglevel
+    if args.printlevel is not None:
+        printlevel = args.printlevel
     else:
-        loglevel = "INFO"
+        printlevel = cfg_printlevel
 
     # TODO 65: Make logging format configurable
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s')
@@ -108,13 +119,13 @@ def setup_logging(args, config):
     if logfile is not None:
         handler = logging.FileHandler(str(logfile))
         handler.setFormatter(formatter)
-        handler.setLevel(level_file)
+        handler.setLevel(filelevel)
         lib_logger.addHandler(handler)
 
     if logprint:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(formatter)
-        handler.setLevel(level_print)
+        handler.setLevel(printlevel)
         lib_logger.addHandler(handler)
 
     lib_logger.setLevel(loglevel)

@@ -111,9 +111,20 @@ def server_cli():
 
     parser.add_argument(
         "-v", "--loglevel",
-        default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-        help="logging level"
+        help="the main logging level (first filter)"
+    )
+
+    parser.add_argument(
+        "-vl", "--filelevel",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="the logging level of the logfile"
+    )
+
+    parser.add_argument(
+        "-vo", "--printlevel",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="the logging level of the print logging"
     )
 
     args = parser.parse_args()
@@ -159,9 +170,20 @@ def client_cli():
 
     parser.add_argument(
         "-v", "--loglevel",
-        default=None,
-        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-        help="the logging level"
+        choices=["NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="the main logging level (first filter)"
+    )
+
+    parser.add_argument(
+        "-vl", "--filelevel",
+        choices=["NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="the logging level of the logfile"
+    )
+
+    parser.add_argument(
+        "-vo", "--printlevel",
+        choices=["NOTSET", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="the logging level of the print logging"
     )
 
     parser.add_argument(
