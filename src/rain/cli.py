@@ -123,12 +123,14 @@ def server_cli():
     parser.add_argument(
         "-vl", "--filelevel",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        default=None,
         help="the logging level of the logfile"
     )
 
     parser.add_argument(
         "-vo", "--printlevel",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        default=None,
         help="the logging level of the print logging"
     )
 
