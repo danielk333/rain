@@ -2,6 +2,7 @@ import json
 import logging
 import sys
 import copy
+import socket as pys
 
 from .fetch import get_datetime
 from .plugins import PLUGINS
@@ -31,6 +32,7 @@ def form_request(message_type, params, data):
     request.update({
         "date": date_time[0],
         "time": date_time[1],
+        "hostname": pys.gethostname(),
     })
     request.update({"action": message_type})
     request.update({"name": params})
