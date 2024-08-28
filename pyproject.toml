@@ -1,0 +1,56 @@
+[project]
+name = "rain"
+description = "Communication network linking research infrastructure using TCP/IP json messages"
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    {name = "Calum Lonie", email = "callon-2@student.ltu.se"},
+    {name = "Daniel Kastinen", email = "daniel.kastinen@irf.se"},
+]
+maintainers = [
+    {name = "Daniel Kastinen", email = "daniel.kastinen@irf.se"},
+]
+license = {file = "LICENSE"}
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">=3.5"
+dependencies = [
+    "pyzmq",
+    "jsonschema",
+]
+dynamic = ["version"]
+
+[project.scripts]
+rain-client = "rain.cli:client_cli"
+rain-register = "rain.cli:register_cli"
+rain-server = "rain.cli:server_cli"
+rain-trigger = "rain.cli:trigger_cli"
+
+[tool.setuptools.dynamic]
+version = {attr = "rain.version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+develop = [
+    "pytest",
+    "flake8",
+    "wheel",
+    "build",
+    "twine",
+    "pre-commit",
+    "black",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+]
+
+[project.urls]
+Documentation = "https://danielk.developer.irf.se/rain/"
+Repository = "https://github.com/danielk333/rain"
+
+[tool.black]
+line-length = 100
+target_version = ['py35', 'py36', 'py37', 'py38', 'py39', 'py310']
