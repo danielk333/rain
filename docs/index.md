@@ -1,23 +1,25 @@
-# Welcome to MkDocs
+# `rain`
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+ReseArch Infrastructure Network (`rain`) is a communication network linking research infrastructure, such as instruments or instrument arrays, in order for them to exchange data between each other.
+This project is aimed specifically at the PIs (Principal Investigators) of these instruments.
 
-## My own heading
+## TODO
 
-test
+- [ ] Installation guide
+- [ ] Setup guide
+- [ ] Server and client guides
+- [ ] Protocol description
+- [ ] Cookbook for plugins and custom data formats
+- [ ] Developers guide
 
-more test
+## Develop
 
-## Commands
+### Internal development
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+Please refer to the style and contribution guidelines documented in the
+[IRF Software Contribution Guide](https://danielk.developer.irf.se/software_contribution_guide/).
 
-## Project layout
+### External code-contributions
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+Generally external code-contributions are made trough a "Fork-and-pull"
+workflow towards the `main` branch.

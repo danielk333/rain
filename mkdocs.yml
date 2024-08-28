@@ -4,7 +4,15 @@ theme:
   name: "material"
 
 plugins:
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            docstring_section_style: table
+            show_docstring_functions: true
+            show_docstring_modules: true
+            show_docstring_description: true
 
 nav:
   - index.md

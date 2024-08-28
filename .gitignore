@@ -1,15 +1,8 @@
-# Database-related files
-data/*
-infra_info/*
-public_keys/*
-private_keys/*
+# compiled docs
+public
 
 # Editor files
 *.code-*
-
-# Test files
-test/*
-test.py
 
 # Virtual environments
 venv/*
