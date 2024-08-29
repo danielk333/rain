@@ -67,9 +67,7 @@ pages:
   stage: release
   extends: .devsetup
   script:
-    - cd docs
-    - make html
-    - mv build ../public
+    - mkdocs build --site-dir public
   artifacts:
     paths:
       - public
