@@ -1,11 +1,11 @@
 # `rain`
 
-ReseArch Infrastructure Network (`rain`) is a communication network linking research infrastructure, such as instruments or instrument arrays, in order for them to exchange data between each other.
-This project is aimed specifically at the PIs (Principal Investigators) of these instruments.
+ReseArch Infrastructure Network (`rain`) is a Python package that allows users to exchange messages between each other. This package was created with the purpose of sending status information between research infrastructure in the Arctic regions of the Nordics. However `rain`'s scope is not limited to this specific use case.
+The communication network is set up in a decentralised peer-to-peer configuration, allowing users to run servers and clients. The communication takes place in the form of JSON messages over a TCP/IP connection.
 
 ## TODO
 
-- [ ] Installation guide
+- [x] Installation guide
 - [ ] Setup guide
 - [ ] Server and client guides
 - [ ] Protocol description
