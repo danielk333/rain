@@ -257,26 +257,26 @@ def find_params(args):
     '''
     if args.action == "get" or args.action == "set":
         params = args.param
-        logger.info(f"Parameters: {params}")
+        logger.info(f"Parameters requested: {params}")
 
     elif args.action == "sub":
-        params = [[], [], []]
+        params = []
         if args.changes is not None:
             for item in args.changes:
-                params[0].append(item)
-            logger.info(f"Parameter changes: {params[0]}")
+                params.append(item)
+            logger.info(f"Parameter changes: {args.changes}")
         else:
             logger.info(f"Parameter changes: {None}")
         if args.freq is not None:
             for item in args.freq:
-                params[1].append(item)
-            logger.info(f"Frequency parameters: {params[1]}")
+                params.append(item)
+            logger.info(f"Frequency parameters: {args.freq}")
         else:
-            logger.info(f"Frequency parameters: {params[1]}")
+            logger.info(f"Frequency parameters: {args.freq}")
         if args.trigger is not None:
             for item in args.trigger:
-                params[2].append(item)
-            logger.info(f"Triggers: {params[2]}")
+                params.append(item)
+            logger.info(f"Triggers: {args.trigger}")
         else:
             logger.info(f"Triggers: {None}")
 

@@ -258,6 +258,26 @@ def client_cli():
 
     messages = run_client(args)
 
+    prev_values = []
+    if args.action == "sub":
+        if args.changes is not None:
+            for item in args.changes:
+                prev_values.append([item, ""])
+
     for message in messages:
-        if not args.suppress:
-            print_response(message)
+        if args.action == "sub":
+            if args.changes is not None:
+                if message["name"] in args.changes:
+                    for item in range(len(prev_values)):
+                        if prev_values[item][0] == message["name"]:
+                            index = item
+                    if message["data"] != prev_values[index][1]:
+                        prev_values[index][1] = message["data"]
+                        if not args.suppress:
+                            print_response(message)
+            else:
+                if not args.suppress:
+                    print_response(message)
+        else:
+            if not args.suppress:
+                print_response(message)

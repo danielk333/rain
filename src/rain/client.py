@@ -65,7 +65,6 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
             yield response
 
 
-# TODO 57: Nicely shut down a subscribed client
 def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
@@ -87,17 +86,7 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
     '''
     socket = setup_client("sub", server, timeouts, path_pub, path_prv)
 
-    change_params = params[0]
-    freq_params = params[1]
-    trig_params = params[2]
-    prev_values = []
-
-    for item in change_params:
-        prev_values.append([item, ""])
-        socket.setsockopt_string(zmq.SUBSCRIBE, item)
-    for item in freq_params:
-        socket.setsockopt_string(zmq.SUBSCRIBE, item)
-    for item in trig_params:
+    for item in params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
 
     socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
@@ -109,6 +98,8 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
             formatted_update = receive_subscribe(socket)
         except KeyboardInterrupt:
             client_connected = False
+            for item in params:
+                socket.setsockopt_string(zmq.UNSUBSCRIBE, item)
             logger.info("Closing subscribe client")
             continue
 
@@ -118,24 +109,8 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
             validate_update(update)
             logger.debug("Update validated")
         except jsonschema.exceptions.ValidationError:
-            update = {"name": ""}
             logger.error("Update validation failed")
-
-        if update["name"] in freq_params:
-            logger.debug(f"Saved update: {json.dumps(update)}")
-            yield update
-        elif update["name"] in change_params:
-            for item in range(len(prev_values)):
-                if prev_values[item][0] == update["name"]:
-                    index = item
-            if update["data"] != prev_values[index][1]:
-                prev_values[index][1] = update["data"]
-                logger.debug(f"Saved update: {json.dumps(update)}")
-                yield update
-            else:
-                logger.debug("Update not saved")
-        elif update["name"] in trig_params:
-            logger.debug(f"Saved update: {json.dumps(update)}")
+        else:
             yield update
 
 
