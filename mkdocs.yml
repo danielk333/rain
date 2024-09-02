@@ -17,4 +17,5 @@ plugins:
 nav:
   - index.md
   - installation.md
+  - registration.md
   - api.md
