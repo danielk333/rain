@@ -18,4 +18,6 @@ nav:
   - index.md
   - installation.md
   - registration.md
+  - setup_server.md
+  - setup_client.md
   - api.md

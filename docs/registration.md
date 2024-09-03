@@ -5,6 +5,7 @@ Once `rain` has been installed, users need to "register" an instrument before th
 ## Registration initialisation
 
 The registration process is simple to initiate, and is done by calling the registration CLI (Command Line Interface).
+It only needs to be done once per instrument, whether you are wanting to run it as a server or as a client.
 The registration process involves setting up the instrument's configurations and generating the instrument's public-private keypair.
 The CLI source code can be found in `src/rain/cli.py`.
 This CLI has one required argument:
