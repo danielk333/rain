@@ -30,9 +30,9 @@ DEFAULT_LOGGING = {
     "Logging": {
         "level": "INFO",
         "filepath": "None",
-        "file_level": "INFO",
+        "file-level": "INFO",
         "print": "True",
-        "print_level": "INFO",
+        "print-level": "INFO",
     }
 }
 
