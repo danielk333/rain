@@ -19,7 +19,8 @@ nav:
   - installation.md
   - registration.md
   - setup_server.md
-  - setup_client.md
+  - plugins.md
   - run_server.md
+  - setup_client.md
   - run_client.md
   - api.md

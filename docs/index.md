@@ -9,7 +9,7 @@ The communication network is set up in a decentralised peer-to-peer configuratio
 - [x] Setup guide
 - [x] Server and client guides
 - [ ] Protocol description
-- [ ] Cookbook for plugins and custom data formats
+- [x] Cookbook for plugins and custom data formats
 - [ ] Developers guide
 
 ## Develop
