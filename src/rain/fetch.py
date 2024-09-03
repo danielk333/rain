@@ -280,6 +280,10 @@ def find_params(args):
         else:
             logger.info(f"Triggers: {None}")
 
+        if len(params) == 0:
+            logger.error("No parameters entered")
+            exit()
+
     return params
 
 
