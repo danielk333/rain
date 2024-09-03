@@ -78,8 +78,10 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
 
     Parameters
     ----------
-    address : list of strings
-        The server's hostname and port
+    serv_addr : list of strings
+        The publish server's hostname and port
+    trig_addr : list of strings
+        The trigger server's hostname and port
     allowed : list of strings
         The hostnames of the clients that are allowed to connect to this server
     path_pub: Posix path
