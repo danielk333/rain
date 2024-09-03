@@ -6,8 +6,8 @@ The communication network is set up in a decentralised peer-to-peer configuratio
 ## TODO
 
 - [x] Installation guide
-- [ ] Setup guide
-- [ ] Server and client guides
+- [x] Setup guide
+- [x] Server and client guides
 - [ ] Protocol description
 - [ ] Cookbook for plugins and custom data formats
 - [ ] Developers guide

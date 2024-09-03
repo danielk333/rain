@@ -20,4 +20,6 @@ nav:
   - registration.md
   - setup_server.md
   - setup_client.md
+  - run_server.md
+  - run_client.md
   - api.md
