@@ -1,12 +1,12 @@
 import json
-from .plugins import PLUGINS, register_plugin
+
+from .plugins import PLUGINS, register_response
 
 
-@register_plugin(
+@register_response(
     action="get",
     name="api",
-    interval=0,
-    data_description="api description description",
+    data_description="api description description"
 )
 def generate_api(message):
     api = {

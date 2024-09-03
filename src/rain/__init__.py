@@ -1,4 +1,4 @@
 from .cli import trigger_cli, register_cli, client_cli, server_cli
-from .plugins import register_plugin, register_trigger, PLUGINS
+from .plugins import PLUGINS, register_publish, register_response, register_trigger
 
 from . import get_api
