@@ -275,6 +275,9 @@ def client_cli():
                         prev_values[index][1] = message["data"]
                         if not args.suppress:
                             print_response(message)
+                else:
+                    if not args.suppress:
+                        print_response(message)
             else:
                 if not args.suppress:
                     print_response(message)
