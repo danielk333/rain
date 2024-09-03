@@ -5,7 +5,7 @@ This guide will describe what steps to take to set up a server, once an instrume
 ## Server configurations
 
 As was explained in registration.md, a file called `server.cfg` was automatically generated when your instrument was registered.
-This file will be located at the location set when registering the instrument, or in `~/home/.config/rain` if this was not set.
+This file will be located at the location set when registering the instrument, or in `~/home/user/.config/rain` if this was not set.
 This file was pre-filled with the relevant items, which were assigned default values.
 These items will need to be adjusted to suit your needs.
 

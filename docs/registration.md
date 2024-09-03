@@ -14,7 +14,7 @@ This CLI has one required argument:
 
 And two optional arguments:
 
-- The path to the folder containing the instrument's configurations. If this is not provided, the default location will be used: `~/home/.config/rain`
+- The path to the folder containing the instrument's configurations. If this is not provided, the default location will be used: `~/home/user/.config/rain`
 - The path to the keypairs folder which will hold the instrument's public and private keys. If this is not provided, the default location will be used, which is inside the configuration folder
 
 ## The configuration folder
