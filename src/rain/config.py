@@ -28,7 +28,7 @@ DEFAULT_SERVER_CFG = {
 
 DEFAULT_LOGGING = {
     "Logging": {
-        "level": "INFO",
+        "level": "DEBUG",
         "filepath": "None",
         "file-level": "INFO",
         "print": "True",
