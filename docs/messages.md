@@ -27,10 +27,10 @@ Below is an example message, a response to a `GET` request of a parameter called
     "time": "09:39:12 Local Time",
     "action": "get",
     "name": [
-                "herd_size"
-            ],
+        "herd_size"
+    ],
     "data": [
-                "10"
-            ]
+        "10"
+    ]
 }
 ```
