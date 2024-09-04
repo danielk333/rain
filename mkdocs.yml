@@ -23,4 +23,5 @@ nav:
   - run_server.md
   - setup_client.md
   - run_client.md
+  - messages.md
   - api.md
