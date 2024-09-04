@@ -87,6 +87,8 @@ def setup_logging(args, config):
 
     cfg_level = config.get("Logging", "level", fallback="INFO")
     cfg_file = config.get("Logging", "filepath", fallback=None)
+    if cfg_file == "None":
+        cfg_file = None
     cfg_filelevel = config.get("Logging", "file-level", fallback="INFO")
     cfg_print = config.getboolean("Logging", "print", fallback=False)
     cfg_printlevel = config.get("Logging", "print-level", fallback="INFO")
