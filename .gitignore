@@ -9,7 +9,7 @@ venv/*
 .python-version
 
 # Distribution files
-dist/*
+dist
 src/rain.egg-info
 
 # Logs
