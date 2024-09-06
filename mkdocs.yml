@@ -35,7 +35,7 @@ plugins:
             show_docstring_description: true
 
 nav:
-  - index.md
+  - Home: index.md
   - installation.md
   - registration.md
   - setup_server.md
