@@ -1,4 +1,4 @@
-# Setting up a client
+# Setting up a `rain` client
 
 This guide will describe what steps to take to set up a client, once an instrument has been registered.
 
@@ -24,14 +24,14 @@ As long as the paths link to the correct folders then the software will function
 `rain` offers logging support, allowing users to select how to visualise logging messages as well as set logging levels as a filter.
 A number of configurations have been given to users:
 
-- `level`: the system-wide logging level, acting as the first filter, selecting what level of messages are passed onto the `filepath` and `print` handlers. The default level is INFO
-- `filepath`: the path to a file that will store logging messages. This is disabled by default
+- `level`: the top-level logging level. The default level is DEBUG
+- `filepath`: the path to a file that will store logging messages passed to it by a file handler. This is disabled by default
 - `file-level`: the level of messages that are stored in the logging file. The default value is INFO
-- `print`: determines whether logging messages are passed on to `stdout`, allowing logging messages to be printed to the console for example. This is set to `True` by default
-- `print-level`: the level of messages that are passed on to `stdout`. The default value is INFO
+- `print`: determines whether a stream handler is used, allowing for logging messages to be passed on to `stdout`. This is set to `True` by default
+- `print-level`: the level of messages that are passed on to the stream handler. The default value is INFO
 
 The following logging levels are implemented: `NOTSET`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`.
-More information regarding logging can be found in the logging [library documentation](https://docs.python.org/3/library/logging.html).
+Logging is desscribed in more detail in the `Logging` section of the documentation.
 
 The above logging configurations can also be called when starting the client.
 In this case, the values entered when starting the client take precedence over the configured values, without overwriting them in `hosts.cfg`.

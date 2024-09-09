@@ -36,12 +36,15 @@ plugins:
 
 nav:
   - Home: index.md
-  - installation.md
-  - registration.md
-  - setup_server.md
-  - plugins.md
-  - run_server.md
-  - setup_client.md
-  - run_client.md
-  - messages.md
-  - api.md
+  - Guides:
+    - installation.md
+    - registration.md
+    - setup_server.md
+    - plugins.md
+    - run_server.md
+    - setup_client.md
+    - run_client.md
+  - Reference:
+    - messages.md
+    - logging.md
+    - api.md
