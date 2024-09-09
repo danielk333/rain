@@ -1,8 +1,8 @@
+import copy
 import json
 import logging
-import sys
-import copy
 import socket as pys
+import sys
 
 from .fetch import get_datetime
 from .plugins import PLUGINS
@@ -10,12 +10,12 @@ from .plugins import PLUGINS
 logger = logging.getLogger(__name__)
 
 
-def form_request(message_type, params, data):
+def form_request(request_type, params, data):
     ''' Creates the request message for the client to send to a server
 
     Parameters
     ----------
-    message_type : string
+    request_type : string
         Whether the request is in the form of a GET or a SET command
     params : list of strings
         The parameters that are the subject of the request
@@ -34,7 +34,7 @@ def form_request(message_type, params, data):
         "time": date_time[1],
         "hostname": pys.gethostname(),
     })
-    request.update({"action": message_type})
+    request.update({"action": request_type})
     request.update({"name": params})
     if request["action"] == "get":
         if data is None:

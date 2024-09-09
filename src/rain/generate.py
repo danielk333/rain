@@ -3,9 +3,8 @@ from pathlib import Path
 
 import zmq
 
-from .config import DEFAULT_FOLDER, PLUGIN_FOLDER
+from .config import AUTHORISED_KEYS_FOLDER, DEFAULT_FOLDER, KNOWN_HOSTS_FOLDER, PLUGINS_FOLDER
 from .config import DEFAULT_SERVER_CFG, DEFAULT_LOGGING, DEFAULT_TIMEOUTS
-from .config import AUTHORISED_KEYS_FOLDER, KNOWN_HOSTS_FOLDER
 
 
 def gen_paths(cfg_path, key_path):
@@ -37,7 +36,7 @@ def gen_paths(cfg_path, key_path):
         path_conf = DEFAULT_FOLDER
         path_auth = AUTHORISED_KEYS_FOLDER
         path_host = KNOWN_HOSTS_FOLDER
-        path_plug = PLUGIN_FOLDER
+        path_plug = PLUGINS_FOLDER
     else:
         path_conf = cfg_path
         path_auth = path_conf / "authorised_keys"
@@ -87,8 +86,6 @@ def gen_keys(name, cfg_path, key_path):
         cfg_path / f"{name}.key_secret",
         key_path / f"{name}-curve.key_secret"
     )
-
-    return
 
 
 def gen_server_cfg(path_conf, path_pub, path_prv, path_plug):

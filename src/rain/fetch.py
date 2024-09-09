@@ -1,8 +1,8 @@
 import configparser
 import logging
 from pathlib import Path
-import time
 import sys
+import time
 import warnings
 
 from .config import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
@@ -177,7 +177,7 @@ def find_details_server(args, config):
 
     Returns
     -------
-    addr_pub : list of strings
+    addr_publ : list of strings
         The hostname and port of the server
     addr_trig : list of strings
         The hostname and port of the server's trigger network
@@ -185,13 +185,13 @@ def find_details_server(args, config):
         The hostnames of the clients that are authorised to connect
     '''
     if args.host == "rep":
-        addr_pub = [
+        addr_publ = [
             config.get("Response", "hostname"),
             config.get("Response", "port")
         ]
         addr_trig = None
     elif args.host == "pub":
-        addr_pub = [
+        addr_publ = [
             config.get("Publish", "hostname"),
             config.get("Publish", "port")
         ]
@@ -205,7 +205,7 @@ def find_details_server(args, config):
     else:
         allowed = []
 
-    return addr_pub, addr_trig, allowed
+    return addr_publ, addr_trig, allowed
 
 
 def find_details_client(args, config):
@@ -304,7 +304,7 @@ def handle_server_args(args):
         The path to the folder containing the public keys of the known clients
     path_prv : Posix path
         The path to the folder containing the server's private key
-    addr_pub : list of strings
+    addr_publ : list of strings
         The hostname and port of the server
     addr_trig : list of strings
         The hostname and port of the server's trigger network
@@ -316,9 +316,9 @@ def handle_server_args(args):
     setup_logging(args, config)
     path_pub, path_prv, path_plug = find_paths(config, "server")
     load_plugins(path_plug)
-    addr_pub, addr_trig, allowed = find_details_server(args, config)
+    addr_publ, addr_trig, allowed = find_details_server(args, config)
 
-    return path_pub, path_prv, addr_pub, addr_trig, allowed
+    return path_pub, path_prv, addr_publ, addr_trig, allowed
 
 
 def handle_client_args(args):

@@ -11,7 +11,7 @@ from .server import run_server
 
 
 def register_cli():
-    ''' The CLI for users who want to register an instrument to RAIN
+    ''' The CLI used for registering an instrument to RAIN
 
     Returns
     -------
@@ -46,7 +46,7 @@ def register_cli():
 
 
 def trigger_cli():
-    ''' The CLI for a user wanting to send a trigger to a PUB server
+    ''' The CLI used server-side to trigger a trigger parameter
 
     Returns
     -------
@@ -79,7 +79,7 @@ def trigger_cli():
 
 
 def server_cli():
-    ''' The CLI for a user wanting to use the server side of RAIN
+    ''' The CLI to start a RAIN server
 
     Returns
     -------
@@ -140,7 +140,7 @@ def server_cli():
 
 
 def client_cli():
-    ''' The CLI for a user wanting to use the client side of RAIN
+    ''' The CLI to start a RAIN client
 
     Returns
     -------

@@ -133,39 +133,6 @@ def open_connection(socket, address):
     logger.debug("Server connection opened")
 
 
-def setup_client(host_type, server, timeouts, path_pub, path_prv):
-    ''' The top-level function that organises the initialisation of the client
-        connection
-
-    Parameters
-    ----------
-    host_type : string
-        The type of connection to create: publish, request, response, subscribe
-    server : string
-        The name of the server
-    timeouts : list of strings
-        The connection timeouts when interacting with a server
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known hosts
-    path_prv : Posix path
-        The path to the folder containing the client's private key
-
-    Returns
-    -------
-    socket : zmq.Socket
-        The connection socket
-    '''
-    context = zmq.Context()
-    context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
-    context.setsockopt(zmq.SocketOption.RCVTIMEO, timeouts[1])
-    context.setsockopt(zmq.LINGER, 0)
-    socket = setup_socket(context, host_type)
-
-    auth_client(socket, server, path_pub, path_prv)
-
-    return socket
-
-
 def setup_server(host_type, address, allowed, path_pub, path_prv):
     ''' The top-level function that organises the initialisation of the server
         connection
@@ -198,3 +165,36 @@ def setup_server(host_type, address, allowed, path_pub, path_prv):
     open_connection(socket, address)
 
     return auth, socket
+
+
+def setup_client(host_type, server, timeouts, path_pub, path_prv):
+    ''' The top-level function that organises the initialisation of the client
+        connection
+
+    Parameters
+    ----------
+    host_type : string
+        The type of connection to create: publish, request, response, subscribe
+    server : string
+        The name of the server
+    timeouts : list of strings
+        The connection timeouts when interacting with a server
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known hosts
+    path_prv : Posix path
+        The path to the folder containing the client's private key
+
+    Returns
+    -------
+    socket : zmq.Socket
+        The connection socket
+    '''
+    context = zmq.Context()
+    context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
+    context.setsockopt(zmq.SocketOption.RCVTIMEO, timeouts[1])
+    context.setsockopt(zmq.LINGER, 0)
+    socket = setup_socket(context, host_type)
+
+    auth_client(socket, server, path_pub, path_prv)
+
+    return socket

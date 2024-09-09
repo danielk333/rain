@@ -8,6 +8,13 @@ from .config import DEFAULT_FOLDER
 
 
 def rain_trigger(args):
+    ''' Function used to send a trigger to the server's trigger server
+
+    Parameters
+    ----------
+    args : Namespace
+        The arguments entered into the system
+    '''
     if args.cfgpath is None:
         folder = DEFAULT_FOLDER
     else:

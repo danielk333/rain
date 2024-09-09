@@ -4,7 +4,7 @@ HOME = Path(Path.home())
 
 # Default paths
 DEFAULT_FOLDER = HOME / ".config" / "rain"
-PLUGIN_FOLDER = DEFAULT_FOLDER / "plugins"
+PLUGINS_FOLDER = DEFAULT_FOLDER / "plugins"
 AUTHORISED_KEYS_FOLDER = DEFAULT_FOLDER / "authorised_keys"
 KNOWN_HOSTS_FOLDER = DEFAULT_FOLDER / "known_hosts"
 KEYPAIRS_FOLDER = DEFAULT_FOLDER / "keypairs"

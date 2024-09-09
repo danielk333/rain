@@ -15,5 +15,3 @@ def rain_register(args):
 
     gen_server_cfg(path_conf, path_auth, path_pair, path_plug)
     gen_client_cfg(path_conf, path_host, path_pair)
-
-    return

@@ -1,5 +1,5 @@
-import logging
 import json
+import logging
 import socket as pys
 import zmq
 
@@ -61,8 +61,6 @@ def send_response(socket, response):
         The response to send to the client
     '''
     socket.send_json(response, 0)
-
-    return
 
 
 def receive_response(socket, address):
