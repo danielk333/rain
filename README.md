@@ -5,7 +5,7 @@ The communication network is set up in a decentralised peer-to-peer configuratio
 
 RAIN can be installed in your virtual environment:
 - From PyPI:
-```pip install rain```
+```pip install pyrain```
 - From this repository:
 ```
 git clone https://github.com/danielk333/rain
@@ -16,3 +16,9 @@ An installation guide can be found in `docs/installation.md`
 The software package has two external dependencies:
 - [PyZMQ](https://github.com/zeromq/pyzmq): used for creating the connection socket, the transport of messages and also for the authentication of the connection
 - [JSON Schema](https://github.com/python-jsonschema/jsonschema): used for validating messages, both before transmission and after reception
+
+Supporting documentation is provided in the form of:
+
+- [Online documentation](https://danielk.developer.irf.se/rain/)
+- Examples, containing a ready-to-use instrument called `reindeer`, and a README as a guide
+- Tests

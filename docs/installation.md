@@ -46,7 +46,7 @@ You can read more about PyPI [here](https://pypi.org/).
 
 You can install `rain` by entering the following command with your virtual environment activated:
 ```
-pip install rain
+pip install pyrain
 ```
 
 This instructs pip to install `rain` and its external dependencies within the virtual environment you have activated.
