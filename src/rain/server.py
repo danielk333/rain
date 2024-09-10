@@ -16,10 +16,13 @@ from .validate import validate_request, validate_response, validate_update
 
 logger = logging.getLogger(__name__)
 
+SERVER_EXIT_KEY = "__SERVER_EXIT__"
+SERVER_EXIT_CODE = "Ezk1wDZ4MTQNG22ASim4"
 SERVER_TRIGGER_REQ_OK = "Trigger received"
 SERVER_TRIGGER_REQ_FAIL = "No such triggered parameter exists"
 
-def run_response(address, allowed, path_pub, path_prv):
+
+def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_handler_check=10):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -34,17 +37,31 @@ def run_response(address, allowed, path_pub, path_prv):
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
+    exit_handler : function, default=None
+        A function that returns a boolean to check weather the server should exit or not, if this
+        is set, the socket receive will no longer be blocking and check the value returned according to
+        `exit_handler_check`
+    exit_handler_check : int, default=10
+        Milliseconds time interval between to checks for new received messages and the return value
+        of the `exit_handler` function if `exit_handler` is set
     '''
     auth, socket = setup_server("rep", address, allowed, path_pub, path_prv)
 
     server_open = True
+    blocking = True if exit_handler is None else False
     while server_open:
+        if exit_handler is not None:
+            server_open = exit_handler()
+
         try:
-            request = receive_request(socket)
+            request = receive_request(socket, blocking=blocking)
             logger.debug("Request received")
         except KeyboardInterrupt:
             server_open = False
             logger.info("Closing server")
+            continue
+        except zmq.error.Again:
+            time.sleep(exit_handler_check*1e-3)
             continue
 
         try:
@@ -74,7 +91,7 @@ def run_response(address, allowed, path_pub, path_prv):
     auth.stop()
 
 
-def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
+def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, custom_message_queue=None):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -91,10 +108,19 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
+    custom_message_queue : queue.Queue
+        Queue instance that will be used to get messages to be published by the server,
+        control over this queue allows for custom injection of new published values
+        and possibility to terminate the server via the magic `(SERVER_EXIT_KEY, SERVER_EXIT_CODE)`
+        put into the queue
     '''
     auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv)
     possible_sub = sub_params()
-    q = queue.Queue()
+    possible_sub_trig = sub_trig_params()
+    if custom_message_queue is None:
+        q = queue.Queue()
+    else:
+        q = custom_message_queue
     server_open = True
 
     def trigger_wait():
@@ -147,6 +173,12 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
             server_open = False
             logger.info("Stopping publish server")
             break
+
+        if name == SERVER_EXIT_KEY and new_value == SERVER_EXIT_CODE:
+            server_open = False
+            logger.info("Stopping publish server from magic Queue code")
+            break
+
         date_time = get_datetime()
         update = publish_update(name, new_value, serv_addr, date_time)
         logger.debug("Update formed")
