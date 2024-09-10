@@ -25,7 +25,7 @@ def send_request(socket, address, request):
     return
 
 
-def receive_request(socket):
+def receive_request(socket, blocking=True):
     ''' Receives a request from a client
 
     Parameters
@@ -37,8 +37,14 @@ def receive_request(socket):
     -------
     request : JSON
         The request sent by the client to the server
+    blocking : bool
+        Determines if the socket recv should be blocking or not,
+        if not blocking the recv will raise `zmq.error.Again` when
+        there is no new connections
     '''
-    frame = socket.recv(0, copy=False)
+    flags = 0 if blocking else zmq.NOBLOCK
+    frame = socket.recv(flags, copy=False)
+
     src_fd = frame.get(zmq.MessageOption.SRCFD)
     src_sock = pys.socket(fileno=src_fd)
     address = src_sock.getpeername()[0]
@@ -78,11 +84,7 @@ def receive_response(socket, address):
     response : JSON
         The responsesent by the server to the client
     '''
-    try:
-        response = socket.recv_json(0)
-    except zmq.error.Again:
-        logger.error("Server not reachable, response timed out")
-        raise KeyboardInterrupt
+    response = socket.recv_json(0)
     socket.disconnect(f"tcp://{address[0]}:{address[1]}")
 
     return response
@@ -102,10 +104,5 @@ def receive_subscribe(socket):
     update : string
         The update sent by the server
     '''
-    try:
-        update = socket.recv_string(0)
-    except zmq.error.Again:
-        logger.error("Server not reachable, response timed out")
-        raise KeyboardInterrupt
-
+    update = socket.recv_string()
     return update
