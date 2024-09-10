@@ -8,7 +8,7 @@ import jsonschema
 import zmq
 
 from .authenticate import setup_server
-from .fetch import get_datetime, handle_server_args, sub_params
+from .fetch import get_datetime, handle_server_args, sub_params, sub_trig_params
 from .packaging import form_response, form_failed, publish_format, publish_update
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
@@ -16,6 +16,8 @@ from .validate import validate_request, validate_response, validate_update
 
 logger = logging.getLogger(__name__)
 
+SERVER_TRIGGER_REQ_OK = "Trigger received"
+SERVER_TRIGGER_REQ_FAIL = "No such triggered parameter exists"
 
 def run_response(address, allowed, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of a
@@ -100,22 +102,23 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv):
         context.setsockopt(zmq.SocketOption.SNDTIMEO, 1000)
         context.setsockopt(zmq.SocketOption.RCVTIMEO, 1000)
         context.setsockopt(zmq.LINGER, 0)
-        socket = context.socket(zmq.REP)
-        socket.bind(f"tcp://{trig_addr[0]}:{trig_addr[1]}")
+        tsocket = context.socket(zmq.REP)
+        tsocket.bind(f"tcp://{trig_addr[0]}:{trig_addr[1]}")
         logger.debug("Trigger server opened")
         while server_open:
             try:
-                trigger = socket.recv_json(0)
+                trigger = tsocket.recv_json(0)
             except zmq.error.Again:
                 continue
             logger.debug(f"Trigger received: {json.dumps(trigger)}")
-            q.put([trigger["name"], trigger["data"]])
-            response = {
-                "name": trigger["name"],
-                "data": "Trigger received"
-            }
+            response = {"name": trigger["name"]}
+            if trigger["name"] in possible_sub_trig:
+                q.put([trigger["name"], trigger["data"]])
+                response["data"] = SERVER_TRIGGER_REQ_OK
+            else:
+                response["data"] = SERVER_TRIGGER_REQ_FAIL
             logger.debug(f"Trigger response formed: {json.dumps(response)}")
-            socket.send_json(response, 0)
+            tsocket.send_json(response, 0)
             logger.debug("Trigger response sent to the trigger server")
 
     def worker(name):
