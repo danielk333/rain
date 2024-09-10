@@ -44,15 +44,31 @@ stages:
   script:
     - pip install pytest
     - pytest
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+  only:
+    - tags
 
-# python:
-#   extends: .pytest
+python:
+  extends: .pytest
 
-# python3.10:
-#   extends: .pytest
-#   image: python:3.10
+python3.7:
+  extends: .pytest
+  image: python:3.7
+
+python3.9:
+  extends: .pytest
+  image: python:3.9
+
+python3.10:
+  extends: .pytest
+  image: python:3.10
+
+python3.11:
+  extends: .pytest
+  image: python:3.11
+
+python3.12:
+  extends: .pytest
+  image: python:3.12
 
 ###############
 ## Releasing ##
@@ -71,21 +87,21 @@ pages:
 
 # Build and check integrity of distribution
 # Then publish package on public PyPI
-# pypi:
-#   stage: release
-#   extends: .devsetup
-#   variables:
-#     #Use a gitlab variable to securly store the token
-#     PYPI_TOKEN: $PYPI_TOKEN
-#   script:
-#     - python -m build
-#     - python -m twine check dist/*
-#     - >
-#       TWINE_USERNAME=__token__
-#       TWINE_PASSWORD=$PYPI_TOKEN
-#       python -m twine upload dist/*
-#   artifacts:
-#     paths:
-#       - dist/*
-#   only:
-#     - tags
+pypi:
+  stage: release
+  extends: .devsetup
+  variables:
+    #Use a gitlab variable to securly store the token
+    PYPI_TOKEN: $PYPI_TOKEN
+  script:
+    - python -m build
+    - python -m twine check dist/*
+    - >
+      TWINE_USERNAME=__token__
+      TWINE_PASSWORD=$PYPI_TOKEN
+      python -m twine upload dist/*
+  artifacts:
+    paths:
+      - dist/*
+  only:
+    - tags

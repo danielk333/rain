@@ -50,6 +50,8 @@ develop = [
 [project.urls]
 Documentation = "https://danielk.developer.irf.se/rain/"
 Repository = "https://github.com/danielk333/rain"
+Homepage = "https://github.com/danielk333/rain"
+Issues = "https://github.com/danielk333/rain/issues"
 
 [tool.black]
 line-length = 100
