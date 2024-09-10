@@ -384,3 +384,17 @@ def sub_params():
     list_params = list(PLUGINS["sub"].keys())
 
     return list_params
+
+
+def sub_trig_params():
+    ''' Returns a list of the triggered parameters that the server has made available for
+        clients to subscribe to
+
+    Returns
+    -------
+    list_params : list of strings
+        A list of triggered parameters that can be subscribed to
+    '''
+    list_params = list(PLUGINS["sub-trigger"].keys())
+
+    return list_params
