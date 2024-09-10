@@ -17,7 +17,7 @@ def send_trigger(server_host, server_port, name, value):
     socket.connect(f"tcp://{server_host}:{server_port}")
     socket.send_json(message, 0)
     response = socket.recv_json(0)
-    print(json.dumps(response, indent=4, sort_keys=False))
+    return response
 
 
 def rain_trigger(args):
@@ -40,4 +40,6 @@ def rain_trigger(args):
     server_host = config.get("Trigger", "hostname")
     server_port = config.get("Trigger", "port")
 
-    send_trigger(server_host, server_port, args.name, args.value)
+    response = send_trigger(server_host, server_port, args.name, args.value)
+
+    print(json.dumps(response, indent=4, sort_keys=False))
