@@ -1,5 +1,5 @@
 [project]
-name = "rain"
+name = "pyrain"
 description = "Communication network linking research infrastructure using TCP/IP json messages"
 readme = {file = "README.md", content-type = "text/markdown"}
 authors = [
