@@ -82,7 +82,7 @@ def receive_response(socket, address):
         response = socket.recv_json(0)
     except zmq.error.Again:
         logger.error("Server not reachable, response timed out")
-        exit()
+        raise KeyboardInterrupt
     socket.disconnect(f"tcp://{address[0]}:{address[1]}")
 
     return response
@@ -103,9 +103,9 @@ def receive_subscribe(socket):
         The update sent by the server
     '''
     try:
-        update = socket.recv_string()
+        update = socket.recv_string(0)
     except zmq.error.Again:
         logger.error("Server not reachable, response timed out")
-        exit()
+        raise KeyboardInterrupt
 
     return update
