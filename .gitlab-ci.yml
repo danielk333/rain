@@ -47,28 +47,28 @@ stages:
   only:
     - tags
 
-# python:
-#   extends: .pytest
+python:
+  extends: .pytest
 
-# python3.7:
-#   extends: .pytest
-#   image: python:3.7
+python3.7:
+  extends: .pytest
+  image: python:3.7
 
-# python3.9:
-#   extends: .pytest
-#   image: python:3.9
+python3.9:
+  extends: .pytest
+  image: python:3.9
 
-# python3.10:
-#   extends: .pytest
-#   image: python:3.10
+python3.10:
+  extends: .pytest
+  image: python:3.10
 
-# python3.11:
-#   extends: .pytest
-#   image: python:3.11
+python3.11:
+  extends: .pytest
+  image: python:3.11
 
-# python3.12:
-#   extends: .pytest
-#   image: python:3.12
+python3.12:
+  extends: .pytest
+  image: python:3.12
 
 ###############
 ## Releasing ##
