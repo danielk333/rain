@@ -7,6 +7,19 @@ import zmq
 from .config import DEFAULT_FOLDER
 
 
+def send_trigger(server_host, server_port, name, value):
+    message = {
+        "name": name,
+        "data": value
+    }
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect(f"tcp://{server_host}:{server_port}")
+    socket.send_json(message, 0)
+    response = socket.recv_json(0)
+    print(json.dumps(response, indent=4, sort_keys=False))
+
+
 def rain_trigger(args):
     ''' Function used to send a trigger to the server's trigger server
 
@@ -27,16 +40,4 @@ def rain_trigger(args):
     server_host = config.get("Trigger", "hostname")
     server_port = config.get("Trigger", "port")
 
-    name = args.name
-    value = args.value
-    message = {
-        "name": name,
-        "data": value
-    }
-
-    context = zmq.Context()
-    socket = context.socket(zmq.REQ)
-    socket.connect(f"tcp://{server_host}:{server_port}")
-    socket.send_json(message, 0)
-    response = socket.recv_json(0)
-    print(json.dumps(response, indent=4, sort_keys=False))
+    send_trigger(server_host, server_port, args.name, args.value)
