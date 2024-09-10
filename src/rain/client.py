@@ -43,7 +43,7 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
     except jsonschema.exceptions.ValidationError:
         request = None
         logger.error("Request validation failed")
-        exit()
+        return
     else:
         logger.debug("Request validated")
         logger.debug(f"Request: {json.dumps(request)}")
@@ -52,13 +52,18 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
         socket = setup_client("req", server, timeouts, path_pub, path_prv)
         send_request(socket, server_address, request)
         logger.debug("Request sent to the server")
-        response = receive_response(socket, server_address)
+        try:
+            response = receive_response(socket, server_address)
+        except zmq.error.Again:
+            logger.error("Server not reachable, response timed out")
+            return
+
         logger.info("Response received from the server")
         try:
             validate_response(response)
         except jsonschema.exceptions.ValidationError:
             logger.error("Response validation failed")
-            exit()
+            return
         else:
             logger.debug("Response validated")
             logger.debug(f"Response: {json.dumps(response)}")
@@ -96,11 +101,15 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
     while client_connected:
         try:
             formatted_update = receive_subscribe(socket)
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, zmq.error.Again) as e:
+            if isinstance(e, KeyboardInterrupt):
+                logger.info("Closing subscribe client")
+            elif isinstance(e, zmq.error.Again):
+                logger.error("Server not reachable, response timed out")
+
             client_connected = False
             for item in params:
                 socket.setsockopt_string(zmq.UNSUBSCRIBE, item)
-            logger.info("Closing subscribe client")
             continue
 
         update = pub_split(formatted_update)
