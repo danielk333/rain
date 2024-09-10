@@ -112,6 +112,6 @@ def sub_activity(param_name):
 
 
 register_trigger(
-    name="antler",
+    name="antlers",
     data_description="Did the antlers fall off?"
 )
