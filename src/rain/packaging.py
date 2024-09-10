@@ -9,6 +9,10 @@ from .plugins import PLUGINS
 
 logger = logging.getLogger(__name__)
 
+REQ_VALIDATION_ERROR = "Request verification failed"
+REP_VALIDATION_ERROR = "Response verification failed"
+NO_SUCH_PARAM_ERROR = "Parameter '{0}' invalid"
+
 
 def form_request(request_type, params, data):
     ''' Creates the request message for the client to send to a server
@@ -86,7 +90,7 @@ def form_response(request, address):
         try:
             func = PLUGINS[request["action"]][param]["function"]
         except KeyError:
-            data.append(f"Parameter '{param}' invalid")
+            data.append(NO_SUCH_PARAM_ERROR.format(param))
         else:
             request_copy = copy.deepcopy(request)
             request_copy["name"] = param
@@ -129,9 +133,9 @@ def form_failed(form, address):
                 "action": "fail",
                 "name": ["fail"]}
     if form == "request":
-        response.update({"data": ["Request verification failed"]})
+        response.update({"data": [REQ_VALIDATION_ERROR]})
     elif form == "response":
-        response.update({"data": ["Response verification failed"]})
+        response.update({"data": [REP_VALIDATION_ERROR]})
 
     return response
 
