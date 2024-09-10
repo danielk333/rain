@@ -125,8 +125,24 @@ def run_client(args):
     dir_pub, dir_prv, address_server, timeouts, params = handle_client_args(args)
 
     if args.action == "get" or args.action == "set":
-        response = run_request(args.server, address_server, timeouts, args.action, params, args.data, dir_pub, dir_prv)
+        response = run_request(
+            args.server,
+            address_server,
+            timeouts,
+            args.action,
+            params,
+            args.data,
+            dir_pub,
+            dir_prv,
+        )
     elif args.action == "sub":
-        response = run_subscribe(args.server, address_server, timeouts, params, dir_pub, dir_prv)
+        response = run_subscribe(
+            args.server,
+            address_server,
+            timeouts,
+            params,
+            dir_pub,
+            dir_prv,
+        )
 
     return response
