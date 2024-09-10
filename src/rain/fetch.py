@@ -228,8 +228,10 @@ def find_details_client(args, config):
     '''
     if args.action == "set" or args.action == "get":
         inter_type = "response"
+        timeout_fallback = 10000
     elif args.action == "sub":
         inter_type = "publish"
+        timeout_fallback = -1
 
     addr_server = [
         config.get(f"{args.server}-{inter_type}", "hostname"),
@@ -237,8 +239,8 @@ def find_details_client(args, config):
     ]
 
     timeouts = []
-    timeouts.append(config.getint("Timeouts", "send", fallback=10000))
-    timeouts.append(config.getint("Timeouts", "receive", fallback=10000))
+    timeouts.append(config.getint("Timeouts", "send", fallback=timeout_fallback))
+    timeouts.append(config.getint("Timeouts", "receive", fallback=timeout_fallback))
 
     return addr_server, timeouts
 
