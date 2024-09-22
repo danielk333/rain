@@ -6,6 +6,16 @@ from zmq.auth.thread import ThreadAuthenticator
 logger = logging.getLogger(__name__)
 
 
+class ClientCustomAuth:
+
+    def __init__(self):
+        self.key = None
+
+    def callback(self, domain, key: bytes):
+        self.key = key.decode("utf8")
+        return True
+
+
 def setup_auth(context, allowed, path_pub):
     ''' Set up the thread used as part of the authentication process
 
@@ -28,6 +38,8 @@ def setup_auth(context, allowed, path_pub):
     for item in allowed:
         auth.allow(item)
     auth.configure_curve(domain="*", location=path_pub)
+    auth.client_auth = ClientCustomAuth()
+    auth.configure_curve_callback(domain="*", credentials_provider=auth.client_auth)
 
     return auth
 
@@ -59,7 +71,7 @@ def setup_socket(context, host_type):
     return socket
 
 
-def auth_server(socket, path_prv):
+def auth_server(socket, path_prv, auth):
     ''' Sets up the authentication side to the server connection
 
     Parameters
@@ -68,6 +80,8 @@ def auth_server(socket, path_prv):
         The connection socket
     path_prv : Posix path
         The path to the folder containing the server's private key
+    auth : thread
+        The thread that the authenticator uses to authenticate conenctions
     '''
     try:
         server_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
@@ -81,6 +95,7 @@ def auth_server(socket, path_prv):
     socket.curve_secretkey = server_prv
     socket.curve_publickey = server_pub
     socket.curve_server = True
+    auth.server_public_key = server_pub.decode("utf8")
     logger.debug("Server keypair loaded")
 
 
@@ -161,7 +176,7 @@ def setup_server(host_type, address, allowed, path_pub, path_prv):
     socket = setup_socket(context, host_type)
 
     auth = setup_auth(context, allowed, path_pub)
-    auth_server(socket, path_prv)
+    auth_server(socket, path_prv, auth)
     open_connection(socket, address)
 
     return auth, socket

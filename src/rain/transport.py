@@ -1,6 +1,4 @@
-import json
 import logging
-import socket as pys
 import zmq
 
 
@@ -25,7 +23,7 @@ def send_request(socket, address, request):
     return
 
 
-def receive_request(socket, blocking=True):
+def receive_request(socket: zmq.Socket, auth, blocking=True):
     ''' Receives a request from a client
 
     Parameters
@@ -43,16 +41,8 @@ def receive_request(socket, blocking=True):
         there is no new connections
     '''
     flags = 0 if blocking else zmq.NOBLOCK
-    frame = socket.recv(flags, copy=False)
-
-    src_fd = frame.get(zmq.MessageOption.SRCFD)
-    src_sock = pys.socket(fileno=src_fd)
-    address = src_sock.getpeername()[0]
-    src_sock.detach()
-
-    request = json.loads(frame.bytes.decode("utf-8"))
-    request["sender"] = address
-
+    request = socket.recv_json(flags)
+    request["sender"] = auth.client_auth.key
     return request
 
 

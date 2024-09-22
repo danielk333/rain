@@ -54,7 +54,7 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
             server_open = exit_handler()
 
         try:
-            request = receive_request(socket, blocking=blocking)
+            request = receive_request(socket, auth, blocking=blocking)
             logger.debug("Request received")
         except KeyboardInterrupt:
             server_open = False
@@ -67,12 +67,12 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
         try:
             validate_request(request)
         except jsonschema.exceptions.ValidationError:
-            logger.error("Request validation failed")
-            response = form_failed("request", address)
+            logger.error("Request validation failed:\n" + json.dumps(request))
+            response = form_failed("request", auth)
         else:
             logger.debug("Request validated")
             logger.info(f"Request: {json.dumps(request)}")
-            response = form_response(request, address)
+            response = form_response(request, auth)
         finally:
             logger.debug("Response formed")
 
@@ -80,7 +80,7 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
             validate_response(response)
         except jsonschema.exceptions.ValidationError:
             logger.error("Response validation failed")
-            response = form_failed("response", address)
+            response = form_failed("response", auth)
         else:
             logger.debug("Response validated")
             logger.debug(f"Response: {json.dumps(response)}")

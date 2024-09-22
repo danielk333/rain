@@ -1,7 +1,6 @@
 import copy
 import json
 import logging
-import socket as pys
 import sys
 
 from .fetch import get_datetime
@@ -36,7 +35,6 @@ def form_request(request_type, params, data):
     request.update({
         "date": date_time[0],
         "time": date_time[1],
-        "hostname": pys.gethostname(),
     })
     request.update({"action": request_type})
     request.update({"name": params})
@@ -62,7 +60,7 @@ def form_request(request_type, params, data):
     return request
 
 
-def form_response(request, address):
+def form_response(request, auth):
     ''' Creates the response message following from the reception of a request
         from a client. This response message will later be sent to the client
 
@@ -79,7 +77,7 @@ def form_response(request, address):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"sender": address[0]}
+    response = {"sender": auth.server_public_key}
     response.update({"date": date_time[0],
                      "time": date_time[1]})
     response.update({"action": request["action"]})
@@ -106,7 +104,7 @@ def form_response(request, address):
     return response
 
 
-def form_failed(form, address):
+def form_failed(form, auth):
     ''' Creates a failure response message, either because the server received
         a request that failed validation or because its response failed
         validation. This message needs to be sent as a REQ/REP socket requires
@@ -127,7 +125,7 @@ def form_failed(form, address):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"sender": address[0],
+    response = {"sender": auth.server_public_key,
                 "date": date_time[0],
                 "time": date_time[1],
                 "action": "fail",
