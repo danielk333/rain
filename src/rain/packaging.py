@@ -31,7 +31,7 @@ def form_request(request_type, params, data):
         The formatted request to be sent by the client to the server
     '''
     date_time = get_datetime()
-    request = {"sender": ""}
+    request = {"sender": ""}  # Server will fill this in to avoid spoofing
     request.update({
         "date": date_time[0],
         "time": date_time[1],
@@ -60,7 +60,7 @@ def form_request(request_type, params, data):
     return request
 
 
-def form_response(request, auth):
+def form_response(request):
     ''' Creates the response message following from the reception of a request
         from a client. This response message will later be sent to the client
 
@@ -68,8 +68,6 @@ def form_response(request, auth):
     ----------
     request : JSON
         The request made by the client
-    address : list of strings
-        The hostname and port number of the server
 
     Returns
     -------
@@ -77,7 +75,7 @@ def form_response(request, auth):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"sender": auth.server_public_key}
+    response = {"sender": ""}  # Client will fill this in to avoid spoofing
     response.update({"date": date_time[0],
                      "time": date_time[1]})
     response.update({"action": request["action"]})
@@ -104,7 +102,7 @@ def form_response(request, auth):
     return response
 
 
-def form_failed(form, auth):
+def form_failed(form):
     ''' Creates a failure response message, either because the server received
         a request that failed validation or because its response failed
         validation. This message needs to be sent as a REQ/REP socket requires
@@ -116,8 +114,6 @@ def form_failed(form, auth):
     form : string
         Whether the message that failed verification was a request or a
         response
-    address : list of strings
-        The hostname and port number of the server
 
     Returns
     -------
@@ -125,7 +121,7 @@ def form_failed(form, auth):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"sender": auth.server_public_key,
+    response = {"sender": "",  # Client will fill this in to avoid spoofing
                 "date": date_time[0],
                 "time": date_time[1],
                 "action": "fail",
@@ -138,7 +134,7 @@ def form_failed(form, auth):
     return response
 
 
-def publish_update(param, value, address, current_datetime):
+def publish_update(param, value, current_datetime):
     ''' Creates a JSON blob containing the updated value of a parameter
 
     Parameters
@@ -147,8 +143,6 @@ def publish_update(param, value, address, current_datetime):
         The parameter whose value has been updated
     value : string
         The new values this parameter has
-    address : list of strings
-        The hostname and port number of the server
     current_datetime : list of strings
         The server's current local date and time
 
@@ -157,7 +151,7 @@ def publish_update(param, value, address, current_datetime):
     update : JSON
         The update to be published by the server
     '''
-    update = {"sender": address[0],
+    update = {"sender": "",  # Client will fill this in to avoid spoofing
               "date": current_datetime[0],
               "time": current_datetime[1],
               "action": "sub",

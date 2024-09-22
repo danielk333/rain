@@ -68,11 +68,11 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
             validate_request(request)
         except jsonschema.exceptions.ValidationError:
             logger.error("Request validation failed:\n" + json.dumps(request))
-            response = form_failed("request", auth)
+            response = form_failed("request")
         else:
             logger.debug("Request validated")
             logger.info(f"Request: {json.dumps(request)}")
-            response = form_response(request, auth)
+            response = form_response(request)
         finally:
             logger.debug("Response formed")
 
@@ -80,7 +80,7 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
             validate_response(response)
         except jsonschema.exceptions.ValidationError:
             logger.error("Response validation failed")
-            response = form_failed("response", auth)
+            response = form_failed("response")
         else:
             logger.debug("Response validated")
             logger.debug(f"Response: {json.dumps(response)}")
@@ -180,7 +180,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, custom_messag
             break
 
         date_time = get_datetime()
-        update = publish_update(name, new_value, serv_addr, date_time)
+        update = publish_update(name, new_value, date_time)
         logger.debug("Update formed")
         try:
             validate_update(update)

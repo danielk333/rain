@@ -112,6 +112,12 @@ def auth_client(socket, server, path_pub, path_prv):
         The path to the folder containg the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containg the client's private key
+
+
+    Returns
+    -------
+    auth : dict
+        Dict with auth information about client and server connection
     '''
     try:
         client_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
@@ -130,6 +136,9 @@ def auth_client(socket, server, path_pub, path_prv):
     server_pub, _ = zmq.auth.load_certificate(server_file_pub)
     socket.curve_serverkey = server_pub
     logger.debug("Server public key loaded")
+
+    auth = {"server_public_key": server_pub.decode("utf8")}
+    return auth
 
 
 def open_connection(socket, address):
@@ -203,6 +212,8 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv):
     -------
     socket : zmq.Socket
         The connection socket
+    auth : dict
+        Dict with auth information about client and server connection
     '''
     context = zmq.Context()
     context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
@@ -210,6 +221,6 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv):
     context.setsockopt(zmq.LINGER, 0)
     socket = setup_socket(context, host_type)
 
-    auth_client(socket, server, path_pub, path_prv)
+    auth = auth_client(socket, server, path_pub, path_prv)
 
-    return socket
+    return socket, auth

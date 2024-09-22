@@ -59,7 +59,7 @@ def send_response(socket, response):
     socket.send_json(response, 0)
 
 
-def receive_response(socket, address):
+def receive_response(socket, address, auth):
     ''' Receives a response from a server, in response to a request
 
     Parameters
@@ -68,6 +68,8 @@ def receive_response(socket, address):
         The connection socket
     address : list of strings
         The hostname and port of the server
+    auth : dict
+        Dict with auth information about client and server connection
 
     Returns
     -------
@@ -75,6 +77,7 @@ def receive_response(socket, address):
         The responsesent by the server to the client
     '''
     response = socket.recv_json(0)
+    response["sender"] = auth["server_public_key"]
     socket.disconnect(f"tcp://{address[0]}:{address[1]}")
 
     return response

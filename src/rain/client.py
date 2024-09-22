@@ -49,11 +49,11 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
         logger.debug(f"Request: {json.dumps(request)}")
 
     if request:
-        socket = setup_client("req", server, timeouts, path_pub, path_prv)
+        socket, auth = setup_client("req", server, timeouts, path_pub, path_prv)
         send_request(socket, server_address, request)
         logger.debug("Request sent to the server")
         try:
-            response = receive_response(socket, server_address)
+            response = receive_response(socket, server_address, auth)
         except zmq.error.Again:
             logger.error("Server not reachable, response timed out")
             return
@@ -89,7 +89,7 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    socket = setup_client("sub", server, timeouts, path_pub, path_prv)
+    socket, auth = setup_client("sub", server, timeouts, path_pub, path_prv)
 
     for item in params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
@@ -113,6 +113,7 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
             continue
 
         update = pub_split(formatted_update)
+        update["sender"] = auth["server_public_key"]
         logger.debug(f"Update received from the server: {json.dumps(update)}")
         try:
             validate_update(update)
