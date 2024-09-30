@@ -5,6 +5,8 @@ from zmq.auth.thread import ThreadAuthenticator
 
 logger = logging.getLogger(__name__)
 
+MAX_MESSAGE_SIZE = int(1e6)
+
 
 class ClientCustomAuth:
 
@@ -182,6 +184,7 @@ def setup_server(host_type, address, allowed, path_pub, path_prv):
         The connection socket
     '''
     context = zmq.Context()
+    context.setsockopt(zmq.SocketOption.MAXMSGSIZE, MAX_MESSAGE_SIZE)
     socket = setup_socket(context, host_type)
 
     auth = setup_auth(context, allowed, path_pub)
