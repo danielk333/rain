@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import warnings
 
-from .config import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
+from .defaults import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
 from .plugins import PLUGINS, load_plugins
 
 logger = logging.getLogger(__name__)

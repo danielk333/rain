@@ -8,18 +8,29 @@ import jsonschema
 import zmq
 
 from .authenticate import setup_server
-from .fetch import get_datetime, handle_server_args, sub_params, sub_trig_params
-from .packaging import form_response, form_failed, publish_format, publish_update
+from .defaults import (
+    SERVER_EXIT_KEY,
+    SERVER_EXIT_CODE,
+    SERVER_TRIGGER_REQ_OK,
+    SERVER_TRIGGER_REQ_FAIL
+)
+from .fetch import (
+    get_datetime,
+    handle_server_args,
+    sub_params,
+    sub_trig_params,
+)
+from .packaging import (
+    form_response,
+    form_failed,
+    publish_format,
+    publish_update
+)
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
 from .validate import validate_request, validate_response, validate_update
 
 logger = logging.getLogger(__name__)
-
-SERVER_EXIT_KEY = "__SERVER_EXIT__"
-SERVER_EXIT_CODE = "Ezk1wDZ4MTQNG22ASim4"
-SERVER_TRIGGER_REQ_OK = "Trigger received"
-SERVER_TRIGGER_REQ_FAIL = "No such triggered parameter exists"
 
 
 def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_handler_check=10):

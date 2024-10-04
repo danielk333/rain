@@ -4,7 +4,7 @@ from pathlib import Path
 
 import zmq
 
-from .config import DEFAULT_FOLDER
+from .defaults import DEFAULT_FOLDER
 
 
 def send_trigger(server_host, server_port, name, value):

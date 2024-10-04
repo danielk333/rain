@@ -3,9 +3,9 @@ import logging
 import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
-logger = logging.getLogger(__name__)
+from .defaults import MAX_MESSAGE_SIZE
 
-MAX_MESSAGE_SIZE = int(1e6)
+logger = logging.getLogger(__name__)
 
 
 class ClientCustomAuth:

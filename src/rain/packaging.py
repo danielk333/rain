@@ -3,14 +3,15 @@ import json
 import logging
 import sys
 
+from .defaults import (
+    REQ_VALIDATION_ERROR,
+    REP_VALIDATION_ERROR,
+    NO_SUCH_PARAM_ERROR
+)
 from .fetch import get_datetime
 from .plugins import PLUGINS
 
 logger = logging.getLogger(__name__)
-
-REQ_VALIDATION_ERROR = "Request verification failed"
-REP_VALIDATION_ERROR = "Response verification failed"
-NO_SUCH_PARAM_ERROR = "Parameter '{0}' invalid"
 
 
 def form_request(request_type, params, data):

@@ -53,3 +53,14 @@ _CFG_PATHS_CLIENT = [
     ("Security", "public-keys"),
     ("Security", "private-keys")
 ]
+
+SERVER_EXIT_KEY = "__SERVER_EXIT__"
+SERVER_EXIT_CODE = "Ezk1wDZ4MTQNG22ASim4"
+SERVER_TRIGGER_REQ_OK = "Trigger received"
+SERVER_TRIGGER_REQ_FAIL = "No such triggered parameter exists"
+
+REQ_VALIDATION_ERROR = "Request verification failed"
+REP_VALIDATION_ERROR = "Response verification failed"
+NO_SUCH_PARAM_ERROR = "Parameter '{0}' invalid"
+
+MAX_MESSAGE_SIZE = int(1e6)
