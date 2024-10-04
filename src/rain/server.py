@@ -135,6 +135,9 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, custom_messag
     server_open = True
 
     def trigger_wait():
+        ''' The worker function used by the thread running the trigger server
+            to wait for a trigger parameter to be triggered
+        '''
         context = zmq.Context()
         context.setsockopt(zmq.SocketOption.SNDTIMEO, 1000)
         context.setsockopt(zmq.SocketOption.RCVTIMEO, 1000)
@@ -159,6 +162,10 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, custom_messag
             logger.debug("Trigger response sent to the trigger server")
 
     def worker(name):
+        ''' The worker function run by each parameter thread, calling the
+            relevant plugin function, adding the parameter value to the queue
+            and waiting for the set interval before repeating this process
+        '''
         func = PLUGINS["sub"][name]["function"]
         interval = PLUGINS["sub"][name]["interval"]
         while server_open:

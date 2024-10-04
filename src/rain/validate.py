@@ -2,10 +2,26 @@ from jsonschema import validate
 
 
 def validate_reqrep(message):
+    ''' Used to validate the structure of a client request or a server response
+        using a validation schema
+
+    Parameters
+    ----------
+    message : JSON
+        The formatted message to be validated
+    '''
     validate(instance=message, schema=reqrep_schema)
 
 
 def validate_pub(message):
+    ''' Used to validate the structure of a message from a Publish server using
+        a validation schema
+
+    Parameters
+    ----------
+    message : JSON
+        The formatted message to be validated
+    '''
     validate(instance=message, schema=pub_schema)
 
 
