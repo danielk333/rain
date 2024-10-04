@@ -28,7 +28,7 @@ from .packaging import (
 )
 from .plugins import PLUGINS
 from .transport import receive_request, send_response
-from .validate import validate_request, validate_response, validate_update
+from .validate import validate_reqrep, validate_pub
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
             continue
 
         try:
-            validate_request(request)
+            validate_reqrep(request)
         except jsonschema.exceptions.ValidationError:
             logger.error("Request validation failed:\n" + json.dumps(request))
             response = form_failed("request")
@@ -88,7 +88,7 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
             logger.debug("Response formed")
 
         try:
-            validate_response(response)
+            validate_reqrep(response)
         except jsonschema.exceptions.ValidationError:
             logger.error("Response validation failed")
             response = form_failed("response")
@@ -194,7 +194,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, custom_messag
         update = publish_update(name, new_value, date_time)
         logger.debug("Update formed")
         try:
-            validate_update(update)
+            validate_pub(update)
         except jsonschema.exceptions.ValidationError:
             logger.error("Update validation failed")
         else:

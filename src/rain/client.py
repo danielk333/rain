@@ -8,7 +8,7 @@ from .authenticate import setup_client
 from .fetch import handle_client_args
 from .packaging import form_request, pub_split
 from .transport import send_request, receive_response, receive_subscribe
-from .validate import validate_response, validate_request, validate_update
+from .validate import validate_reqrep, validate_pub
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
     request = form_request(action, params, data)
     logger.debug("Request formed")
     try:
-        validate_request(request)
+        validate_reqrep(request)
     except jsonschema.exceptions.ValidationError:
         request = None
         logger.error("Request validation failed")
@@ -60,7 +60,7 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
 
         logger.info("Response received from the server")
         try:
-            validate_response(response)
+            validate_reqrep(response)
         except jsonschema.exceptions.ValidationError:
             logger.error("Response validation failed")
             return
@@ -116,7 +116,7 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
         update["sender"] = auth["server_public_key"]
         logger.debug(f"Update received from the server: {json.dumps(update)}")
         try:
-            validate_update(update)
+            validate_pub(update)
             logger.debug("Update validated")
         except jsonschema.exceptions.ValidationError:
             logger.error("Update validation failed")
