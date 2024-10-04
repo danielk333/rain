@@ -1,8 +1,8 @@
 import configparser
+from datetime import datetime
 import logging
 from pathlib import Path
 import sys
-import time
 import warnings
 
 from .config import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
@@ -356,18 +356,15 @@ def handle_client_args(args):
 
 
 def get_datetime():
-    ''' Finds the current date and local time and return an array with these
-        values
+    ''' Finds the current time and date with a timezone offset and returns a
+        string in the ISO 8601 format
 
     Returns
     -------
-    current_datetime : list of strings
-        The current local date and time
+    current_datetime : string
+        The current time and date in ISO format including a timezone offset
     '''
-    local_time = time.localtime()
-    current_datetime = []
-    current_datetime.append(f"{local_time[0]:04}-{local_time[1]:02}-{local_time[2]:02}")
-    current_datetime.append(f"{local_time[3]:02}:{local_time[4]:02}:{local_time[5]:02} Local Time")
+    current_datetime = datetime.now().astimezone().isoformat()
 
     return current_datetime
 

@@ -31,13 +31,13 @@ def form_request(request_type, params, data):
         The formatted request to be sent by the client to the server
     '''
     date_time = get_datetime()
-    request = {"sender": ""}  # Server will fill this in to avoid spoofing
-    request.update({
-        "date": date_time[0],
-        "time": date_time[1],
-    })
-    request.update({"action": request_type})
-    request.update({"name": params})
+    request = {
+        "sender": "",  # Server will fill this in to avoid spoofing
+        "datetime": date_time,
+        "action": request_type,
+        "name": params
+    }
+
     if request["action"] == "get":
         if data is None:
             request.update({"data": ["None"]*len(params)})
@@ -75,11 +75,12 @@ def form_response(request):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"sender": ""}  # Client will fill this in to avoid spoofing
-    response.update({"date": date_time[0],
-                     "time": date_time[1]})
-    response.update({"action": request["action"]})
-    response.update({"name": request["name"]})
+    response = {
+        "sender": "",  # Client will fill this in to avoid spoofing
+        "datetime": date_time,
+        "action": request["action"],
+        "name": request["name"]
+    }
 
     data = []
     for ind, param in enumerate(request["name"]):
@@ -121,11 +122,13 @@ def form_failed(form):
         The formatted response to be sent by the server to the client
     '''
     date_time = get_datetime()
-    response = {"sender": "",  # Client will fill this in to avoid spoofing
-                "date": date_time[0],
-                "time": date_time[1],
-                "action": "fail",
-                "name": ["fail"]}
+    response = {
+        "sender": "",  # Client will fill this in to avoid spoofing
+        "datetime": date_time,
+        "action": "fail",
+        "name": ["fail"]
+    }
+
     if form == "request":
         response.update({"data": [REQ_VALIDATION_ERROR]})
     elif form == "response":
@@ -151,12 +154,13 @@ def publish_update(param, value, current_datetime):
     update : JSON
         The update to be published by the server
     '''
-    update = {"sender": "",  # Client will fill this in to avoid spoofing
-              "date": current_datetime[0],
-              "time": current_datetime[1],
-              "action": "sub",
-              "name": param,
-              "data": value}
+    update = {
+        "sender": "",  # Client will fill this in to avoid spoofing
+        "datetime": current_datetime,
+        "action": "sub",
+        "name": param,
+        "data": value
+    }
 
     return update
 

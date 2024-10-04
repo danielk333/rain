@@ -21,13 +21,10 @@ req_schema = {
         "sender": {
             "type": "string"
         },
-        "date": {
+        "datetime": {
             "type": "string",
-            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
-        },
-        "time": {
-            "type": "string",
-            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
+            "description": "the date and time at message formation, including"
+            + "timezone offset, according to the ISO 8601 standard"
         },
         "action": {
             "type": "string"
@@ -55,13 +52,10 @@ rep_schema = {
         "sender": {
             "type": "string"
         },
-        "date": {
+        "datetime": {
             "type": "string",
-            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
-        },
-        "time": {
-            "type": "string",
-            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
+            "description": "the date and time at message formation, including"
+            + "timezone offset, according to the ISO 8601 standard"
         },
         "action": {
             "type": "string"
@@ -89,13 +83,10 @@ pub_schema = {
         "sender": {
             "type": "string"
         },
-        "date": {
+        "datetime": {
             "type": "string",
-            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
-        },
-        "time": {
-            "type": "string",
-            "description": "https://www.iso.org/iso-8601-date-and-time-format.html"
+            "description": "the date and time at message formation, including"
+            + "timezone offset, according to the ISO 8601 standard"
         },
         "action": {
             "type": "string"
