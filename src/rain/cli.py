@@ -70,6 +70,7 @@ def trigger_cli():
 
     parser.add_argument(
         "-c", "--cfgpath",
+        type=pathlib.PosixPath,
         help="the path to your RAIN config folder"
     )
 
@@ -99,6 +100,7 @@ def server_cli():
 
     parser.add_argument(
         "-c", "--cfgpath",
+        type=pathlib.PosixPath,
         help="the path to your RAIN config folder"
     )
 
@@ -160,6 +162,7 @@ def client_cli():
 
     parser.add_argument(
         "-c", "--cfgpath",
+        type=pathlib.PosixPath,
         help="the path to your RAIN config folder"
     )
 
