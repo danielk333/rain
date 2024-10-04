@@ -21,14 +21,14 @@ class TestRepServer(unittest.TestCase):
     def test_run_response(self):
         self.server_running = True
         server = th.Thread(
-            target = rain.server.run_response,
-            args = (
+            target=rain.server.run_response,
+            args=(
                 ("localhost", 8000),
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
             ),
-            kwargs = {
+            kwargs={
                 "exit_handler": lambda: self.server_running,
             },
         )
@@ -46,25 +46,25 @@ class TestRepClientTowardsServer(unittest.TestCase):
         cls.server_running = True
         cls.server_address = ("localhost", 8000)
         cls.server = th.Thread(
-            target = rain.server.run_response,
-            args = (
+            target=rain.server.run_response,
+            args=(
                 cls.server_address,
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
             ),
-            kwargs = {
+            kwargs={
                 "exit_handler": lambda: cls.server_running,
             },
         )
         cls.server.start()
 
         cls.client_kwargs = dict(
-            server = "reindeer",
-            server_address = cls.server_address,
-            timeouts = [1000, 1000],
-            path_pub = SERVER_CONFIG_LOC / "known_hosts",
-            path_prv = SERVER_CONFIG_LOC / "keypairs",
+            server="reindeer",
+            server_address=cls.server_address,
+            timeouts=[1000, 1000],
+            path_pub=SERVER_CONFIG_LOC / "known_hosts",
+            path_prv=SERVER_CONFIG_LOC / "keypairs",
         )
 
     @classmethod
@@ -74,9 +74,9 @@ class TestRepClientTowardsServer(unittest.TestCase):
 
     def test_run_client_get(self):
         response_generator = rain.client.run_request(
-            action = "get",
-            params = ["activity"],
-            data = None,
+            action="get",
+            params=["activity"],
+            data=None,
             **self.client_kwargs
         )
         response = next(response_generator)
@@ -86,9 +86,9 @@ class TestRepClientTowardsServer(unittest.TestCase):
 
     def test_run_client_get_non_existant(self):
         response_generator = rain.client.run_request(
-            action = "get",
-            params = ["what_they_doin"],
-            data = None,
+            action="get",
+            params=["what_they_doin"],
+            data=None,
             **self.client_kwargs
         )
         response = next(response_generator)

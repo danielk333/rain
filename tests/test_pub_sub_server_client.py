@@ -25,15 +25,15 @@ class TestPubServer(unittest.TestCase):
         self.queue = queue.Queue()
         self.exit_magic = (rain.server.SERVER_EXIT_KEY, rain.server.SERVER_EXIT_CODE)
         server = th.Thread(
-            target = rain.server.run_publish,
-            args = (
+            target=rain.server.run_publish,
+            args=(
                 ("localhost", 8000),
                 ("localhost", 8001),
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
             ),
-            kwargs = {
+            kwargs={
                 "custom_message_queue": self.queue,
             },
         )
@@ -53,26 +53,26 @@ class TestSubClientTowardsServer(unittest.TestCase):
         cls.server_address = ("localhost", 8000)
         cls.trigger_address = ("localhost", 8001)
         cls.server = th.Thread(
-            target = rain.server.run_publish,
-            args = (
+            target=rain.server.run_publish,
+            args=(
                 cls.server_address,
                 cls.trigger_address,
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
             ),
-            kwargs = {
+            kwargs={
                 "custom_message_queue": cls.queue,
             },
         )
         cls.server.start()
 
         cls.client_kwargs = dict(
-            server = "reindeer",
-            server_address = cls.server_address,
-            timeouts = [10000, 10000],
-            path_pub = SERVER_CONFIG_LOC / "known_hosts",
-            path_prv = SERVER_CONFIG_LOC / "keypairs",
+            server="reindeer",
+            server_address=cls.server_address,
+            timeouts=[10000, 10000],
+            path_pub=SERVER_CONFIG_LOC / "known_hosts",
+            path_prv=SERVER_CONFIG_LOC / "keypairs",
         )
 
     @classmethod
@@ -82,7 +82,7 @@ class TestSubClientTowardsServer(unittest.TestCase):
 
     def test_run_client_sub(self):
         response_generator = rain.client.run_subscribe(
-            params = ["activity"],
+            params=["activity"],
             **self.client_kwargs
         )
         response = next(response_generator)
@@ -97,27 +97,27 @@ class TestSubClientTowardsServer(unittest.TestCase):
 
     def test_trigger_non_trigger_fail(self):
         trigger_response = rain.trigger.send_trigger(
-            server_host = self.trigger_address[0],
-            server_port = self.trigger_address[1],
-            name = "activity",
-            value = "DANCING",
+            server_host=self.trigger_address[0],
+            server_port=self.trigger_address[1],
+            name="activity",
+            value="DANCING",
         )
         assert trigger_response["name"] == "activity", trigger_response
         assert trigger_response["data"] == rain.server.SERVER_TRIGGER_REQ_FAIL, trigger_response
 
     def test_trigger(self):
         trigger_response = rain.trigger.send_trigger(
-            server_host = self.trigger_address[0],
-            server_port = self.trigger_address[1],
-            name = "antlers",
-            value = "They fell off!",
+            server_host=self.trigger_address[0],
+            server_port=self.trigger_address[1],
+            name="antlers",
+            value="They fell off!",
         )
         assert trigger_response["name"] == "antlers", trigger_response
         assert trigger_response["data"] == rain.server.SERVER_TRIGGER_REQ_OK, trigger_response
 
     def test_run_client_sub_trigger(self):
         response_generator = rain.client.run_subscribe(
-            params = ["antlers"],
+            params=["antlers"],
             **self.client_kwargs
         )
         local_q = queue.Queue()
@@ -133,10 +133,10 @@ class TestSubClientTowardsServer(unittest.TestCase):
         time.sleep(0.01)
 
         trigger_response = rain.trigger.send_trigger(
-            server_host = self.trigger_address[0],
-            server_port = self.trigger_address[1],
-            name = "antlers",
-            value = "They fell off!",
+            server_host=self.trigger_address[0],
+            server_port=self.trigger_address[1],
+            name="antlers",
+            value="They fell off!",
         )
         assert trigger_response["name"] == "antlers", trigger_response
         assert trigger_response["data"] == rain.server.SERVER_TRIGGER_REQ_OK, trigger_response
