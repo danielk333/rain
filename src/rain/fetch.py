@@ -390,7 +390,7 @@ def sub_trig_params():
     Returns
     -------
     list_params : list of strings
-        A list of triggered parameters that can be subscribed to
+        A list of trigger parameters that can be subscribed to
     '''
     list_params = list(PLUGINS["sub-trigger"].keys())
 

@@ -3,8 +3,15 @@ from pathlib import Path
 
 import zmq
 
-from .defaults import AUTHORISED_KEYS_FOLDER, DEFAULT_FOLDER, KNOWN_HOSTS_FOLDER, PLUGINS_FOLDER
-from .defaults import DEFAULT_SERVER_CFG, DEFAULT_LOGGING, DEFAULT_TIMEOUTS
+from .defaults import (
+    AUTHORISED_KEYS_FOLDER,
+    DEFAULT_FOLDER,
+    KNOWN_HOSTS_FOLDER,
+    PLUGINS_FOLDER,
+    DEFAULT_SERVER_CFG,
+    DEFAULT_LOGGING,
+    DEFAULT_TIMEOUTS
+)
 
 
 def gen_paths(cfg_path, key_path):

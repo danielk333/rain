@@ -33,7 +33,7 @@ def setup_auth(context, allowed, path_pub):
     Returns
     -------
     auth : thread
-        The thread that the authenticator uses to authenticate conenctions
+        The thread that the authenticator uses to authenticate connections
     '''
     auth = ThreadAuthenticator(context)
     auth.start()
@@ -83,7 +83,7 @@ def auth_server(socket, path_prv, auth):
     path_prv : Posix path
         The path to the folder containing the server's private key
     auth : thread
-        The thread that the authenticator uses to authenticate conenctions
+        The thread that the authenticator uses to authenticate connections
     '''
     try:
         server_file_prv = list(path_prv.glob("*-curve.key_secret"))[0]
@@ -216,7 +216,7 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv):
     socket : zmq.Socket
         The connection socket
     auth : dict
-        Dict with auth information about client and server connection
+        Dict with auth information about the client and server connection
     '''
     context = zmq.Context()
     context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
