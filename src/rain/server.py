@@ -21,6 +21,7 @@ from .fetch import (
     sub_trig_params,
 )
 from .packaging import (
+    fill_sender_details,
     form_response,
     form_failed,
     publish_format,
@@ -75,6 +76,8 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
         except zmq.error.Again:
             time.sleep(exit_handler_check*1e-3)
             continue
+
+        request = fill_sender_details(auth.keys_dict, request)
 
         try:
             validate_reqrep(request)

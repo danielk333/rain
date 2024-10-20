@@ -33,7 +33,8 @@ def form_request(request_type, params, data):
     '''
     date_time = get_datetime()
     request = {
-        "sender": "",  # Server will fill this in to avoid spoofing
+        "sender-name": "",  # Server will fill this in to avoid spoofing
+        "sender-key": "",  # Server will fill this in to avoid spoofing
         "datetime": date_time,
         "action": request_type,
         "name": params
@@ -77,7 +78,8 @@ def form_response(request):
     '''
     date_time = get_datetime()
     response = {
-        "sender": "",  # Client will fill this in to avoid spoofing
+        "sender-name": "",  # Client will fill this in to avoid spoofing
+        "sender-key": "",  # Client will fill this in to avoid spoofing
         "datetime": date_time,
         "action": request["action"],
         "name": request["name"]
@@ -124,7 +126,8 @@ def form_failed(form):
     '''
     date_time = get_datetime()
     response = {
-        "sender": "",  # Client will fill this in to avoid spoofing
+        "sender-name": "",  # Client will fill this in to avoid spoofing
+        "sender-key": "",  # Client will fill this in to avoid spoofing
         "datetime": date_time,
         "action": "fail",
         "name": ["fail"]
@@ -156,7 +159,8 @@ def publish_update(param, value, current_datetime):
         The update to be published by the server
     '''
     update = {
-        "sender": "",  # Client will fill this in to avoid spoofing
+        "sender-name": "",  # Client will fill this in to avoid spoofing
+        "sender-key": "",  # Client will fill this in to avoid spoofing
         "datetime": current_datetime,
         "action": "sub",
         "name": param,
@@ -216,3 +220,11 @@ def print_response(response):
     '''
     print(json.dumps(response, indent=4, sort_keys=False))
     sys.stdout.flush()
+
+
+def fill_sender_details(keys_dict, message):
+    for item in keys_dict:
+        if item == message["sender-key"]:
+            message["sender-name"] = keys_dict[item]
+
+    return message

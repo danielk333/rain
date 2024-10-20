@@ -4,6 +4,7 @@ import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
 from .defaults import MAX_MESSAGE_SIZE
+from .fetch import get_keys
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,7 @@ def setup_auth(context, allowed, path_pub):
     auth.configure_curve(domain="*", location=path_pub)
     auth.client_auth = ClientCustomAuth()
     auth.configure_curve_callback(domain="*", credentials_provider=auth.client_auth)
+    auth.keys_dict = get_keys(path_pub)
 
     return auth
 
@@ -139,7 +141,9 @@ def auth_client(socket, server, path_pub, path_prv):
     socket.curve_serverkey = server_pub
     logger.debug("Server public key loaded")
 
-    auth = {"server_public_key": server_pub.decode("utf8")}
+    # auth = {"server_public_key": server_pub.decode("utf8")}
+    auth = {server_pub.decode("utf8"): server}
+
     return auth
 
 

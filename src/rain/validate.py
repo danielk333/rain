@@ -30,7 +30,10 @@ reqrep_schema = {
     "description": "",
     "required": ["action", "name", "data"],
     "properties": {
-        "sender": {
+        "sender-name": {
+            "type": "string"
+        },
+        "sender-key": {
             "type": "string"
         },
         "datetime": {
@@ -61,7 +64,10 @@ pub_schema = {
     "description": "",
     "required": ["action", "name", "data"],
     "properties": {
-        "sender": {
+        "sender-name": {
+            "type": "string"
+        },
+        "sender-key": {
             "type": "string"
         },
         "datetime": {

@@ -6,7 +6,7 @@ import zmq
 
 from .authenticate import setup_client
 from .fetch import handle_client_args
-from .packaging import form_request, pub_split
+from .packaging import fill_sender_details, form_request, pub_split
 from .transport import send_request, receive_response, receive_subscribe
 from .validate import validate_reqrep, validate_pub
 
@@ -57,6 +57,8 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
         except zmq.error.Again:
             logger.error("Server not reachable, response timed out")
             return
+
+        response = fill_sender_details(auth, response)
 
         logger.info("Response received from the server")
         try:
@@ -113,7 +115,10 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
             continue
 
         update = pub_split(formatted_update)
-        update["sender"] = auth["server_public_key"]
+        for key in auth:
+            update["sender-key"] = key
+            update["sender-name"] = auth[key]
+
         logger.debug(f"Update received from the server: {json.dumps(update)}")
         try:
             validate_pub(update)

@@ -42,7 +42,7 @@ def receive_request(socket: zmq.Socket, auth, blocking=True):
     '''
     flags = 0 if blocking else zmq.NOBLOCK
     request = socket.recv_json(flags)
-    request["sender"] = auth.client_auth.key
+    request["sender-key"] = auth.client_auth.key
     return request
 
 
@@ -77,7 +77,9 @@ def receive_response(socket, address, auth):
         The responsesent by the server to the client
     '''
     response = socket.recv_json(0)
-    response["sender"] = auth["server_public_key"]
+    for key in auth:
+        response["sender-key"] = key
+    # response["sender-key"] = auth["server_public_key"]
     socket.disconnect(f"tcp://{address[0]}:{address[1]}")
 
     return response

@@ -5,6 +5,8 @@ from pathlib import Path
 import sys
 import warnings
 
+import zmq
+
 from .defaults import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
 from .plugins import PLUGINS, load_plugins
 
@@ -384,8 +386,8 @@ def sub_params():
 
 
 def sub_trig_params():
-    ''' Returns a list of the triggered parameters that the server has made available for
-        clients to subscribe to
+    ''' Returns a list of the triggered parameters that the server has made
+        available for clients to subscribe to
 
     Returns
     -------
@@ -395,3 +397,27 @@ def sub_trig_params():
     list_params = list(PLUGINS["sub-trigger"].keys())
 
     return list_params
+
+
+def get_keys(path_pub):
+    ''' Returns a dict containing the public keys of all users that can connect
+        and the associated user names, taken from the name of the file the key
+        is stored in
+
+    Parameters
+    ----------
+    path_pub : Posix path
+        The path to the folder containing the public keys of the known hosts
+
+    Returns
+    -------
+    keys_dict : dictionary
+        A dictionary containing all server/client public keys as keys and the
+        file names they are in as values
+    '''
+    keys_dict = {}
+    for file in path_pub.glob("*"):
+        key = zmq.auth.load_certificate(file)
+        keys_dict[key[0].decode()] = file.stem
+
+    return keys_dict
