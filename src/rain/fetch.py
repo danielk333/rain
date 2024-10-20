@@ -411,9 +411,9 @@ def get_keys(path_pub):
 
     Returns
     -------
-    keys_dict : dictionary
-        A dictionary containing all server/client public keys as keys and the
-        file names they are in as values
+    keys_dict : dict
+        A dict containing all server/client public keys as keys and the file
+        names they are in as values
     '''
     keys_dict = {}
     for file in path_pub.glob("*"):

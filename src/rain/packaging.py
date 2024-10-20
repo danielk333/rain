@@ -223,6 +223,23 @@ def print_response(response):
 
 
 def fill_sender_details(keys_dict, message):
+    ''' Updates the received message with the sender's name and public key,
+        this is done automatically on reception to counter potential spoofing
+
+    Parameters
+    ----------
+    keys_dict : dict
+        A dict containing sender public keys as values and their names as
+        values
+    message : JSON
+        The message received by the receiver
+
+    Returns
+    -------
+    message : JSON
+        The message received by the receiver, updated to display the sender's
+        name and public key
+    '''
     for item in keys_dict:
         if item == message["sender-key"]:
             message["sender-name"] = keys_dict[item]
