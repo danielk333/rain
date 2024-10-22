@@ -7,7 +7,7 @@ import warnings
 
 import zmq
 
-from .defaults import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT
+from .defaults import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT, MAX_MESSAGE_SIZE
 from .plugins import PLUGINS, load_plugins
 
 logger = logging.getLogger(__name__)
@@ -207,7 +207,12 @@ def find_details_server(args, config):
     else:
         allowed = []
 
-    return addr_publ, addr_trig, allowed
+    if "Messages" in config:
+        max_size = config.getint("Messages", "max-size")
+    else:
+        max_size = MAX_MESSAGE_SIZE
+
+    return addr_publ, addr_trig, allowed, max_size
 
 
 def find_details_client(args, config):
@@ -320,9 +325,9 @@ def handle_server_args(args):
     setup_logging(args, config)
     path_pub, path_prv, path_plug = find_paths(config, "server")
     load_plugins(path_plug)
-    addr_publ, addr_trig, allowed = find_details_server(args, config)
+    addr_publ, addr_trig, allowed, max_size = find_details_server(args, config)
 
-    return path_pub, path_prv, addr_publ, addr_trig, allowed
+    return path_pub, path_prv, addr_publ, addr_trig, allowed, max_size
 
 
 def handle_client_args(args):

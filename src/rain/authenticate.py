@@ -94,7 +94,6 @@ def auth_server(socket, path_prv, auth):
                      "keypairs folder")
         exit()
 
-    # TODO: Check exceptions for loading certificates
     server_pub, server_prv = zmq.auth.load_certificate(server_file_prv)
     socket.curve_secretkey = server_prv
     socket.curve_publickey = server_pub
@@ -130,7 +129,6 @@ def auth_client(socket, server, path_pub, path_prv):
                      "keypairs folder")
         exit()
 
-    # TODO: Check exceptions for loading certificates
     client_pub, client_prv = zmq.auth.load_certificate(client_file_prv)
     socket.curve_secretkey = client_prv
     socket.curve_publickey = client_pub
@@ -141,7 +139,6 @@ def auth_client(socket, server, path_pub, path_prv):
     socket.curve_serverkey = server_pub
     logger.debug("Server public key loaded")
 
-    # auth = {"server_public_key": server_pub.decode("utf8")}
     auth = {server_pub.decode("utf8"): server}
 
     return auth
@@ -163,7 +160,7 @@ def open_connection(socket, address):
     logger.debug("Server connection opened")
 
 
-def setup_server(host_type, address, allowed, path_pub, path_prv):
+def setup_server(host_type, address, allowed, path_pub, path_prv, max_size):
     ''' The top-level function that organises the initialisation of the server
         connection
 
@@ -188,7 +185,7 @@ def setup_server(host_type, address, allowed, path_pub, path_prv):
         The connection socket
     '''
     context = zmq.Context()
-    context.setsockopt(zmq.SocketOption.MAXMSGSIZE, MAX_MESSAGE_SIZE)
+    context.setsockopt(zmq.SocketOption.MAXMSGSIZE, max_size)
     socket = setup_socket(context, host_type)
 
     auth = setup_auth(context, allowed, path_pub)

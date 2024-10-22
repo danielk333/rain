@@ -34,7 +34,7 @@ from .validate import validate_reqrep, validate_pub
 logger = logging.getLogger(__name__)
 
 
-def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_handler_check=10):
+def run_response(address, allowed, path_pub, path_prv, max_size, exit_handler=None, exit_handler_check=10):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -58,7 +58,7 @@ def run_response(address, allowed, path_pub, path_prv, exit_handler=None, exit_h
         and the return value of the `exit_handler` function if `exit_handler`
         is set
     '''
-    auth, socket = setup_server("rep", address, allowed, path_pub, path_prv)
+    auth, socket = setup_server("rep", address, allowed, path_pub, path_prv, max_size)
 
     server_open = True
     blocking = True if exit_handler is None else False
@@ -229,14 +229,15 @@ def run_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    dir_pub, dir_prv, addr_server, addr_trig, allowed = handle_server_args(args)
+    dir_pub, dir_prv, addr_server, addr_trig, allowed, max_size = handle_server_args(args)
 
     if args.host == "rep":
         run_response(
             addr_server,
             allowed,
             dir_pub,
-            dir_prv
+            dir_prv,
+            max_size
         )
     elif args.host == "pub":
         run_publish(

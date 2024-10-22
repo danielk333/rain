@@ -10,7 +10,8 @@ from .defaults import (
     PLUGINS_FOLDER,
     DEFAULT_SERVER_CFG,
     DEFAULT_LOGGING,
-    DEFAULT_TIMEOUTS
+    DEFAULT_TIMEOUTS,
+    MAX_MESSAGE_SIZE
 )
 
 
@@ -131,6 +132,10 @@ def gen_server_cfg(path_conf, path_pub, path_prv, path_plug):
         config.add_section(section)
         for key in DEFAULT_SERVER_CFG[section]:
             config[section][key] = DEFAULT_SERVER_CFG[section][key]
+
+    config["Messages"] = {
+        'max-size': MAX_MESSAGE_SIZE
+    }
 
     filename = path_conf / "server.cfg"
     with open(filename, 'w') as configfile:
