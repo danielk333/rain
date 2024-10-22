@@ -20,6 +20,7 @@ class TestRepServer(unittest.TestCase):
 
     def test_run_response(self):
         self.server_running = True
+        max_size = int(1e6)
         server = th.Thread(
             target=rain.server.run_response,
             args=(
@@ -27,6 +28,7 @@ class TestRepServer(unittest.TestCase):
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
+                max_size
             ),
             kwargs={
                 "exit_handler": lambda: self.server_running,
@@ -42,6 +44,7 @@ class TestRepClientTowardsServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         rain.load_plugins(SERVER_CONFIG_LOC / "plugins")
+        max_size = int(1e6)
 
         cls.server_running = True
         cls.server_address = ("localhost", 8000)
@@ -52,6 +55,7 @@ class TestRepClientTowardsServer(unittest.TestCase):
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
+                max_size
             ),
             kwargs={
                 "exit_handler": lambda: cls.server_running,

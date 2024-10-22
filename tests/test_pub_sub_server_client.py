@@ -24,6 +24,7 @@ class TestPubServer(unittest.TestCase):
     def test_run_publish(self):
         self.queue = queue.Queue()
         self.exit_magic = (rain.server.SERVER_EXIT_KEY, rain.server.SERVER_EXIT_CODE)
+        max_size = int(1e6)
         server = th.Thread(
             target=rain.server.run_publish,
             args=(
@@ -32,6 +33,7 @@ class TestPubServer(unittest.TestCase):
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
+                max_size
             ),
             kwargs={
                 "custom_message_queue": self.queue,
@@ -52,6 +54,7 @@ class TestSubClientTowardsServer(unittest.TestCase):
         cls.exit_magic = (rain.server.SERVER_EXIT_KEY, rain.server.SERVER_EXIT_CODE)
         cls.server_address = ("localhost", 8000)
         cls.trigger_address = ("localhost", 8001)
+        max_size = int(1e6)
         cls.server = th.Thread(
             target=rain.server.run_publish,
             args=(
@@ -60,6 +63,7 @@ class TestSubClientTowardsServer(unittest.TestCase):
                 [],
                 SERVER_CONFIG_LOC / "authorised_keys",
                 SERVER_CONFIG_LOC / "keypairs",
+                max_size
             ),
             kwargs={
                 "custom_message_queue": cls.queue,
