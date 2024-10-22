@@ -185,6 +185,9 @@ def find_details_server(args, config):
         The hostname and port of the server's trigger network
     allowed : list of strings
         The hostnames of the clients that are authorised to connect
+    max_size : int
+        The maximum message size a server will accept. If a client attempts to
+        send a longer message, it will be immediately disconnected
     '''
     if args.host == "rep":
         addr_publ = [
@@ -319,6 +322,9 @@ def handle_server_args(args):
         The hostname and port of the server's trigger network
     allowed : list of strings
         The hostnames of the clients that are authorised to connect
+    max_size : int
+        The maximum message size a server will accept. If a client attempts to
+        send a longer message, it will be immediately disconnected
     '''
     conf_folder = find_config(args)
     config = load_config(conf_folder, "server")

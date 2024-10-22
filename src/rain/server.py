@@ -49,6 +49,9 @@ def run_response(address, allowed, path_pub, path_prv, max_size, exit_handler=No
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
+    max_size : int
+        The maximum message size a server will accept. If a client attempts to
+        send a longer message, it will be immediately disconnected
     exit_handler : function, default=None
         A function that returns a boolean to check weather the server should
         exit or not, if this is set, the socket receive will no longer be

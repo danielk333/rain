@@ -176,6 +176,9 @@ def setup_server(host_type, address, allowed, path_pub, path_prv, max_size):
         The path to the folder containing the public keys of the known clients
     path_prv : Posix path
         The path to the folder containing the server's private key
+    max_size : int
+        The maximum message size a server will accept. If a client attempts to
+        send a longer message, it will be immediately disconnected
 
     Returns
     -------
