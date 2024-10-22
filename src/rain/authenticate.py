@@ -3,7 +3,6 @@ import logging
 import zmq.auth
 from zmq.auth.thread import ThreadAuthenticator
 
-from .defaults import MAX_MESSAGE_SIZE
 from .fetch import get_keys
 
 logger = logging.getLogger(__name__)
@@ -223,8 +222,9 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv):
         Dict with auth information about the client and server connection
     '''
     context = zmq.Context()
-    context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
-    context.setsockopt(zmq.SocketOption.RCVTIMEO, timeouts[1])
+    if host_type == "req" or host_type == "rep":
+        context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
+        context.setsockopt(zmq.SocketOption.RCVTIMEO, timeouts[1])
     context.setsockopt(zmq.LINGER, 0)
     socket = setup_socket(context, host_type)
 
