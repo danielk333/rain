@@ -99,6 +99,12 @@ def server_cli():
     )
 
     parser.add_argument(
+        "-a", "--auth",
+        action="store_false",
+        help="disables authentication for publish servers"
+    )
+
+    parser.add_argument(
         "-c", "--cfgpath",
         type=pathlib.PosixPath,
         help="the path to your RAIN config folder"
@@ -240,6 +246,11 @@ def client_cli():
     parser_sub = subparsers.add_parser(
         "sub",
         help="subscribe to the values of parameters"
+    )
+    parser_sub.add_argument(
+        "-a", "--auth",
+        action="store_false",
+        help="disables authentication for publish servers"
     )
     parser_sub.add_argument(
         "-c", "--changes",

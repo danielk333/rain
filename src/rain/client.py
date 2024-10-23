@@ -49,7 +49,7 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
         logger.debug(f"Request: {json.dumps(request)}")
 
     if request:
-        socket, auth = setup_client("req", server, timeouts, path_pub, path_prv)
+        socket, auth = setup_client("req", server, timeouts, path_pub, path_prv, True)
         send_request(socket, server_address, request)
         logger.debug("Request sent to the server")
         try:
@@ -72,7 +72,7 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
             yield response
 
 
-def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
+def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv, auth_bool):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
@@ -90,8 +90,10 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
+    auth_bool : boolean
+        If True, used to disable authentication for Subscribe clients
     '''
-    socket, auth = setup_client("sub", server, timeouts, path_pub, path_prv)
+    socket, auth = setup_client("sub", server, timeouts, path_pub, path_prv, auth_bool)
 
     for item in params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
@@ -115,9 +117,11 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv):
             continue
 
         update = pub_split(formatted_update)
-        for key in auth:
-            update["sender-key"] = key
-            update["sender-name"] = auth[key]
+
+        if auth:
+            for key in auth:
+                update["sender-key"] = key
+                update["sender-name"] = auth[key]
 
         logger.debug(f"Update received from the server: {json.dumps(update)}")
         try:
@@ -148,7 +152,7 @@ def run_client(args):
             params,
             args.data,
             dir_pub,
-            dir_prv,
+            dir_prv
         )
     elif args.action == "sub":
         response = run_subscribe(
@@ -158,6 +162,7 @@ def run_client(args):
             params,
             dir_pub,
             dir_prv,
+            args.auth
         )
 
     return response

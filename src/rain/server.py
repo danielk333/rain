@@ -61,7 +61,7 @@ def run_response(address, allowed, path_pub, path_prv, max_size, exit_handler=No
         and the return value of the `exit_handler` function if `exit_handler`
         is set
     '''
-    auth, socket = setup_server("rep", address, allowed, path_pub, path_prv, max_size)
+    auth, socket = setup_server("rep", address, allowed, path_pub, path_prv, max_size, True)
 
     server_open = True
     blocking = True if exit_handler is None else False
@@ -109,7 +109,7 @@ def run_response(address, allowed, path_pub, path_prv, max_size, exit_handler=No
     auth.stop()
 
 
-def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, max_size, custom_message_queue=None):
+def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, max_size, auth_bool, custom_message_queue=None):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -129,13 +129,15 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, max_size, cus
     max_size : int
         The maximum message size a server will accept. If a client attempts to
         send a longer message, it will be immediately disconnected
+    auth_bool : boolean
+        If True, used to disable authentication for Publish servers
     custom_message_queue : queue.Queue
         Queue instance that will be used to get messages to be published by the
         server, control over this queue allows for custom injection of new
         published values and possibility to terminate the server via the magic
         `(SERVER_EXIT_KEY, SERVER_EXIT_CODE)` put into the queue
     '''
-    auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv, max_size)
+    auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv, max_size, auth_bool)
     possible_sub = sub_params()
     possible_sub_trig = sub_trig_params()
     if custom_message_queue is None:
@@ -224,7 +226,9 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, max_size, cus
     trig.join()
     for t in sub_threads:
         t.join()
-    auth.stop()
+
+    if auth_bool:
+        auth.stop()
 
 
 def run_server(args):
@@ -252,5 +256,6 @@ def run_server(args):
             allowed,
             dir_pub,
             dir_prv,
-            max_size
+            max_size,
+            args.auth
         )

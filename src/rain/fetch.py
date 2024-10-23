@@ -333,7 +333,7 @@ def handle_server_args(args):
     load_plugins(path_plug)
     addr_publ, addr_trig, allowed, max_size = find_details_server(args, config)
 
-    return path_pub, path_prv, addr_publ, addr_trig, allowed, max_size
+    return path_pub, path_prv, addr_publ, addr_trig, allowed, max_size,
 
 
 def handle_client_args(args):

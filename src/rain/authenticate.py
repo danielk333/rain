@@ -159,7 +159,7 @@ def open_connection(socket, address):
     logger.debug("Server connection opened")
 
 
-def setup_server(host_type, address, allowed, path_pub, path_prv, max_size):
+def setup_server(host_type, address, allowed, path_pub, path_prv, max_size, auth_bool):
     ''' The top-level function that organises the initialisation of the server
         connection
 
@@ -178,6 +178,8 @@ def setup_server(host_type, address, allowed, path_pub, path_prv, max_size):
     max_size : int
         The maximum message size a server will accept. If a client attempts to
         send a longer message, it will be immediately disconnected
+    auth_bool : boolean
+        If True, used to disable authentication for Publish servers
 
     Returns
     -------
@@ -190,14 +192,17 @@ def setup_server(host_type, address, allowed, path_pub, path_prv, max_size):
     context.setsockopt(zmq.SocketOption.MAXMSGSIZE, max_size)
     socket = setup_socket(context, host_type)
 
-    auth = setup_auth(context, allowed, path_pub)
-    auth_server(socket, path_prv, auth)
+    if auth_bool:
+        auth = setup_auth(context, allowed, path_pub)
+        auth_server(socket, path_prv, auth)
+    else:
+        auth = None
     open_connection(socket, address)
 
     return auth, socket
 
 
-def setup_client(host_type, server, timeouts, path_pub, path_prv):
+def setup_client(host_type, server, timeouts, path_pub, path_prv, auth_bool):
     ''' The top-level function that organises the initialisation of the client
         connection
 
@@ -213,6 +218,8 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv):
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
+    auth_bool : boolean
+        If True, used to disable authentication for Subscribe clients
 
     Returns
     -------
@@ -228,6 +235,9 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv):
     context.setsockopt(zmq.LINGER, 0)
     socket = setup_socket(context, host_type)
 
-    auth = auth_client(socket, server, path_pub, path_prv)
+    if auth_bool:
+        auth = auth_client(socket, server, path_pub, path_prv)
+    else:
+        auth = None
 
     return socket, auth
