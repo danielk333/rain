@@ -202,7 +202,7 @@ def setup_server(host_type, address, allowed, path_pub, path_prv, max_size, auth
     return auth, socket
 
 
-def setup_client(host_type, server, timeouts, path_pub, path_prv, auth_bool):
+def setup_client(host_type, server, timeout, path_pub, path_prv, auth_bool):
     ''' The top-level function that organises the initialisation of the client
         connection
 
@@ -212,8 +212,8 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv, auth_bool):
         The type of connection to create: publish, request, response, subscribe
     server : string
         The name of the server
-    timeouts : list of strings
-        The connection timeouts when interacting with a server
+    timeout : int
+        The connection timeout when receiving server messages
     path_pub : Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
@@ -229,9 +229,7 @@ def setup_client(host_type, server, timeouts, path_pub, path_prv, auth_bool):
         Dict with auth information about the client and server connection
     '''
     context = zmq.Context()
-    if host_type == "req" or host_type == "rep":
-        context.setsockopt(zmq.SocketOption.SNDTIMEO, timeouts[0])
-        context.setsockopt(zmq.SocketOption.RCVTIMEO, timeouts[1])
+    context.setsockopt(zmq.SocketOption.RCVTIMEO, timeout)
     context.setsockopt(zmq.LINGER, 0)
     socket = setup_socket(context, host_type)
 

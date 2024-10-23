@@ -7,7 +7,7 @@ import warnings
 
 import zmq
 
-from .defaults import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT, MAX_MESSAGE_SIZE
+from .defaults import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT, MAX_MESSAGE_SIZE, DEFAULT_TIMEOUTS
 from .plugins import PLUGINS, load_plugins
 
 logger = logging.getLogger(__name__)
@@ -233,26 +233,24 @@ def find_details_client(args, config):
     -------
     addr_server : list of strings
         The hostname and port of the server
-    timeouts : list of strings
-        The connection timeouts when interacting with a server
+    timeout : int
+        The connection timeout when receiving server messages
     '''
     if args.action == "set" or args.action == "get":
         inter_type = "response"
-        timeout_fallback = 10000
+        timeout_fallback = DEFAULT_TIMEOUTS["Timeouts"]["receive"]
+        timeout = config.getint("Timeouts", "receive", fallback=timeout_fallback)
     elif args.action == "sub":
         inter_type = "publish"
-        timeout_fallback = -1
+        timeout_fallback = DEFAULT_TIMEOUTS["Timeouts"]["subscribe"]
+        timeout = config.getint("Timeouts", "subscribe", fallback=timeout_fallback)
 
     addr_server = [
         config.get(f"{args.server}-{inter_type}", "hostname"),
         config.get(f"{args.server}-{inter_type}", "port")
     ]
 
-    timeouts = []
-    timeouts.append(config.getint("Timeouts", "send", fallback=timeout_fallback))
-    timeouts.append(config.getint("Timeouts", "receive", fallback=timeout_fallback))
-
-    return addr_server, timeouts
+    return addr_server, timeout
 
 
 def find_params(args):
@@ -353,8 +351,8 @@ def handle_client_args(args):
         The path to the folder containing the client's private key
     address : list of strings
         The hostname and port of the server
-    timeouts : list of strings
-        The connection timeouts when interacting with a server
+    timeout : int
+        The connection timeout when receiving server messages
     params : list of strings
         The parameters requested by the client
     '''
@@ -362,10 +360,10 @@ def handle_client_args(args):
     config = load_config(conf_folder, "client")
     setup_logging(args, config)
     path_pub, path_prv, _ = find_paths(config, "client")
-    address, timeouts = find_details_client(args, config)
+    address, timeout = find_details_client(args, config)
     params = find_params(args)
 
-    return path_pub, path_prv, address, timeouts, params
+    return path_pub, path_prv, address, timeout, params
 
 
 def get_datetime():

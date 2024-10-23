@@ -13,7 +13,7 @@ from .validate import validate_reqrep, validate_pub
 logger = logging.getLogger(__name__)
 
 
-def run_request(server, server_address, timeouts, action, params, data, path_pub, path_prv):
+def run_request(server, server_address, timeout, action, params, data, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -23,8 +23,8 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
         The name of the server
     server_address : list of strings
         The server's hostname and port
-    timeouts : list of strings
-        The connection timeouts when interacting with a server
+    timeout : int
+        The connection timeout when receiving server messages
     action : string
         The type of action: get or set
     params : list of strings
@@ -49,7 +49,7 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
         logger.debug(f"Request: {json.dumps(request)}")
 
     if request:
-        socket, auth = setup_client("req", server, timeouts, path_pub, path_prv, True)
+        socket, auth = setup_client("req", server, timeout, path_pub, path_prv, True)
         send_request(socket, server_address, request)
         logger.debug("Request sent to the server")
         try:
@@ -72,7 +72,7 @@ def run_request(server, server_address, timeouts, action, params, data, path_pub
             yield response
 
 
-def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv, auth_bool):
+def run_subscribe(server, server_address, timeout, params, path_pub, path_prv, auth_bool):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
@@ -82,8 +82,8 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv, 
         The name of the server
     server_address : list of strings
         The server's hostname and port
-    timeouts : list of strings
-        The connection timeouts when interacting with a server
+    timeout : int
+        The connection timeout when receiving server messages
     params : list of strings
         The parameters to interact with
     path_pub: Posix path
@@ -93,7 +93,7 @@ def run_subscribe(server, server_address, timeouts, params, path_pub, path_prv, 
     auth_bool : boolean
         If True, used to disable authentication for Subscribe clients
     '''
-    socket, auth = setup_client("sub", server, timeouts, path_pub, path_prv, auth_bool)
+    socket, auth = setup_client("sub", server, timeout, path_pub, path_prv, auth_bool)
 
     for item in params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
@@ -141,13 +141,13 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    dir_pub, dir_prv, address_server, timeouts, params = handle_client_args(args)
+    dir_pub, dir_prv, address_server, timeout, params = handle_client_args(args)
 
     if args.action == "get" or args.action == "set":
         response = run_request(
             args.server,
             address_server,
-            timeouts,
+            timeout,
             args.action,
             params,
             args.data,
@@ -158,7 +158,7 @@ def run_client(args):
         response = run_subscribe(
             args.server,
             address_server,
-            timeouts,
+            timeout,
             params,
             dir_pub,
             dir_prv,
