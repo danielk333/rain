@@ -5,19 +5,21 @@ import zmq
 logger = logging.getLogger(__name__)
 
 
-def send_request(socket, address, request):
+def send_request(socket, hostname, port, request):
     ''' Sends a request from a client to a server
 
     Parameters
     ----------
     socket : zmq.Socket
         The connection socket
-    address : list of strings
-        The hostname and port of the server
+    hostname : string
+        The server's hostname (IP address)
+    port : string
+        The server's port
     request : JSON
         The request to send to the server
     '''
-    socket.connect(f"tcp://{address[0]}:{address[1]}")
+    socket.connect(f"tcp://{hostname}:{port}")
     socket.send_json(request, 0)
 
     return
@@ -59,15 +61,17 @@ def send_response(socket, response):
     socket.send_json(response, 0)
 
 
-def receive_response(socket, address, auth):
+def receive_response(socket, hostname, port, auth):
     ''' Receives a response from a server, in response to a request
 
     Parameters
     ----------
     socket : zmq.Socket
         The connection socket
-    address : list of strings
-        The hostname and port of the server
+    hostname : string
+        The server's hostname (IP address)
+    port : string
+        The server's port
     auth : dict
         Dict with auth information about client and server connection
 
@@ -80,7 +84,7 @@ def receive_response(socket, address, auth):
     for key in auth:
         response["sender-key"] = key
     # response["sender-key"] = auth["server_public_key"]
-    socket.disconnect(f"tcp://{address[0]}:{address[1]}")
+    socket.disconnect(f"tcp://{hostname}:{port}")
 
     return response
 

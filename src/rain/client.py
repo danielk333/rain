@@ -13,20 +13,14 @@ from .validate import validate_reqrep, validate_pub
 logger = logging.getLogger(__name__)
 
 
-def run_request(server, server_address, timeout, action, params, data, path_pub, path_prv):
+def run_request(client, params, data, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
     Parameters
     ----------
-    server : string
-        The name of the server
-    server_address : list of strings
-        The server's hostname and port
-    timeout : int
-        The connection timeout when receiving server messages
-    action : string
-        The type of action: get or set
+    client : Client object
+        Contains information regarding the connection to the server
     params : list of strings
         The parameters to interact with
     data : list of strings
@@ -36,7 +30,7 @@ def run_request(server, server_address, timeout, action, params, data, path_pub,
     path_prv : Posix path
         The path to the folder containing the client's private key
     '''
-    request = form_request(action, params, data)
+    request = form_request(client.action, params, data)
     logger.debug("Request formed")
     try:
         validate_reqrep(request)
@@ -49,16 +43,16 @@ def run_request(server, server_address, timeout, action, params, data, path_pub,
         logger.debug(f"Request: {json.dumps(request)}")
 
     if request:
-        socket, auth = setup_client("req", server, timeout, path_pub, path_prv, True)
-        send_request(socket, server_address, request)
+        socket, client.pub_key = setup_client(client, path_pub, path_prv)
+        send_request(socket, client.hostname, client.port, request)
         logger.debug("Request sent to the server")
         try:
-            response = receive_response(socket, server_address, auth)
+            response = receive_response(socket, client.hostname, client.port, client.pub_key)
         except zmq.error.Again:
             logger.error("Server not reachable, response timed out")
             return
 
-        response = fill_sender_details(auth, response)
+        response = fill_sender_details(client.pub_key, response)
 
         logger.info("Response received from the server")
         try:
@@ -72,33 +66,27 @@ def run_request(server, server_address, timeout, action, params, data, path_pub,
             yield response
 
 
-def run_subscribe(server, server_address, timeout, params, path_pub, path_prv, auth_bool):
+def run_subscribe(client, params, path_pub, path_prv):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
     Parameters
     ----------
-    server : string
-        The name of the server
-    server_address : list of strings
-        The server's hostname and port
-    timeout : int
-        The connection timeout when receiving server messages
+    client : Client object
+        Contains information regarding the connection to the server
     params : list of strings
         The parameters to interact with
     path_pub: Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
-    auth_bool : boolean
-        If True, used to disable authentication for Subscribe clients
     '''
-    socket, auth = setup_client("sub", server, timeout, path_pub, path_prv, auth_bool)
+    socket, client.pub_key = setup_client(client, path_pub, path_prv)
 
     for item in params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
 
-    socket.connect(f"tcp://{server_address[0]}:{server_address[1]}")
+    socket.connect(f"tcp://{client.hostname}:{client.port}")
     logger.info("Connection opened to the publish server")
 
     client_connected = True
@@ -118,10 +106,10 @@ def run_subscribe(server, server_address, timeout, params, path_pub, path_prv, a
 
         update = pub_split(formatted_update)
 
-        if auth:
-            for key in auth:
+        if client.pub_key:
+            for key in client.pub_key:
                 update["sender-key"] = key
-                update["sender-name"] = auth[key]
+                update["sender-name"] = client.pub_key[key]
 
         logger.debug(f"Update received from the server: {json.dumps(update)}")
         try:
@@ -141,14 +129,11 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    dir_pub, dir_prv, address_server, timeout, params = handle_client_args(args)
+    client, params, dir_pub, dir_prv = handle_client_args(args)
 
     if args.action == "get" or args.action == "set":
         response = run_request(
-            args.server,
-            address_server,
-            timeout,
-            args.action,
+            client,
             params,
             args.data,
             dir_pub,
@@ -156,13 +141,10 @@ def run_client(args):
         )
     elif args.action == "sub":
         response = run_subscribe(
-            args.server,
-            address_server,
-            timeout,
+            client,
             params,
             dir_pub,
-            dir_prv,
-            args.auth
+            dir_prv
         )
 
     return response

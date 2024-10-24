@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from pathlib import Path
 
 HOME = Path(Path.home())
@@ -64,3 +65,26 @@ REP_VALIDATION_ERROR = "Response verification failed"
 NO_SUCH_PARAM_ERROR = "Parameter '{0}' invalid"
 
 MAX_MESSAGE_SIZE = int(1e6)
+
+
+@dataclass
+class Server():
+    host: str
+    allowed: list
+    publ_host: str = ""
+    publ_port: str = ""
+    trig_host: str = ""
+    trig_port: str = ""
+    max_msg_size: int = MAX_MESSAGE_SIZE
+    enable_auth = True
+
+
+@dataclass
+class Client():
+    server: str
+    action: str
+    timeout: int
+    host_server: str = ""
+    port_server: str = ""
+    enable_auth = True
+    pub_key: dict = None

@@ -7,7 +7,14 @@ import warnings
 
 import zmq
 
-from .defaults import DEFAULT_FOLDER, _CFG_PATHS_SERVER, _CFG_PATHS_CLIENT, MAX_MESSAGE_SIZE, DEFAULT_TIMEOUTS
+from .defaults import (
+    Client,
+    Server,
+    _CFG_PATHS_SERVER,
+    _CFG_PATHS_CLIENT,
+    DEFAULT_FOLDER,
+    DEFAULT_TIMEOUTS
+)
 from .plugins import PLUGINS, load_plugins
 
 logger = logging.getLogger(__name__)
@@ -166,91 +173,79 @@ def find_paths(config, container):
     return path_pub, path_prv, path_plug
 
 
-def find_details_server(args, config):
-    ''' Uses the input arguments and server configs to extract the connection
-        details of the server
+def setup_server_object(args, config):
+    ''' Reads the input arguments and the loaded configs to fill in a Server
+        object containing relevant connection information
 
     Parameters
     ----------
     args : Namespace
         The arguments entered into the system
     config : ConfigParser
-        The set of configs found in the client's configuration file
+        The set of configs found in the configuration file
 
     Returns
     -------
-    addr_publ : list of strings
-        The hostname and port of the server
-    addr_trig : list of strings
-        The hostname and port of the server's trigger network
-    allowed : list of strings
-        The hostnames of the clients that are authorised to connect
-    max_size : int
-        The maximum message size a server will accept. If a client attempts to
-        send a longer message, it will be immediately disconnected
+    server : Server object
+        Contains information regarding the connection established by the server
     '''
-    if args.host == "rep":
-        addr_publ = [
-            config.get("Response", "hostname"),
-            config.get("Response", "port")
-        ]
-        addr_trig = None
-    elif args.host == "pub":
-        addr_publ = [
-            config.get("Publish", "hostname"),
-            config.get("Publish", "port")
-        ]
-        addr_trig = [
-            config.get("Trigger", "hostname"),
-            config.get("Trigger", "port")
-        ]
-
     if "Allowed" in config:
         allowed = [config.get("Allowed", option) for option in config["Allowed"]]
-    else:
-        allowed = []
+
+    server = Server(args.host, allowed)
+
+    if args.host == "rep":
+        server.publ_host = config.get("Response", "hostname")
+        server.publ_port = config.get("Response", "port")
+
+    elif args.host == "pub":
+        server.publ_host = config.get("Publish", "hostname")
+        server.publ_port = config.get("Publish", "port")
+        server.trig_host = config.get("Trigger", "hostname")
+        server.trig_port = config.get("Trigger", "port")
+        server.enable_auth = args.auth
 
     if "Messages" in config:
-        max_size = config.getint("Messages", "max-size")
-    else:
-        max_size = MAX_MESSAGE_SIZE
+        server.max_msg_size = config.getint("Messages", "max-size")
 
-    return addr_publ, addr_trig, allowed, max_size
+    return server
 
 
-def find_details_client(args, config):
-    ''' Uses the input arguments and client configs to extract the connection
-        details of the server
+def setup_client_object(args, config):
+    ''' Reads the input arguments and the loaded configs to fill in a Client
+        object containing relevant connection information
 
     Parameters
     ----------
     args : Namespace
         The arguments entered into the system
     config : ConfigParser
-        The set of configs found in the client's configuration file
+        The set of configs found in the configuration file
 
     Returns
     -------
-    addr_server : list of strings
-        The hostname and port of the server
-    timeout : int
-        The connection timeout when receiving server messages
+    client : Client object
+        Contains information regarding the connection to the server
     '''
     if args.action == "set" or args.action == "get":
-        inter_type = "response"
-        timeout_fallback = DEFAULT_TIMEOUTS["Timeouts"]["receive"]
-        timeout = config.getint("Timeouts", "receive", fallback=timeout_fallback)
+        interaction = "response"
+        timeout_fb = DEFAULT_TIMEOUTS["Timeouts"]["receive"]
+        timeout = config.getint("Timeouts", "receive", fallback=timeout_fb)
+
     elif args.action == "sub":
-        inter_type = "publish"
-        timeout_fallback = DEFAULT_TIMEOUTS["Timeouts"]["subscribe"]
-        timeout = config.getint("Timeouts", "subscribe", fallback=timeout_fallback)
+        interaction = "publish"
+        timeout_fb = DEFAULT_TIMEOUTS["Timeouts"]["subscribe"]
+        timeout = config.getint("Timeouts", "subscribe", fallback=timeout_fb)
 
-    addr_server = [
-        config.get(f"{args.server}-{inter_type}", "hostname"),
-        config.get(f"{args.server}-{inter_type}", "port")
-    ]
+    client = Client(args.server, args.action, timeout)
 
-    return addr_server, timeout
+    client.hostname = config.get(f"{args.server}-{interaction}", "hostname")
+    client.port = config.get(f"{args.server}-{interaction}", "port")
+
+    if args.action == "sub":
+        client.enable_auth = args.auth
+
+    return client
 
 
 def find_params(args):
@@ -310,28 +305,21 @@ def handle_server_args(args):
 
     Returns
     -------
+    server : Server object
+        Contains information regarding the connection established by the server
     path_pub : Posix path
         The path to the folder containing the public keys of the known clients
     path_prv : Posix path
         The path to the folder containing the server's private key
-    addr_publ : list of strings
-        The hostname and port of the server
-    addr_trig : list of strings
-        The hostname and port of the server's trigger network
-    allowed : list of strings
-        The hostnames of the clients that are authorised to connect
-    max_size : int
-        The maximum message size a server will accept. If a client attempts to
-        send a longer message, it will be immediately disconnected
     '''
     conf_folder = find_config(args)
     config = load_config(conf_folder, "server")
     setup_logging(args, config)
     path_pub, path_prv, path_plug = find_paths(config, "server")
     load_plugins(path_plug)
-    addr_publ, addr_trig, allowed, max_size = find_details_server(args, config)
+    server = setup_server_object(args, config)
 
-    return path_pub, path_prv, addr_publ, addr_trig, allowed, max_size,
+    return server, path_pub, path_prv
 
 
 def handle_client_args(args):
@@ -345,25 +333,23 @@ def handle_client_args(args):
 
     Returns
     -------
+    client : Client object
+        Contains information regarding the connection to the server
+    params : list of strings
+        The parameters requested by the client
     path_pub : Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
-    address : list of strings
-        The hostname and port of the server
-    timeout : int
-        The connection timeout when receiving server messages
-    params : list of strings
-        The parameters requested by the client
     '''
     conf_folder = find_config(args)
     config = load_config(conf_folder, "client")
     setup_logging(args, config)
     path_pub, path_prv, _ = find_paths(config, "client")
-    address, timeout = find_details_client(args, config)
+    client = setup_client_object(args, config)
     params = find_params(args)
 
-    return path_pub, path_prv, address, timeout, params
+    return client, params, path_pub, path_prv
 
 
 def get_datetime():

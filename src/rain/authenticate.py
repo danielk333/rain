@@ -101,20 +101,19 @@ def auth_server(socket, path_prv, auth):
     logger.debug("Server keypair loaded")
 
 
-def auth_client(socket, server, path_pub, path_prv):
+def auth_client(socket, server_name, path_pub, path_prv):
     ''' Sets up the authentication side to the client connection
 
     Parameters
     ----------
     socket : zmq.Socket
         The connection socket
-    server : string
+    server_name : string
         The name of the server
     path_pub : Posix path
         The path to the folder containg the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containg the client's private key
-
 
     Returns
     -------
@@ -133,93 +132,81 @@ def auth_client(socket, server, path_pub, path_prv):
     socket.curve_publickey = client_pub
     logger.debug("Client keypair loaded")
 
-    server_file_pub = path_pub.joinpath(f"{server}.key")
+    server_file_pub = path_pub.joinpath(f"{server_name}.key")
     server_pub, _ = zmq.auth.load_certificate(server_file_pub)
     socket.curve_serverkey = server_pub
     logger.debug("Server public key loaded")
 
-    auth = {server_pub.decode("utf8"): server}
+    auth = {server_pub.decode("utf8"): server_name}
 
     return auth
 
 
-def open_connection(socket, address):
+def open_connection(socket, hostname, port):
     ''' Opens the socket connection on the server side
 
     Parameters
     ----------
     socket : zmq.Socket
         The connection socket
-    address : list of strings
-        The hostname and port number of the server
+    hostname : string
+        The server's hostname (IP address)
+    port : string
+        The server's port
     '''
-    socket.bind(f"tcp://{address[0]}:{address[1]}")
-    logger.info(f"I am a WIP server open on {address[0]} with port " +
-                f"{address[1]} ready to talk to friends")
+    socket.bind(f"tcp://{hostname}:{port}")
+    logger.info(f"I am a WIP server open on {hostname} with port " +
+                f"{port} ready to talk to friends")
     logger.debug("Server connection opened")
 
 
-def setup_server(host_type, address, allowed, path_pub, path_prv, max_size, auth_bool):
+def setup_server(server, path_pub, path_prv):
     ''' The top-level function that organises the initialisation of the server
         connection
 
     Parameters
     ----------
-    host_type : string
-        The type of connection to create: publish, request, response, subscribe
-    address : list of strings
-        The hostname and port of the server
-    allowed : list of strings
-        The hostnames of the clients that are allowed to connect to this server
+    server : Server object
+        Contains information regarding the connection established by the server
     path_pub : Posix path
         The path to the folder containing the public keys of the known clients
     path_prv : Posix path
         The path to the folder containing the server's private key
-    max_size : int
-        The maximum message size a server will accept. If a client attempts to
-        send a longer message, it will be immediately disconnected
-    auth_bool : boolean
-        If True, used to disable authentication for Publish servers
 
     Returns
     -------
-    auth : thread
-        The thread that the authenticator uses to authenticate connections
     socket : zmq.Socket
         The connection socket
+    auth : thread
+        The thread that the authenticator uses to authenticate connections
     '''
     context = zmq.Context()
-    context.setsockopt(zmq.SocketOption.MAXMSGSIZE, max_size)
-    socket = setup_socket(context, host_type)
+    context.setsockopt(zmq.SocketOption.MAXMSGSIZE, server.max_msg_size)
+    socket = setup_socket(context, server.host)
 
-    if auth_bool:
-        auth = setup_auth(context, allowed, path_pub)
+    if server.enable_auth:
+        auth = setup_auth(context, server.allowed, path_pub)
         auth_server(socket, path_prv, auth)
     else:
         auth = None
-    open_connection(socket, address)
 
-    return auth, socket
+    open_connection(socket, server.publ_host, server.publ_port)
+
+    return socket, auth
 
 
-def setup_client(host_type, server, timeout, path_pub, path_prv, auth_bool):
+def setup_client(client, path_pub, path_prv):
     ''' The top-level function that organises the initialisation of the client
         connection
 
     Parameters
     ----------
-    host_type : string
-        The type of connection to create: publish, request, response, subscribe
-    server : string
-        The name of the server
-    timeout : int
-        The connection timeout when receiving server messages
+    client : Client object
+        Contains information regarding the connection to the server
     path_pub : Posix path
         The path to the folder containing the public keys of the known hosts
     path_prv : Posix path
         The path to the folder containing the client's private key
-    auth_bool : boolean
-        If True, used to disable authentication for Subscribe clients
 
     Returns
     -------
@@ -229,12 +216,16 @@ def setup_client(host_type, server, timeout, path_pub, path_prv, auth_bool):
         Dict with auth information about the client and server connection
     '''
     context = zmq.Context()
-    context.setsockopt(zmq.SocketOption.RCVTIMEO, timeout)
+    context.setsockopt(zmq.SocketOption.RCVTIMEO, client.timeout)
     context.setsockopt(zmq.LINGER, 0)
-    socket = setup_socket(context, host_type)
 
-    if auth_bool:
-        auth = auth_client(socket, server, path_pub, path_prv)
+    if client.action == "get" or client.action == "set":
+        socket = setup_socket(context, "req")
+    elif client.action == "sub":
+        socket = setup_socket(context, client.action)
+
+    if client.enable_auth:
+        auth = auth_client(socket, client.server, path_pub, path_prv)
     else:
         auth = None
 

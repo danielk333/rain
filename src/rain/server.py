@@ -34,24 +34,19 @@ from .validate import validate_reqrep, validate_pub
 logger = logging.getLogger(__name__)
 
 
-def run_response(address, allowed, path_pub, path_prv, max_size, exit_handler=None, exit_handler_check=10):
+def run_response(server, path_pub, path_prv, exit_handler=None, exit_handler_check=10):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
     Parameters
     ----------
-    address : list of strings
-        The server's hostname and port
-    allowed : list of strings
-        The hostnames of the clients that are allowed to connect to this server
-    path_pub: Posix path
+    server : Server object
+        Contains information regarding the connection established by the server
+    path_pub : Posix path
         The path to the folder containing the public keys of the authorised
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
-    max_size : int
-        The maximum message size a server will accept. If a client attempts to
-        send a longer message, it will be immediately disconnected
     exit_handler : function, default=None
         A function that returns a boolean to check weather the server should
         exit or not, if this is set, the socket receive will no longer be
@@ -61,7 +56,7 @@ def run_response(address, allowed, path_pub, path_prv, max_size, exit_handler=No
         and the return value of the `exit_handler` function if `exit_handler`
         is set
     '''
-    auth, socket = setup_server("rep", address, allowed, path_pub, path_prv, max_size, True)
+    socket, auth = setup_server(server, path_pub, path_prv)
 
     server_open = True
     blocking = True if exit_handler is None else False
@@ -109,35 +104,26 @@ def run_response(address, allowed, path_pub, path_prv, max_size, exit_handler=No
     auth.stop()
 
 
-def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, max_size, auth_bool, custom_message_queue=None):
+def run_publish(server, path_pub, path_prv, custom_message_queue=None):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
     Parameters
     ----------
-    serv_addr : list of strings
-        The publish server's hostname and port
-    trig_addr : list of strings
-        The trigger server's hostname and port
-    allowed : list of strings
-        The hostnames of the clients that are allowed to connect to this server
+    server : Server object
+        Contains information regarding the connection established by the server
     path_pub: Posix path
         The path to the folder containing the public keys of the authorised
         hosts
     path_prv : Posix path
         The path to the folder containing the server's private key
-    max_size : int
-        The maximum message size a server will accept. If a client attempts to
-        send a longer message, it will be immediately disconnected
-    auth_bool : boolean
-        If True, used to disable authentication for Publish servers
     custom_message_queue : queue.Queue
         Queue instance that will be used to get messages to be published by the
         server, control over this queue allows for custom injection of new
         published values and possibility to terminate the server via the magic
         `(SERVER_EXIT_KEY, SERVER_EXIT_CODE)` put into the queue
     '''
-    auth, socket = setup_server("pub", serv_addr, allowed, path_pub, path_prv, max_size, auth_bool)
+    socket, auth = setup_server(server, path_pub, path_prv)
     possible_sub = sub_params()
     possible_sub_trig = sub_trig_params()
     if custom_message_queue is None:
@@ -151,11 +137,10 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, max_size, aut
             to wait for a trigger parameter to be triggered
         '''
         context = zmq.Context()
-        context.setsockopt(zmq.SocketOption.SNDTIMEO, 1000)
         context.setsockopt(zmq.SocketOption.RCVTIMEO, 1000)
         context.setsockopt(zmq.LINGER, 0)
         tsocket = context.socket(zmq.REP)
-        tsocket.bind(f"tcp://{trig_addr[0]}:{trig_addr[1]}")
+        tsocket.bind(f"tcp://{server.trig_host}:{server.trig_port}")
         logger.debug("Trigger server opened")
         while server_open:
             try:
@@ -227,7 +212,7 @@ def run_publish(serv_addr, trig_addr, allowed, path_pub, path_prv, max_size, aut
     for t in sub_threads:
         t.join()
 
-    if auth_bool:
+    if server.enable_auth:
         auth.stop()
 
 
@@ -239,23 +224,17 @@ def run_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    dir_pub, dir_prv, addr_server, addr_trig, allowed, max_size = handle_server_args(args)
+    server, dir_pub, dir_prv = handle_server_args(args)
 
     if args.host == "rep":
         run_response(
-            addr_server,
-            allowed,
+            server,
             dir_pub,
             dir_prv,
-            max_size
         )
     elif args.host == "pub":
         run_publish(
-            addr_server,
-            addr_trig,
-            allowed,
+            server,
             dir_pub,
-            dir_prv,
-            max_size,
-            args.auth
+            dir_prv
         )
