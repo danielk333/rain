@@ -160,7 +160,7 @@ def open_connection(socket, hostname, port):
     logger.debug("Server connection opened")
 
 
-def setup_server(server, path_pub, path_prv):
+def setup_server(server, paths):
     ''' The top-level function that organises the initialisation of the server
         connection
 
@@ -168,10 +168,9 @@ def setup_server(server, path_pub, path_prv):
     ----------
     server : Server object
         Contains information regarding the connection established by the server
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known clients
-    path_prv : Posix path
-        The path to the folder containing the server's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys, the user's private keypair and the plugins folder
 
     Returns
     -------
@@ -185,8 +184,8 @@ def setup_server(server, path_pub, path_prv):
     socket = setup_socket(context, server.host)
 
     if server.enable_auth:
-        auth = setup_auth(context, server.allowed, path_pub)
-        auth_server(socket, path_prv, auth)
+        auth = setup_auth(context, server.allowed, paths.public)
+        auth_server(socket, paths.private, auth)
     else:
         auth = None
 
@@ -195,7 +194,7 @@ def setup_server(server, path_pub, path_prv):
     return socket, auth
 
 
-def setup_client(client, path_pub, path_prv):
+def setup_client(client, paths):
     ''' The top-level function that organises the initialisation of the client
         connection
 
@@ -203,10 +202,9 @@ def setup_client(client, path_pub, path_prv):
     ----------
     client : Client object
         Contains information regarding the connection to the server
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known hosts
-    path_prv : Posix path
-        The path to the folder containing the client's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys and the user's private keypair
 
     Returns
     -------
@@ -225,7 +223,7 @@ def setup_client(client, path_pub, path_prv):
         socket = setup_socket(context, client.action)
 
     if client.enable_auth:
-        auth = auth_client(socket, client.server, path_pub, path_prv)
+        auth = auth_client(socket, client.server, paths.public, paths.private)
     else:
         auth = None
 

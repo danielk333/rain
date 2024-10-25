@@ -88,3 +88,10 @@ class Client():
     port_server: str = ""
     enable_auth = True
     pub_key: dict = None
+
+
+@dataclass
+class Paths():
+    public: str
+    private: str
+    plugins: str

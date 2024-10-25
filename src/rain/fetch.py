@@ -10,6 +10,7 @@ import zmq
 from .defaults import (
     Client,
     Server,
+    Paths,
     _CFG_PATHS_SERVER,
     _CFG_PATHS_CLIENT,
     DEFAULT_FOLDER,
@@ -156,6 +157,10 @@ def find_paths(config, container):
 
     Returns
     -------
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys, the user's private keypair and the server's plugins folder
+        (if the user is a server)
     path_pub : Posix path
         The path to the folder containing the public keys of the known clients
     path_prv : Posix path
@@ -170,7 +175,9 @@ def find_paths(config, container):
     else:
         path_plug = None
 
-    return path_pub, path_prv, path_plug
+    paths = Paths(path_pub, path_prv, path_plug)
+
+    return paths
 
 
 def setup_server_object(args, config):
@@ -307,19 +314,18 @@ def handle_server_args(args):
     -------
     server : Server object
         Contains information regarding the connection established by the server
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known clients
-    path_prv : Posix path
-        The path to the folder containing the server's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys, the user's private keypair and the plugins folder
     '''
     conf_folder = find_config(args)
     config = load_config(conf_folder, "server")
     setup_logging(args, config)
-    path_pub, path_prv, path_plug = find_paths(config, "server")
-    load_plugins(path_plug)
+    paths = find_paths(config, "server")
+    load_plugins(paths.plugins)
     server = setup_server_object(args, config)
 
-    return server, path_pub, path_prv
+    return server, paths
 
 
 def handle_client_args(args):
@@ -337,19 +343,18 @@ def handle_client_args(args):
         Contains information regarding the connection to the server
     params : list of strings
         The parameters requested by the client
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known hosts
-    path_prv : Posix path
-        The path to the folder containing the client's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys and the user's private keypair
     '''
     conf_folder = find_config(args)
     config = load_config(conf_folder, "client")
     setup_logging(args, config)
-    path_pub, path_prv, _ = find_paths(config, "client")
+    paths = find_paths(config, "client")
     client = setup_client_object(args, config)
     params = find_params(args)
 
-    return client, params, path_pub, path_prv
+    return client, params, paths
 
 
 def get_datetime():

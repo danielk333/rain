@@ -34,7 +34,7 @@ from .validate import validate_reqrep, validate_pub
 logger = logging.getLogger(__name__)
 
 
-def run_response(server, path_pub, path_prv, exit_handler=None, exit_handler_check=10):
+def run_response(server, paths, exit_handler=None, exit_handler_check=10):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -42,11 +42,9 @@ def run_response(server, path_pub, path_prv, exit_handler=None, exit_handler_che
     ----------
     server : Server object
         Contains information regarding the connection established by the server
-    path_pub : Posix path
-        The path to the folder containing the public keys of the authorised
-        hosts
-    path_prv : Posix path
-        The path to the folder containing the server's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys, the user's private keypair and the plugins folder
     exit_handler : function, default=None
         A function that returns a boolean to check weather the server should
         exit or not, if this is set, the socket receive will no longer be
@@ -56,7 +54,7 @@ def run_response(server, path_pub, path_prv, exit_handler=None, exit_handler_che
         and the return value of the `exit_handler` function if `exit_handler`
         is set
     '''
-    socket, auth = setup_server(server, path_pub, path_prv)
+    socket, auth = setup_server(server, paths)
 
     server_open = True
     blocking = True if exit_handler is None else False
@@ -104,7 +102,7 @@ def run_response(server, path_pub, path_prv, exit_handler=None, exit_handler_che
     auth.stop()
 
 
-def run_publish(server, path_pub, path_prv, custom_message_queue=None):
+def run_publish(server, paths, custom_message_queue=None):
     ''' The function used to run all functions relevant to the handling of a
         client requesting parameters provided by this server
 
@@ -112,18 +110,16 @@ def run_publish(server, path_pub, path_prv, custom_message_queue=None):
     ----------
     server : Server object
         Contains information regarding the connection established by the server
-    path_pub: Posix path
-        The path to the folder containing the public keys of the authorised
-        hosts
-    path_prv : Posix path
-        The path to the folder containing the server's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys, the user's private keypair and the plugins folder
     custom_message_queue : queue.Queue
         Queue instance that will be used to get messages to be published by the
         server, control over this queue allows for custom injection of new
         published values and possibility to terminate the server via the magic
         `(SERVER_EXIT_KEY, SERVER_EXIT_CODE)` put into the queue
     '''
-    socket, auth = setup_server(server, path_pub, path_prv)
+    socket, auth = setup_server(server, paths)
     possible_sub = sub_params()
     possible_sub_trig = sub_trig_params()
     if custom_message_queue is None:
@@ -224,17 +220,9 @@ def run_server(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    server, dir_pub, dir_prv = handle_server_args(args)
+    server, paths = handle_server_args(args)
 
     if args.host == "rep":
-        run_response(
-            server,
-            dir_pub,
-            dir_prv,
-        )
+        run_response(server, paths)
     elif args.host == "pub":
-        run_publish(
-            server,
-            dir_pub,
-            dir_prv
-        )
+        run_publish(server, paths)

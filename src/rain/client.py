@@ -13,7 +13,7 @@ from .validate import validate_reqrep, validate_pub
 logger = logging.getLogger(__name__)
 
 
-def run_request(client, params, data, path_pub, path_prv):
+def run_request(client, params, data, paths):
     ''' The function used to run all functions relevant to the handling of the
         user requesting parameters provided by the server
 
@@ -25,10 +25,9 @@ def run_request(client, params, data, path_pub, path_prv):
         The parameters to interact with
     data : list of strings
         The data to transmit along with the parameters
-    path_pub: Posix path
-        The path to the folder containing the public keys of the known hosts
-    path_prv : Posix path
-        The path to the folder containing the client's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys and the user's private keypair
     '''
     request = form_request(client.action, params, data)
     logger.debug("Request formed")
@@ -43,7 +42,7 @@ def run_request(client, params, data, path_pub, path_prv):
         logger.debug(f"Request: {json.dumps(request)}")
 
     if request:
-        socket, client.pub_key = setup_client(client, path_pub, path_prv)
+        socket, client.pub_key = setup_client(client, paths)
         send_request(socket, client.hostname, client.port, request)
         logger.debug("Request sent to the server")
         try:
@@ -66,7 +65,7 @@ def run_request(client, params, data, path_pub, path_prv):
             yield response
 
 
-def run_subscribe(client, params, path_pub, path_prv):
+def run_subscribe(client, params, paths):
     ''' The function used to run all functions relevant to the handling of the
         user subscribing to parameters provided by the server
 
@@ -76,12 +75,11 @@ def run_subscribe(client, params, path_pub, path_prv):
         Contains information regarding the connection to the server
     params : list of strings
         The parameters to interact with
-    path_pub: Posix path
-        The path to the folder containing the public keys of the known hosts
-    path_prv : Posix path
-        The path to the folder containing the client's private key
+    paths : Path object
+        An object containing the paths to the folders holding the senders'
+        public keys and the user's private keypair
     '''
-    socket, client.pub_key = setup_client(client, path_pub, path_prv)
+    socket, client.pub_key = setup_client(client, paths)
 
     for item in params:
         socket.setsockopt_string(zmq.SUBSCRIBE, item)
@@ -129,22 +127,11 @@ def run_client(args):
     args : Namespace
         The command line arguments entered by the user
     '''
-    client, params, dir_pub, dir_prv = handle_client_args(args)
+    client, params, paths = handle_client_args(args)
 
     if args.action == "get" or args.action == "set":
-        response = run_request(
-            client,
-            params,
-            args.data,
-            dir_pub,
-            dir_prv
-        )
+        response = run_request(client, params, args.data, paths)
     elif args.action == "sub":
-        response = run_subscribe(
-            client,
-            params,
-            dir_pub,
-            dir_prv
-        )
+        response = run_subscribe(client, params, paths)
 
     return response
