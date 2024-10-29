@@ -22,7 +22,7 @@ SERVER_CONFIG_LOC = pathlib.Path(".") / "examples" / "reindeer"
 
 class TestPubServer(unittest.TestCase):
 
-    def test_run_publish(self):
+    def test_start_stop_pub_server(self):
         self.test_server = rain.defaults.Server("pub", [])
         self.test_server.publ_host = "127.0.0.1"
         self.test_server.publ_port = 8000
@@ -101,23 +101,24 @@ class TestSubClientTowardsServer(unittest.TestCase):
         cls.queue.put(cls.exit_magic)
         cls.server.join()
 
-    def test_run_client_sub(self):
+    def test_sub_one_timed_param(self):
         response_generator = rain.client.run_subscribe(
             client=self.test_client,
             params=["activity"],
             paths=self.client_paths
         )
-        response = next(response_generator)
-        assert response["action"] == "sub", response
-        assert response["name"] == "activity", response
-        assert response["data"] == "grazing", response
 
         response = next(response_generator)
         assert response["action"] == "sub", response
         assert response["name"] == "activity", response
         assert response["data"] == "grazing", response
 
-    def test_trigger_non_trigger_fail(self):
+        response = next(response_generator)
+        assert response["action"] == "sub", response
+        assert response["name"] == "activity", response
+        assert response["data"] == "grazing", response
+
+    def test_trigger_wrong_param(self):
         trigger_response = rain.trigger.send_trigger(
             server_host=self.test_server.trig_host,
             server_port=self.test_server.trig_port,
@@ -137,7 +138,7 @@ class TestSubClientTowardsServer(unittest.TestCase):
         assert trigger_response["name"] == "antlers", trigger_response
         assert trigger_response["data"] == rain.server.SERVER_TRIGGER_REQ_OK, trigger_response
 
-    def test_run_client_sub_trigger(self):
+    def test_sub_one_trigger(self):
         response_generator = rain.client.run_subscribe(
             client=self.test_client,
             params=["antlers"],
@@ -162,7 +163,7 @@ class TestSubClientTowardsServer(unittest.TestCase):
             value="They fell off!",
         )
         assert trigger_response["name"] == "antlers", trigger_response
-        assert trigger_response["data"] == rain.server.SERVER_TRIGGER_REQ_OK, trigger_response
+        assert trigger_response["data"] == rain.defaults.SERVER_TRIGGER_REQ_OK, trigger_response
 
         send_trigger.join()
         response = local_q.get()
