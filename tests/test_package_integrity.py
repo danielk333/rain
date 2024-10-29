@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Test basic kepler functions
+Test of the importing of the `rain` package
 '''
 
 import unittest
