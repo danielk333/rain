@@ -84,8 +84,8 @@ class Client():
     server: str
     action: str
     timeout: int
-    host_server: str = ""
-    port_server: str = ""
+    hostname: str = ""
+    port: str = ""
     enable_auth = True
     pub_key: dict = None
 
