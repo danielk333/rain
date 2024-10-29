@@ -2,33 +2,33 @@
 
 # API
 
-::: rain.client
-
-::: rain.config
-
-::: rain.validate
-
-::: rain.authenticate
-
-::: rain.get_api
-
-::: rain.transport
-
-::: rain.packaging
-
-::: rain.server
-
-::: rain.register
-
-::: rain.fetch
-
-::: rain.version
-
-::: rain.plugins
+::: rain.defaults
 
 ::: rain.cli
 
+::: rain.generate
+
+::: rain.register
+
+::: rain.plugins
+
+::: rain.fetch
+
+::: rain.authenticate
+
+::: rain.packaging
+
+::: rain.transport
+
+::: rain.validate
+
+::: rain.get_api
+
 ::: rain.trigger
 
-::: rain.generate
+::: rain.server
+
+::: rain.client
+
+::: rain.version
 

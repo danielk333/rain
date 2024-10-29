@@ -3,9 +3,9 @@
 Messages are the packets of information exchanged between servers and clients.
 These messages are in JSON format and have been given defined fields:
 
-- `sender`: the IP address of the message sender, to allow identification
-- `date`: the date this message was formed
-- `time`: the time this message was formed
+- `sender-name`: the name of the sender, as taken from the name its public key is stored in
+- `sender-key`: the sender's public key, extracted from the established connection
+- `datetime`: the date and time this message was formed, including timezone offset. This is in ISO 8601 format
 - `action`: whether this message relates to a `GET`, `SET` or `SUB` request
 - `name`: the name(s) of the requested parameter(s)
 - `data`: any data value, such as parameter values (for responses) or additional request information
@@ -22,9 +22,9 @@ Similar validation schemas could be used in a similar way to how `rain` uses the
 Below is an example message, a response to a `GET` request of a parameter called `herd_size` provided by the "reindeer" server:
 ```
 {
-    "sender": "127.0.0.1",
-    "date": "2024-08-26",
-    "time": "09:39:12 Local Time",
+    "sender-name": "reindeer",
+    "sender-key": "N?</IPRcpG.aNx()nLiAMEO0LWzwWfb<0H?d{IVE",
+    "datetime": "2024-10-29T22:25:09.633010+01:00",
     "action": "get",
     "name": [
         "herd_size"
@@ -33,4 +33,5 @@ Below is an example message, a response to a `GET` request of a parameter called
         "10"
     ]
 }
+
 ```

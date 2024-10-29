@@ -8,6 +8,7 @@ There is one compulsory argument:
 
 Additionally, there are several optional arguments:
 
+- `-a` or `--auth`: is set to `False` when called. This disables a Publish server's authentication measures. It must also be disabled on the client's side, or no messages can be received.
 - `-c` or `--cfgpath`: the path to the server's main configuration folder. This argument must be called if this folder is not in the default location, otherwise it can be omitted
 - `-l` or `--logfile`: the path to a file that will be used to store the server's logs
 - `-o` or `--logprint`: is set to `True` when called. This sets whether to print the server's logs to `stdout` (to print to the console for example)

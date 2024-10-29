@@ -4,7 +4,7 @@ This guide will describe what steps to take to set up a server, once an instrume
 
 ## Server configurations
 
-As was explained in registration.md, a file called `server.cfg` was automatically generated when your instrument was registered.
+As was explained in the Registration Guide, a file called `server.cfg` was automatically generated when your instrument was registered.
 This file will be located at the location set when registering the instrument, or in `~/home/user/.config/rain` if this was not set.
 This file was pre-filled with the relevant items, which were assigned default values.
 These items will need to be adjusted to suit your needs.
@@ -55,6 +55,12 @@ This section is an optional security feature, that can be combined with the publ
 The hostnames of the clients that are allowed to connect to the server can be added here.
 This list is then used by `rain` to reject any connection attempt using IP addresses that aren't in this list.
 However this list can be left empty without affecting how `rain` functions.
+
+### Maximum message length
+
+This section contains a value, representing the maximum length of a message that a client can send to a server.
+If the message exceeds this length, the client will be automatically disconnected.
+This value is given in bytes and can be configured for each server.
 
 ### Example
 

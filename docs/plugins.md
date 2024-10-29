@@ -10,6 +10,10 @@ This function needs to be wrapped with a decorator, in this case `register_respo
 This plugin function is stored in a Python file in the `plugins` folder in the server's configuration folder.
 This means that plugin functions are kept outside of `rain`'s source code.
 
+Please note that if the plugin function raises an error, this error will be added to the data field in the response sent to the client.
+Please be aware of this when writing your plugin functions, as the error transmitted to a client could give an indication of how the server's systems operate.
+This may be a concern for you, depending on your systems.
+
 ## Response server
 
 Response servers need to create plugin functions in order to form responses to `SET` and `GET` requests.

@@ -4,7 +4,7 @@ This guide will describe what steps to take to set up a client, once an instrume
 
 ## Client configurations
 
-As was explained in registration.md, a file called `hosts.cfg` was automatically generated when your instrument was registered.
+As was explained in the Registration Guide, a file called `hosts.cfg` was automatically generated when your instrument was registered.
 This file will be located at the location set when registering the instrument, or in `~/home/.config/rain` if this was not set.
 This file was pre-filled with the relevant items, which were assigned default values.
 These items will need to be adjusted to suit your needs.
@@ -40,10 +40,11 @@ In this case, the values entered when starting the client take precedence over t
 
 Two timeouts have been implemented, in order to ensure that a server or client will not hang, potentially blocking interactions.
 
-- `send`: the connection timeout if a message isn't able to be sent
-- `receive`: the connection timeout if a message isn't being received
+- `receive`: the connection timeout if a request message isn't being received by a Response server
+- `subscribe`: the connection timeout if a message isn't being received by a Publish server
 
-In both cases, the configured values need to be given in milliseconds, with the defaults being set at 10000ms (10s).
+In both cases, the configured values need to be given in milliseconds, with the defaults being set at 10000ms (10s) for the `receive` timeout, and -1 (infinite) for the `subscribe` timeout.
+The `subscribe` timeout is set to infinite to avoid a Subscribe client disconnecting from a Publish server with long update frequencies.
 
 ### Server details
 

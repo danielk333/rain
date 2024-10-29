@@ -11,6 +11,7 @@ There are two compulsory arguments:
 
 As well as a number of optional arguments:
 
+- `-a` or `--auth`: is set to `False` when called. This disables a Subscribe client's authentication measures. It must also be disabled on the server's side, or no messages can be received.
 - `-c` or `--cfgpath`: the path to the client's main configuration folder. This argument must be called if this folder is not in the default location, otherwise it can be omitted
 - `-l` or `--logfile`: the path to a file that will be used to store the client's logs
 - `-o` or `--logprint`: is set to `True` when called. This instructs to print the client's logs to `stdout` (to print to the console for example)
@@ -67,8 +68,8 @@ However, a client can make a distinction among the timed parameters, allowing us
 
 ### Examples
 
-For an example where a client subscribes to three parameters: `herd_size` (only changes in values), `activity` (all values) and `trigger` (a trigger parameter).
+For an example where a client subscribes to three parameters: `herd_size` (only changes in values), `activity` (all values) and `antlers` (a trigger parameter).
 No other optional arguments are called.
 ```
-rain-client sub -c herd_size -f activity -t trigger
+rain-client sub -c herd_size -f activity -t antlers
 ```
