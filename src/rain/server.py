@@ -40,9 +40,9 @@ def run_response(server, paths, exit_handler=None, exit_handler_check=10):
 
     Parameters
     ----------
-    server : Server object
+    server : rain.defaults.Server
         Contains information regarding the connection established by the server
-    paths : Path object
+    paths : rain.defaults.Paths
         An object containing the paths to the folders holding the senders'
         public keys, the user's private keypair and the plugins folder
     exit_handler : function, default=None
@@ -108,9 +108,9 @@ def run_publish(server, paths, custom_message_queue=None):
 
     Parameters
     ----------
-    server : Server object
+    server : rain.defaults.Server
         Contains information regarding the connection established by the server
-    paths : Path object
+    paths : rain.defaults.Paths
         An object containing the paths to the folders holding the senders'
         public keys, the user's private keypair and the plugins folder
     custom_message_queue : queue.Queue

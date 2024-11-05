@@ -166,9 +166,9 @@ def setup_server(server, paths):
 
     Parameters
     ----------
-    server : Server object
+    server : rain.defaults.Server
         Contains information regarding the connection established by the server
-    paths : Path object
+    paths : rain.defaults.Paths
         An object containing the paths to the folders holding the senders'
         public keys, the user's private keypair and the plugins folder
 
@@ -200,9 +200,9 @@ def setup_client(client, paths):
 
     Parameters
     ----------
-    client : Client object
+    client : rain.defaults.Client
         Contains information regarding the connection to the server
-    paths : Path object
+    paths : rain.defaults.Paths
         An object containing the paths to the folders holding the senders'
         public keys and the user's private keypair
 

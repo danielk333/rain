@@ -157,16 +157,10 @@ def find_paths(config, container):
 
     Returns
     -------
-    paths : Path object
+    paths : rain.defaults.Paths
         An object containing the paths to the folders holding the senders'
         public keys, the user's private keypair and the server's plugins folder
         (if the user is a server)
-    path_pub : Posix path
-        The path to the folder containing the public keys of the known clients
-    path_prv : Posix path
-        The path to the folder containing the server's private key
-    path_plug : Posix path
-        The path to the folder containing the server's plugins
     '''
     path_pub = Path(config.get("Security", "public-keys"))
     path_prv = Path(config.get("Security", "private-keys"))
@@ -193,7 +187,7 @@ def setup_server_object(args, config):
 
     Returns
     -------
-    server : Server object
+    server : rain.defaults.Server
         Contains information regarding the connection established by the server
     '''
     if "Allowed" in config:
@@ -231,7 +225,7 @@ def setup_client_object(args, config):
 
     Returns
     -------
-    client : Client object
+    client : rain.defaults.Client
         Contains information regarding the connection to the server
     '''
     if args.action == "set" or args.action == "get":
@@ -312,9 +306,9 @@ def handle_server_args(args):
 
     Returns
     -------
-    server : Server object
+    server : rain.defaults.Server
         Contains information regarding the connection established by the server
-    paths : Path object
+    paths : rain.defaults.Paths
         An object containing the paths to the folders holding the senders'
         public keys, the user's private keypair and the plugins folder
     '''
@@ -339,11 +333,11 @@ def handle_client_args(args):
 
     Returns
     -------
-    client : Client object
+    client : rain.defaults.Client
         Contains information regarding the connection to the server
     params : list of strings
         The parameters requested by the client
-    paths : Path object
+    paths : rain.defaults.Paths
         An object containing the paths to the folders holding the senders'
         public keys and the user's private keypair
     '''
