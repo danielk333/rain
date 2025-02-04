@@ -1,5 +1,5 @@
 """
-Example usage of fetching a get response using rain client API rather than the client CLI
+Example usage of starting servers and loading plugins using rain API rather than the server CLI
 """
 import pathlib
 import argparse

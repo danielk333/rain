@@ -1,5 +1,8 @@
 """
 Example usage of fetching a get response using rain client API rather than the client CLI
+
+RUN THE SERVER BEFORE USING THIS EXAMPLE
+either with the CLI or the `server.py` example with the `rep` argument
 """
 import pathlib
 import json

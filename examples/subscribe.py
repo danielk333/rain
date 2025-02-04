@@ -1,5 +1,8 @@
 """
 Example usage of subscribing to a data-stream using the rain client API rather than the client CLI
+
+RUN THE SERVER BEFORE USING THIS EXAMPLE
+either with the CLI or the `server.py` example with the `pub` argument
 """
 import pathlib
 import json
