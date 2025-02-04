@@ -169,6 +169,7 @@ class TestRepClientTowardsServer(unittest.TestCase):
             data=["grazing"],
             paths=self.client_paths
         )
+        response = next(response_generator)
 
     def test_set_two_params(self):
         response_generator = rain.client.run_request(
@@ -205,3 +206,4 @@ class TestRepClientTowardsServer(unittest.TestCase):
             data=["10", "grazing"],
             paths=self.client_paths
         )
+        response = next(response_generator)
