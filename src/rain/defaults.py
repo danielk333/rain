@@ -39,8 +39,8 @@ DEFAULT_LOGGING = {
 
 DEFAULT_TIMEOUTS = {
     "Timeouts": {
-        "receive": "10000",
-        "subscribe": "-1"
+        "receive": 10000,
+        "subscribe": -1
     }
 }
 
