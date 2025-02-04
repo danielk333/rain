@@ -162,9 +162,13 @@ def run_publish(server, paths, custom_message_queue=None):
         func = PLUGINS["sub"][name]["function"]
         interval = PLUGINS["sub"][name]["interval"]
         while server_open:
-            value = func(name)
-            logger.debug(f"Sending value of '{name}'")
-            q.put([name, value])
+            try:
+                value = func(name)
+            except BaseException:
+                logger.exception("Plugin failed")
+            else:
+                logger.debug(f"Sending value of '{name}'")
+                q.put([name, value])
             time.sleep(interval)
 
     trig = threading.Thread(target=trigger_wait)
